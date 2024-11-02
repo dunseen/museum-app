@@ -1,24 +1,18 @@
 "use client";
 
-import * as React from "react";
 import {
-  Leaf,
-  Users,
   BookOpen,
-  FileText,
-  Settings,
-  BarChart,
-  Camera,
-  Calendar,
-  HelpCircle,
-  LogOut,
   ChevronRight,
   ChevronsUpDown,
-  Plus,
+  FileText,
+  Leaf,
+  LogOut,
+  Settings,
+  Users,
 } from "lucide-react";
+import * as React from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Badge } from "~/components/ui/badge";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,7 +21,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
-import { Button } from "~/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
@@ -40,18 +33,14 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
@@ -73,21 +62,20 @@ const data = {
     avatar: "/avatars/jane-smith.jpg",
     role: "Curador",
   },
-  institutions: [
-    {
-      name: "National Herbarium",
-      logo: Leaf,
-      type: "Research",
-    },
-  ],
   navMain: [
     {
       title: "Acervo",
       icon: BookOpen,
       items: [
-        { title: "Browse Specimens", url: "#" },
-        { title: "Add New Specimen", url: "#" },
-        { title: "Manage Collections", url: "#" },
+        {
+          title: "Taxonomia",
+          url: "/dashboard/collection/taxonomy",
+        },
+        {
+          title: "Características",
+          url: "/dashboard/collection/characteristics",
+        },
+        { title: "Espécies", url: "/dashboard/collection/species" },
       ],
     },
     {
@@ -244,13 +232,13 @@ export default function DashboardLayout({
                   <DropdownMenuGroup>
                     <DropdownMenuItem>
                       <Users className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
+                      <span>Perfil</span>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
+                    <span>Sair</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
