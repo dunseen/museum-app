@@ -64,6 +64,11 @@ export default function Page() {
             description:
               "Açaí é uma fruta roxa aaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaa",
             status: "Publicado",
+            class: "Magnoliopsida",
+            order: "Arecales",
+            family: "Arecaceae",
+            division: "Magnoliophyta",
+            genus: "Euterpe",
             images: [
               "https://fastly.picsum.photos/id/326/200/300.jpg?hmac=SKzjQ5ycCVyISiOfq2m-GqpQ5zWT_J202KPYG7z0uB4",
               "https://fastly.picsum.photos/id/326/200/300.jpg?hmac=SKzjQ5ycCVyISiOfq2m-GqpQ5zWT_J202KPYG7z0uB4",

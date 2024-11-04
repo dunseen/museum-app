@@ -47,7 +47,7 @@ export const EditSpecieDialog: React.FC<EditSpecieDialogProps> = ({
 
   return (
     <Dialog open={!!selectedSpecie} onOpenChange={onCloseDialog}>
-      <DialogContent>
+      <DialogContent style={{ overflowY: "auto", height: 500 }}>
         <DialogHeader>
           <DialogTitle>Editar</DialogTitle>
         </DialogHeader>

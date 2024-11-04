@@ -48,6 +48,26 @@ export function useSpecieTable() {
         ),
       },
       {
+        header: "Divisão",
+        accessorKey: "division",
+      },
+      {
+        header: "Família",
+        accessorKey: "family",
+      },
+      {
+        header: "Classe",
+        accessorKey: "class",
+      },
+      {
+        header: "Ordem",
+        accessorKey: "order",
+      },
+      {
+        header: "Gênero",
+        accessorKey: "genus",
+      },
+      {
         header: "Status",
         accessorKey: "status",
       },

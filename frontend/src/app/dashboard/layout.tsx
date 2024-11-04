@@ -68,10 +68,6 @@ const data = {
       icon: BookOpen,
       items: [
         {
-          title: "Taxonomia",
-          url: "/dashboard/collection/taxonomy",
-        },
-        {
           title: "Características",
           url: "/dashboard/collection/characteristics",
         },
@@ -247,7 +243,7 @@ export default function DashboardLayout({
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>
-      <SidebarInset>
+      <SidebarInset className="overflow-hidden">
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-6">
           <SidebarTrigger />
           <Separator orientation="vertical" className="h-6" />

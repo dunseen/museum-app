@@ -42,7 +42,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onCloseDialog}>
-      <DialogContent>
+      <DialogContent  style={{ overflowY: "auto", height: 500 }}>
         <DialogHeader>
           <DialogTitle>Adicionar</DialogTitle>
         </DialogHeader>
