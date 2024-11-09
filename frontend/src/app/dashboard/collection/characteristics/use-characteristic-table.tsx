@@ -3,7 +3,7 @@
 
 import { type ColumnDef } from "@tanstack/react-table";
 import { Image, MoreHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -13,36 +13,43 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { type Specie } from "./types";
+import { type Characteristic } from "./types";
 import { useRouter } from "next/navigation";
 
-export function useSpecieTable() {
+export function useCharacteristicTable() {
   const router = useRouter();
-  const [selectedSpecieId, setSelectedSpecieId] = useState<string | null>(null);
 
-  const [selectedSpecieImages, setSelectedSpecieImages] = useState<{
-    commonName: string;
-    images: string[];
-  } | null>(null);
+  const [selectedCharacteristicId, setSelectedCharacteristicId] = useState<
+    string | null
+  >(null);
 
-  const resetSelectedSpecieImages = () => setSelectedSpecieImages(null);
-  const resetSelectedSpecieId = () => setSelectedSpecieId(null);
+  const [selectedCharacteristicImages, setSelectedCharacteristicImages] =
+    useState<{
+      name: string;
+      images: string[];
+    } | null>(null);
 
-  const onEditClick = (specieName: string) => {
-    const encodedSpecieName = encodeURIComponent(specieName.toLowerCase());
+  const resetSelectedCharacteristicImages = () =>
+    setSelectedCharacteristicImages(null);
+  const resetSelectedCharacteristicId = () => setSelectedCharacteristicId(null);
 
-    router.push(`/dashboard/collection/species/${encodedSpecieName}/edit`);
-  };
+  const onEditCharacteristic = useCallback(
+    (name: string) => {
+      const encodedName = encodeURIComponent(name);
+      router.push(`/dashboard/collection/characteristics/${encodedName}/edit`);
+    },
+    [router],
+  );
 
-  const columns: ColumnDef<Specie>[] = useMemo(
+  const columns = useMemo<ColumnDef<Characteristic>[]>(
     () => [
       {
-        header: "Nome científico",
-        accessorKey: "scientificName",
+        header: "Nome",
+        accessorKey: "name",
       },
       {
-        header: "Nome popular",
-        accessorKey: "commonName",
+        header: "Tipo",
+        accessorKey: "type",
       },
       {
         header: "Descrição",
@@ -54,37 +61,13 @@ export function useSpecieTable() {
         ),
       },
       {
-        header: "Divisão",
-        accessorKey: "division",
-      },
-      {
-        header: "Família",
-        accessorKey: "family",
-      },
-      {
-        header: "Classe",
-        accessorKey: "class",
-      },
-      {
-        header: "Ordem",
-        accessorKey: "order",
-      },
-      {
-        header: "Gênero",
-        accessorKey: "genus",
-      },
-      {
-        header: "Status",
-        accessorKey: "status",
-      },
-      {
         header: "Imagens",
         accessorKey: "images",
         cell: ({ row }) => {
           return (
             <Button
               variant={"ghost"}
-              onClick={() => setSelectedSpecieImages(row.original)}
+              onClick={() => setSelectedCharacteristicImages(row.original)}
             >
               <Image />
             </Button>
@@ -105,13 +88,13 @@ export function useSpecieTable() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem
-                  onClick={() => onEditClick(row.original.commonName)}
+                  onClick={() => onEditCharacteristic(row.original.name)}
                 >
                   Editar
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={() => setSelectedSpecieId(row.original.id)}
+                  onClick={() => setSelectedCharacteristicId(row.original.id)}
                 >
                   Deletar
                 </DropdownMenuItem>
@@ -121,14 +104,14 @@ export function useSpecieTable() {
         },
       },
     ],
-    [],
+    [onEditCharacteristic],
   );
 
   return {
     columns,
-    selectedSpecieId,
-    selectedSpecieImages,
-    resetSelectedSpecieImages,
-    resetSelectedSpecieId,
+    resetSelectedCharacteristicImages,
+    resetSelectedCharacteristicId,
+    selectedCharacteristicId,
+    selectedCharacteristicImages,
   };
 }

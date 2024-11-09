@@ -1,5 +1,5 @@
 import React from "react";
-import { Controller, type useForm } from "react-hook-form";
+import { type useForm } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -8,20 +8,15 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import ImageManager from "../image-manager";
 import { type SpecieFormType } from "./schema";
 import { Textarea } from "~/components/ui/textarea";
 
 type GeneralInfoFormProps = {
   form: ReturnType<typeof useForm<SpecieFormType>>;
-  images?: string[];
 };
-export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({
-  form,
-  images,
-}) => {
+export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({ form }) => {
   return (
-    <>
+    <div className="flex flex-1 flex-col gap-2">
       <FormField
         control={form.control}
         name="commonName"
@@ -29,7 +24,15 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({
           <FormItem>
             <FormLabel>Nome popular (*)</FormLabel>
             <FormControl>
-              <Input placeholder="Digite o nome popular" {...field} />
+              <Input
+                defaultValue={field.value}
+                ref={field.ref}
+                name={field.name}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                disabled={field.disabled}
+                placeholder="Digite o nome popular"
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -42,7 +45,15 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({
           <FormItem>
             <FormLabel>Nome Cientifico (*)</FormLabel>
             <FormControl>
-              <Input placeholder="Digite o nome cientifico" {...field} />
+              <Input
+                defaultValue={field.value}
+                ref={field.ref}
+                name={field.name}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                disabled={field.disabled}
+                placeholder="Digite o nome cientifico"
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -53,29 +64,22 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({
         name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Descrição (opcional)</FormLabel>
+            <FormLabel>Descrição (*)</FormLabel>
             <FormControl>
               <Textarea
+                defaultValue={field.value}
+                ref={field.ref}
+                name={field.name}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                disabled={field.disabled}
                 placeholder="Informe uma breve descrição da espécie"
-                {...field}
               />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
-      <Controller
-        name="images"
-        control={form.control}
-        defaultValue={images}
-        render={({ field, fieldState }) => (
-          <ImageManager
-            errorMessage={fieldState.error?.message}
-            existingImages={field.value}
-            onImagesChange={(newImages) => field.onChange(newImages)}
-          />
-        )}
-      />
-    </>
+    </div>
   );
 };

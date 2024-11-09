@@ -68,6 +68,10 @@ const data = {
       icon: BookOpen,
       items: [
         {
+          title: "Taxonomia",
+          url: "/dashboard/collection/taxonomy",
+        },
+        {
           title: "Características",
           url: "/dashboard/collection/characteristics",
         },

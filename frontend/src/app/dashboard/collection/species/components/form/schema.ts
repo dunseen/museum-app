@@ -5,13 +5,22 @@ export const formSpecieSchema = z.object({
   scientificName: z.string({
     required_error: "Campo obrigatório",
   }),
-  description: z.string(),
-  images: z.array(z.string()).min(1, "Adicione ao menos uma imagem"),
-  division: z.object({ value: z.string(), label: z.string() }),
-  class: z.object({ value: z.string(), label: z.string() }),
-  order: z.object({ value: z.string(), label: z.string() }),
-  family: z.object({ value: z.string(), label: z.string() }),
-  genus: z.object({ value: z.string(), label: z.string() }),
+  description: z.string({
+    required_error: "Campo obrigatório",
+  }),
+  images: z.array(z.string(), {
+    required_error: "Campo obrigatório",
+  }),
+  taxonomyId: z.object(
+    { value: z.string(), label: z.string() },
+    {
+      required_error: "Campo obrigatório",
+      invalid_type_error: "Campo obrigatório",
+    },
+  ),
+  characteristics: z
+    .array(z.object({ value: z.string(), label: z.string() }))
+    .optional(),
 });
 
 export type SpecieFormType = z.infer<typeof formSpecieSchema>;

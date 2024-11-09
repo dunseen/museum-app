@@ -7,40 +7,32 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 
-import { DataTable } from "./data-table";
+import { DataTable } from "../../shared/components/data-table";
 import { useSpecieTable } from "./use-specie-table";
 import { ImageCarousel } from "../../shared/components/image-carousel";
 import { ConfirmationAlert } from "../../shared/components/confirmation-alert";
-import { EditSpecieDialog } from "./edit/edit-specie-dialog";
 import { Button } from "~/components/ui/button";
 import { PlusIcon } from "lucide-react";
-import { useDisclosure } from "~/hooks/use-disclosure";
-import { AddSpecieDialog } from "./add/add-specie-dialog";
-import { TablePagination } from "../../shared/components/table-pagination";
 import { HeaderFiltersAndPagination } from "../../shared/components/header-filters-and-pagination";
-import { useState } from "react";
-import { TaxonomyFilters } from "./types";
-import { Nullable } from "~/types";
 import { useHeaderFilters } from "../../shared/hooks/use-header-filters";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const {
     columns,
-    selectedSpecie,
     selectedSpecieId,
     selectedSpecieImages,
     resetSelectedSpecieImages,
     resetSelectedSpecieId,
-    resetSelectedSpecie,
   } = useSpecieTable();
-
-  const addSpecieDialog = useDisclosure();
 
   const { handleTaxonomyChange, onSearchChange, searchValue, taxonomyFilters } =
     useHeaderFilters();
 
+  const router = useRouter();
+
   return (
-    <div className="container mx-auto py-10">
+    <>
       <header className="mb-4 flex justify-between">
         <HeaderFiltersAndPagination
           handleTaxonomyChange={handleTaxonomyChange}
@@ -49,7 +41,9 @@ export default function Page() {
           taxonomyFilters={taxonomyFilters}
           searchPlaceholder="Busca por nome científico ou popular"
         />
-        <Button onClick={addSpecieDialog.onOpen}>
+        <Button
+          onClick={() => router.push("/dashboard/collection/species/add")}
+        >
           <PlusIcon />
           Adicionar
         </Button>
@@ -91,20 +85,6 @@ export default function Page() {
         </Dialog>
       ) : null}
 
-      {!!selectedSpecie ? (
-        <EditSpecieDialog
-          resetSelectedSpecie={resetSelectedSpecie}
-          selectedSpecie={selectedSpecie}
-        />
-      ) : null}
-
-      {addSpecieDialog.isOpen ? (
-        <AddSpecieDialog
-          onClose={addSpecieDialog.onClose}
-          isOpen={addSpecieDialog.isOpen}
-        />
-      ) : null}
-
       {!!selectedSpecieId ? (
         <ConfirmationAlert
           isOpen={!!selectedSpecieId}
@@ -113,6 +93,6 @@ export default function Page() {
           onConfirm={resetSelectedSpecieId}
         />
       ) : null}
-    </div>
+    </>
   );
 }

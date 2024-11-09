@@ -1,53 +1,34 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState, useRef } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Upload, UploadCloud } from "lucide-react";
+import { useImageManager } from "../hooks/use-image-manager";
 
 interface ImageManagerProps {
   existingImages: string[];
-  errorMessage?: string;
   onImagesChange: (images: string[]) => void;
 }
 
 export default function ImageManager({
   existingImages = [],
-  errorMessage,
   onImagesChange,
 }: ImageManagerProps) {
-  const [images, setImages] = useState<string[]>(existingImages);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files) {
-      const newImages = Array.from(files).map((file) =>
-        URL.createObjectURL(file),
-      );
-      const updatedImages = [...images, ...newImages];
-      setImages(updatedImages);
-      onImagesChange(updatedImages);
-    }
-  };
-
-  const handleRemoveImage = (index: number) => {
-    const updatedImages = images.filter((_, i) => i !== index);
-    setImages(updatedImages);
-    onImagesChange(updatedImages);
-  };
-
-  const handleAddImageClick = () => {
-    fileInputRef.current?.click();
-  };
+  const {
+    fileInputRef,
+    handleAddImageClick,
+    handleFileChange,
+    handleRemoveImage,
+    images,
+  } = useImageManager({
+    existingImages,
+    onImagesChange,
+  });
 
   return (
     <div className="mx-auto">
       <div className="flex items-center gap-2">
-        <p className={`text-md font mb-2 ${errorMessage && "text-red-500"}`}>
-          Imagens
-        </p>
         <Button
           size={"icon"}
           type="button"
@@ -68,7 +49,7 @@ export default function ImageManager({
           aria-label="Adicionar imagens"
         />
       </div>
-      <div className="flex max-w-md gap-2 overflow-x-auto">
+      <div className="flex gap-2 overflow-x-auto">
         {images.map((image, index) => (
           <Card key={index} className="group relative min-w-32">
             <CardContent className="p-2">
@@ -91,7 +72,6 @@ export default function ImageManager({
           </Card>
         ))}
       </div>
-      {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
     </div>
   );
 }
