@@ -69,26 +69,39 @@ const TaxonomyFilter: React.FC<{
   onChange: (level: string, value: string | null) => void;
 }> = ({ filters, onChange }) => {
   const taxonomyLevels = [
-    { name: "division", label: "Divisão", dependent: null },
-    { name: "class", label: "Classe", dependent: "division" },
-    { name: "order", label: "Ordem", dependent: "class" },
-    { name: "family", label: "Família", dependent: "order" },
-    { name: "genus", label: "Gênero", dependent: "family" },
+    { name: "family", label: "Família" },
+    { name: "class", label: "Classe" },
+    { name: "order", label: "Ordem" },
+    { name: "genus", label: "Gênero" },
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-2 rounded-sm bg-zinc-50 p-2">
-      {taxonomyLevels.map((level) => (
-        <div className="flex min-w-56 flex-col gap-2" key={level.name}>
-          <Label>{level.label}</Label>
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-2 gap-4 rounded-sm bg-zinc-50 p-2">
+        {taxonomyLevels.map((level) => (
+          <div className="flex min-w-56 flex-col gap-2" key={level.name}>
+            <Label>{level.label}</Label>
+            <Select
+              value={filters[level.name as keyof TaxonomyFilters]}
+              onChange={(value) => onChange(level.name, value)}
+              options={[]}
+            />
+          </div>
+        ))}
+        <div className="flex min-w-56 flex-col gap-2">
+          <Label>Status</Label>
           <Select
-            value={filters[level.name as keyof TaxonomyFilters]}
-            onChange={(value) => onChange(level.name, value)}
-            options={[]}
-            isDisabled={Boolean(level.dependent)}
+            value={{}}
+            placeholder={"Status"}
+            isSearchable={false}
+            options={[
+              { value: "publicado", label: "Publicado" },
+              { value: "rascunho", label: "Rascunho" },
+              { value: "criado", label: "Criado" },
+            ]}
           />
         </div>
-      ))}
+      </div>
     </div>
   );
 };

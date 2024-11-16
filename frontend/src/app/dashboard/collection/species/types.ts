@@ -15,7 +15,6 @@ export type Specie = {
 };
 
 export type TaxonomyFilters = {
-  division: Nullable<string>;
   class: Nullable<string>;
   order: Nullable<string>;
   family: Nullable<string>;

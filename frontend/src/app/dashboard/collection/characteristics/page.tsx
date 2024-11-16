@@ -1,10 +1,7 @@
 "use client";
 
 import { Button } from "~/components/ui/button";
-import { HeaderFiltersAndPagination } from "../../shared/components/header-filters-and-pagination";
-import { useHeaderFilters } from "../../shared/hooks/use-header-filters";
 import { PlusIcon } from "lucide-react";
-import { useDisclosure } from "~/hooks/use-disclosure";
 import { useCharacteristicTable } from "./use-characteristic-table";
 import { DataTable } from "../../shared/components/data-table";
 import {
@@ -16,6 +13,24 @@ import {
 import { ImageCarousel } from "../../shared/components/image-carousel";
 import { ConfirmationAlert } from "../../shared/components/confirmation-alert";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Input } from "~/components/ui/input";
+
+const Search = () => {
+  const [searchValue, setSearchValue] = useState("");
+
+  const onSearchChange = (value: string) => setSearchValue(value);
+
+  return (
+    <div className="flex min-w-72">
+      <Input
+        value={searchValue}
+        onChange={(e) => onSearchChange(e.target.value)}
+        placeholder={"Busca por nome, tipo ou descrição"}
+      />
+    </div>
+  );
+};
 
 export default function Page() {
   const {
@@ -26,21 +41,12 @@ export default function Page() {
     resetSelectedCharacteristicId,
   } = useCharacteristicTable();
 
-  const { handleTaxonomyChange, onSearchChange, searchValue, taxonomyFilters } =
-    useHeaderFilters();
-
   const router = useRouter();
 
   return (
     <>
       <header className="mb-4 flex justify-between">
-        <HeaderFiltersAndPagination
-          handleTaxonomyChange={handleTaxonomyChange}
-          onSearchChange={onSearchChange}
-          searchValue={searchValue}
-          taxonomyFilters={taxonomyFilters}
-          searchPlaceholder="Busca por nome"
-        />
+        <Search />
         <Button
           onClick={() =>
             router.push("/dashboard/collection/characteristics/add")

@@ -81,11 +81,7 @@ const data = {
     {
       title: "Usuários",
       icon: Users,
-      items: [
-        { title: "Researchers", url: "#" },
-        { title: "Staff", url: "#" },
-        { title: "Visitors", url: "#" },
-      ],
+      items: [],
     },
     {
       title: "Relatórios",
@@ -94,14 +90,6 @@ const data = {
         { title: "Specimen Reports", url: "#" },
         { title: "User Activity", url: "#" },
         { title: "Research Output", url: "#" },
-      ],
-    },
-    {
-      title: "Configurações",
-      icon: Settings,
-      items: [
-        { title: "General", url: "#" },
-        { title: "Permissions", url: "#" },
       ],
     },
   ],
@@ -154,22 +142,26 @@ export default function DashboardLayout({
                       <SidebarMenuButton tooltip={item.title}>
                         {item.icon && <item.icon />}
                         <span>{item.title}</span>
-                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                        {item.items.length > 0 && (
+                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                        )}
                       </SidebarMenuButton>
                     </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {item.items?.map((subItem) => (
-                          <SidebarMenuSubItem key={subItem.title}>
-                            <SidebarMenuSubButton asChild>
-                              <a href={subItem.url}>
-                                <span>{subItem.title}</span>
-                              </a>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
+                    {item.items.length > 0 && (
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.items?.map((subItem) => (
+                            <SidebarMenuSubItem key={subItem.title}>
+                              <SidebarMenuSubButton asChild>
+                                <a href={subItem.url}>
+                                  <span>{subItem.title}</span>
+                                </a>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    )}
                   </SidebarMenuItem>
                 </Collapsible>
               ))}

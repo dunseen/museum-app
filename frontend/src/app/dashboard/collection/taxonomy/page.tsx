@@ -4,27 +4,36 @@ import { Button } from "~/components/ui/button";
 import { DataTable } from "../../shared/components/data-table";
 import { useTaxonomyTable } from "./use-taxonomy-table";
 import { PlusIcon } from "lucide-react";
-import { HeaderFiltersAndPagination } from "../../shared/components/header-filters-and-pagination";
-import { useHeaderFilters } from "../../shared/hooks/use-header-filters";
 import { useRouter } from "next/navigation";
+import { Input } from "~/components/ui/input";
+import { useState } from "react";
+import { ConfirmationAlert } from "../../shared/components/confirmation-alert";
 
+const Search = () => {
+  const [searchValue, setSearchValue] = useState("");
+
+  const onSearchChange = (value: string) => setSearchValue(value);
+
+  return (
+    <Input
+      value={searchValue}
+      onChange={(e) => onSearchChange(e.target.value)}
+      placeholder={"Busca por nome"}
+    />
+  );
+};
 export default function Page() {
-  const { columns } = useTaxonomyTable();
-  const { handleTaxonomyChange, onSearchChange, searchValue, taxonomyFilters } =
-    useHeaderFilters();
+  const { columns, selectedTaxonomyId, resetSelectedTaxonomyId } =
+    useTaxonomyTable();
 
   const router = useRouter();
 
   return (
     <>
       <header className="mb-4 flex justify-between">
-        <HeaderFiltersAndPagination
-          handleTaxonomyChange={handleTaxonomyChange}
-          onSearchChange={onSearchChange}
-          searchValue={searchValue}
-          taxonomyFilters={taxonomyFilters}
-          searchPlaceholder="Busca por nome"
-        />
+        <div className="flex min-w-72">
+          <Search />
+        </div>
         <Button
           onClick={() => router.push("/dashboard/collection/taxonomy/add")}
         >
@@ -43,6 +52,15 @@ export default function Page() {
           },
         ]}
       />
+
+      {!!selectedTaxonomyId ? (
+        <ConfirmationAlert
+          isOpen={!!selectedTaxonomyId}
+          onClose={resetSelectedTaxonomyId}
+          onCancel={resetSelectedTaxonomyId}
+          onConfirm={resetSelectedTaxonomyId}
+        />
+      ) : null}
     </>
   );
 }

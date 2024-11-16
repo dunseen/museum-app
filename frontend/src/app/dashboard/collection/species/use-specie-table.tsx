@@ -3,7 +3,7 @@
 
 import { type ColumnDef } from "@tanstack/react-table";
 import { Image, MoreHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -28,11 +28,14 @@ export function useSpecieTable() {
   const resetSelectedSpecieImages = () => setSelectedSpecieImages(null);
   const resetSelectedSpecieId = () => setSelectedSpecieId(null);
 
-  const onEditClick = (specieName: string) => {
-    const encodedSpecieName = encodeURIComponent(specieName.toLowerCase());
+  const onEditClick = useCallback(
+    (specieName: string) => {
+      const encodedSpecieName = encodeURIComponent(specieName.toLowerCase());
 
-    router.push(`/dashboard/collection/species/${encodedSpecieName}/edit`);
-  };
+      router.push(`/dashboard/collection/species/${encodedSpecieName}/edit`);
+    },
+    [router],
+  );
 
   const columns: ColumnDef<Specie>[] = useMemo(
     () => [
@@ -52,10 +55,6 @@ export function useSpecieTable() {
             {row.original.description}
           </p>
         ),
-      },
-      {
-        header: "Divisão",
-        accessorKey: "division",
       },
       {
         header: "Família",
@@ -121,7 +120,7 @@ export function useSpecieTable() {
         },
       },
     ],
-    [],
+    [onEditClick],
   );
 
   return {
