@@ -10,6 +10,7 @@ import {
   Settings,
   Users,
 } from "lucide-react";
+import Link from "next/link";
 import * as React from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -66,6 +67,7 @@ const data = {
     {
       title: "Acervo",
       icon: BookOpen,
+      defaultUrl: "/dashboard/collection/species",
       items: [
         {
           title: "Taxonomia",
@@ -79,17 +81,18 @@ const data = {
       ],
     },
     {
+      defaultUrl: "/dashboard/users",
       title: "Usuários",
       icon: Users,
       items: [],
     },
     {
       title: "Relatórios",
+      defaultUrl: "/dashboard/report/species",
       icon: FileText,
       items: [
-        { title: "Specimen Reports", url: "#" },
-        { title: "User Activity", url: "#" },
-        { title: "Research Output", url: "#" },
+        { title: "Specimen Reports", url: "/dashboard/report/species" },
+        { title: "User Activity", url: "/dashboard/report/user-activity" },
       ],
     },
   ],
@@ -141,7 +144,7 @@ export default function DashboardLayout({
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton tooltip={item.title}>
                         {item.icon && <item.icon />}
-                        <span>{item.title}</span>
+                        <Link href={item.defaultUrl}>{item.title}</Link>
                         {item.items.length > 0 && (
                           <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                         )}
