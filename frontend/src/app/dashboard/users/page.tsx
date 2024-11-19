@@ -25,7 +25,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import { Label } from "~/components/ui/label";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -75,7 +74,7 @@ const Search = () => {
     <Input
       value={searchValue}
       onChange={(e) => onSearchChange(e.target.value)}
-      placeholder={"Busca por nome"}
+      placeholder={"Busca por nome ou email"}
     />
   );
 };
@@ -100,8 +99,6 @@ export default function Page() {
     () => fakerUser.find((u) => u.id === selectedUserId),
     [fakerUser, selectedUserId],
   );
-
-  console.log(selectedUser);
 
   const form = useForm<AddUserFormType>({
     resolver: zodResolver(addUserSchema),
