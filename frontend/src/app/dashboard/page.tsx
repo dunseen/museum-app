@@ -6,8 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Overview } from "./overview";
-import { RecentActivities } from "./recent-activities";
+import { Overview, RecentActivities } from "./components/";
 import Link from "next/link";
 
 export default function Page() {
@@ -64,7 +63,7 @@ export default function Page() {
             <CardTitle className="inline-flex">
               Atividades
               <Link
-                href={"/dashboard/report/activities"}
+                href={"/dashboard/system/activities"}
                 className="ml-auto text-base font-medium underline"
               >
                 Ver todas

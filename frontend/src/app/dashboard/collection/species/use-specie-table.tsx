@@ -3,7 +3,7 @@
 
 import { type ColumnDef } from "@tanstack/react-table";
 import { Image, MoreHorizontal } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -14,10 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { type Specie } from "./types";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function useSpecieTable() {
-  const router = useRouter();
   const [selectedSpecieId, setSelectedSpecieId] = useState<string | null>(null);
 
   const [selectedSpecieImages, setSelectedSpecieImages] = useState<{
@@ -27,15 +26,6 @@ export function useSpecieTable() {
 
   const resetSelectedSpecieImages = () => setSelectedSpecieImages(null);
   const resetSelectedSpecieId = () => setSelectedSpecieId(null);
-
-  const onEditClick = useCallback(
-    (specieName: string) => {
-      const encodedSpecieName = encodeURIComponent(specieName.toLowerCase());
-
-      router.push(`/dashboard/collection/species/${encodedSpecieName}/edit`);
-    },
-    [router],
-  );
 
   const columns: ColumnDef<Specie>[] = useMemo(
     () => [
@@ -103,11 +93,12 @@ export function useSpecieTable() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() => onEditClick(row.original.commonName)}
+                <Link
+                  href={`/dashboard/collection/species/${encodeURIComponent(row.original.commonName.toLowerCase())}/edit`}
+                  prefetch={true}
                 >
-                  Editar
-                </DropdownMenuItem>
+                  <DropdownMenuItem>Editar</DropdownMenuItem>
+                </Link>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => setSelectedSpecieId(row.original.id)}
@@ -120,7 +111,7 @@ export function useSpecieTable() {
         },
       },
     ],
-    [onEditClick],
+    [],
   );
 
   return {

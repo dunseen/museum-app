@@ -12,9 +12,9 @@ import {
 } from "~/components/ui/dialog";
 import { ImageCarousel } from "../../shared/components/image-carousel";
 import { ConfirmationAlert } from "../../shared/components/confirmation-alert";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Input } from "~/components/ui/input";
+import Link from "next/link";
 
 const Search = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -41,20 +41,16 @@ export default function Page() {
     resetSelectedCharacteristicId,
   } = useCharacteristicTable();
 
-  const router = useRouter();
-
   return (
     <>
       <header className="mb-4 flex justify-between">
         <Search />
-        <Button
-          onClick={() =>
-            router.push("/dashboard/collection/characteristics/add")
-          }
-        >
-          <PlusIcon />
-          Adicionar
-        </Button>
+        <Link href="/dashboard/collection/characteristics/add" prefetch={true}>
+          <Button>
+            <PlusIcon />
+            Adicionar
+          </Button>
+        </Link>
       </header>
 
       <DataTable

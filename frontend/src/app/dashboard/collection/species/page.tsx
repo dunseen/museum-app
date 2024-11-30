@@ -15,7 +15,7 @@ import { Button } from "~/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { HeaderFiltersAndPagination } from "../../shared/components/header-filters-and-pagination";
 import { useHeaderFilters } from "../../shared/hooks/use-header-filters";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Page() {
   const {
@@ -29,8 +29,6 @@ export default function Page() {
   const { handleTaxonomyChange, onSearchChange, searchValue, taxonomyFilters } =
     useHeaderFilters();
 
-  const router = useRouter();
-
   return (
     <>
       <header className="mb-4 flex justify-between">
@@ -41,12 +39,12 @@ export default function Page() {
           taxonomyFilters={taxonomyFilters}
           searchPlaceholder="Busca por nome científico ou popular"
         />
-        <Button
-          onClick={() => router.push("/dashboard/collection/species/add")}
-        >
-          <PlusIcon />
-          Adicionar
-        </Button>
+        <Link href="/dashboard/collection/species/add" prefetch={true}>
+          <Button>
+            <PlusIcon />
+            Adicionar
+          </Button>
+        </Link>
       </header>
       <DataTable
         columns={columns}

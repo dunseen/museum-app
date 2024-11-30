@@ -3,7 +3,7 @@
 
 import { type ColumnDef } from "@tanstack/react-table";
 import { Image, MoreHorizontal } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Button } from "~/components/ui/button";
 import {
@@ -15,10 +15,9 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { type Characteristic } from "./types";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function useCharacteristicTable() {
-  const router = useRouter();
-
   const [selectedCharacteristicId, setSelectedCharacteristicId] = useState<
     string | null
   >(null);
@@ -32,14 +31,6 @@ export function useCharacteristicTable() {
   const resetSelectedCharacteristicImages = () =>
     setSelectedCharacteristicImages(null);
   const resetSelectedCharacteristicId = () => setSelectedCharacteristicId(null);
-
-  const onEditCharacteristic = useCallback(
-    (name: string) => {
-      const encodedName = encodeURIComponent(name);
-      router.push(`/dashboard/collection/characteristics/${encodedName}/edit`);
-    },
-    [router],
-  );
 
   const columns = useMemo<ColumnDef<Characteristic>[]>(
     () => [
@@ -87,11 +78,12 @@ export function useCharacteristicTable() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() => onEditCharacteristic(row.original.name)}
+                <Link
+                  href={`/dashboard/collection/characteristics/${encodeURIComponent(row.original.name)}/edit`}
+                  prefetch={true}
                 >
-                  Editar
-                </DropdownMenuItem>
+                  <DropdownMenuItem>Editar</DropdownMenuItem>
+                </Link>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => setSelectedCharacteristicId(row.original.id)}
@@ -104,7 +96,7 @@ export function useCharacteristicTable() {
         },
       },
     ],
-    [onEditCharacteristic],
+    [],
   );
 
   return {

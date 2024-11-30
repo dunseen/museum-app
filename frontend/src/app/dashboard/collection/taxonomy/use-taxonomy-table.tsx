@@ -15,6 +15,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { type Taxonomy } from "./types";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function useTaxonomyTable() {
   const router = useRouter();
@@ -59,15 +60,12 @@ export function useTaxonomyTable() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() =>
-                    router.push(
-                      `/dashboard/collection/taxonomy/${row.original.name}/edit`,
-                    )
-                  }
+                <Link
+                  href={`/dashboard/collection/taxonomy/${row.original.name}/edit`}
+                  prefetch={true}
                 >
-                  Editar
-                </DropdownMenuItem>
+                  <DropdownMenuItem>Editar</DropdownMenuItem>
+                </Link>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => setSelectedTaxonomyId(row.original.id)}
