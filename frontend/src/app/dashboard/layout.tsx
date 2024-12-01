@@ -7,5 +7,11 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <DashboardSidebar>{children}</DashboardSidebar>;
+  return (
+    <html lang="en">
+      <body>
+        <DashboardSidebar>{children}</DashboardSidebar>
+      </body>
+    </html>
+  );
 }
