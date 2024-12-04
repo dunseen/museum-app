@@ -14,12 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { type Taxonomy } from "./types";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export function useTaxonomyTable() {
-  const router = useRouter();
-
   const [selectedTaxonomyId, setSelectedTaxonomyId] = useState<string | null>(
     null,
   );
@@ -35,12 +32,12 @@ export function useTaxonomyTable() {
   const columns = useMemo<ColumnDef<Taxonomy>[]>(
     () => [
       {
-        header: "Nome",
-        accessorKey: "name",
-      },
-      {
         header: "Hierarquia",
         accessorKey: "hierarchy",
+      },
+      {
+        header: "Nome",
+        accessorKey: "name",
       },
       {
         header: "Dependente",

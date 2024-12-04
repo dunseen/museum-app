@@ -1,4 +1,5 @@
 import { Leaf } from "lucide-react";
+import Link from "next/link";
 import type React from "react";
 import { Button } from "~/components/ui/button";
 import {
@@ -53,9 +54,11 @@ export default function Page() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button className="w-full bg-green-600 text-white hover:bg-green-700">
-            Acessar
-          </Button>
+          <Link style={{ width: "100%" }} href="/dashboard" passHref>
+            <Button className="w-full bg-green-600 text-white hover:bg-green-700">
+              Acessar
+            </Button>
+          </Link>
         </CardFooter>
       </Card>
     </main>
