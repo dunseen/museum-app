@@ -57,8 +57,8 @@ import {
 
 const data = {
   user: {
-    name: "Dr. Jane Smith",
-    email: "jane.smith@herbarium.edu",
+    name: "Manoel Euclides",
+    email: "herbario.fc.ufra@gmail.com",
     avatar: "/avatars/jane-smith.jpg",
     role: "Curador",
   },

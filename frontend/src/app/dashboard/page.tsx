@@ -13,22 +13,22 @@ export default function Page() {
   const cards = [
     {
       title: "Espécies",
-      value: 95,
+      value: 3500,
       icon: <BookOpen />,
     },
     {
       title: "Famílias",
-      value: 95,
+      value: 5,
       icon: <Users />,
     },
     {
       title: "Ordens",
-      value: 95,
+      value: 12,
       icon: <Layers />,
     },
     {
       title: "Características",
-      value: 95,
+      value: 500,
       icon: <List />,
     },
   ];
