@@ -51,19 +51,18 @@ export default function Page() {
         data={[
           {
             id: "1",
-            commonName: "Açaí",
-            scientificName: "Euterpe oleracea",
-            description:
-              "Açaí é uma fruta roxa aaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaa aaaaaaaaaaaaaaa aaaaaaaaaaaaaaaaaaaaaaaa",
-            status: "Publicado",
+            commonName: "Perpétua-do-mato",
+            scientificName: "Palicourea colorata",
+            genus: "Palicourea",
+            family: "Rubiaceae",
             class: "Magnoliopsida",
-            order: "Arecales",
-            family: "Arecaceae",
             division: "Magnoliophyta",
-            genus: "Euterpe",
+            order: "Gentianales",
+            description: "Planta de folhas verdes e flores rosas.",
+            status: "Publicado",
             images: [
-              "https://fastly.picsum.photos/id/326/200/300.jpg?hmac=SKzjQ5ycCVyISiOfq2m-GqpQ5zWT_J202KPYG7z0uB4",
-              "https://fastly.picsum.photos/id/326/200/300.jpg?hmac=SKzjQ5ycCVyISiOfq2m-GqpQ5zWT_J202KPYG7z0uB4",
+              "https://inaturalist-open-data.s3.amazonaws.com/photos/14296486/medium.jpg",
+              "https://inaturalist-open-data.s3.amazonaws.com/photos/58230094/medium.jpeg",
             ],
           },
         ]}

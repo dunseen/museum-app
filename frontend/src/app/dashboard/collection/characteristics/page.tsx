@@ -58,27 +58,29 @@ export default function Page() {
         data={[
           {
             id: "1",
-            name: "Cor",
-            type: "String",
-            description: "Cor do animal",
+            name: "Simples",
+            type: "Folha",
+            description: "Possui um único limbo ligado diretamente ao pecíolo.",
             images: [
               "https://images.unsplash.com/photo-1629917605324-6b4a9a4e7d5c",
             ],
           },
           {
             id: "2",
-            name: "Tamanho",
-            type: "Number",
-            description: "Tamanho do animal",
+            name: "Composta Pinada",
+            type: "Folha",
+            description:
+              "É formada por vários folíolos dispostos ao longo de um eixo central (raque).",
             images: [
               "https://images.unsplash.com/photo-1629917605324-6b4a9a4e7d5c",
             ],
           },
           {
             id: "3",
-            name: "Peso",
-            type: "Number",
-            description: "Peso do animal",
+            name: "Composta Bipinada",
+            type: "Folha",
+            description:
+              "Os folíolos são divididos em subfolíolos, formando um arranjo ainda mais ramificado.",
             images: [
               "https://images.unsplash.com/photo-1629917605324-6b4a9a4e7d5c",
             ],

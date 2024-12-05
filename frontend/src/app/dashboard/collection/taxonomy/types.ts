@@ -6,4 +6,5 @@ export type Taxonomy = {
     id: string;
     name: string;
   };
+  characteristics?: { id: string; name: string }[];
 };
