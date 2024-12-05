@@ -296,7 +296,11 @@ export default function Page() {
               </div>
 
               <DialogFooter>
-                <Button type="button" onClick={onCloseAddDialog}>
+                <Button
+                  variant={"secondary"}
+                  type="button"
+                  onClick={onCloseAddDialog}
+                >
                   Cancelar
                 </Button>
                 <Button type="submit">Salvar</Button>
