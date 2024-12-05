@@ -86,8 +86,8 @@ export function ProfileForm() {
   const form = useForm<ProfileFormType>({
     resolver: zodResolver(schema),
     defaultValues: {
-      name: "John Doe",
-      email: "example@email.com",
+      name: "Manoel Euclides",
+      email: "herbario.fc.ufra@gmail.com",
     },
   });
 
