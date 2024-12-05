@@ -39,11 +39,11 @@ export default function PlantSearch() {
               <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                 <div>
                   <Label>Família</Label>
-                  <Input placeholder="e.g., Fabaceae" />
+                  <Input placeholder="ex., Fabaceae" />
                 </div>
                 <div>
-                  <Label>Genero</Label>
-                  <Input placeholder="e.g., Acacia" />
+                  <Label>Gênero</Label>
+                  <Input placeholder="ex., Acacia" />
                 </div>
               </div>
             </AccordionContent>
@@ -53,20 +53,25 @@ export default function PlantSearch() {
             <AccordionContent>
               <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                 <div>
-                  <Label>Leaf Type</Label>
+                  <Label>Tipo de folha</Label>
                   <div className="mt-2 space-y-2">
-                    {["Simple", "Compound", "Needle-like"].map((type) => (
-                      <Label key={type} className="flex items-center space-x-2">
-                        <Checkbox id={`leaf-${type}`} />
-                        <span>{type}</span>
-                      </Label>
-                    ))}
+                    {["Simples", "Composta Bipinada", "Composta Pinada"].map(
+                      (type) => (
+                        <Label
+                          key={type}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox id={`leaf-${type}`} />
+                          <span>{type}</span>
+                        </Label>
+                      ),
+                    )}
                   </div>
                 </div>
                 <div>
-                  <Label>Flower Color</Label>
+                  <Label>Color da flor</Label>
                   <div className="mt-2 space-y-2">
-                    {["Red", "Yellow", "White", "Purple", "Blue"].map(
+                    {["Vermelho", "Amarelo", "Branco", "Roxa", "Azul"].map(
                       (color) => (
                         <Label
                           key={color}

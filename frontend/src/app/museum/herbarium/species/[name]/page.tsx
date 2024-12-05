@@ -248,14 +248,14 @@ export default function PlantPage({ params }: { params: { name: string } }) {
             <Badge variant="secondary">{plant.conservationStatus}</Badge>
           </div>
           <p className="mb-4">{plant.description}</p>
-          <h2 className="mb-2 text-2xl font-semibold">Distribution</h2>
+          <h2 className="mb-2 text-2xl font-semibold">Distribuição</h2>
           <p className="mb-4">{plant.distribution}</p>
-          <h2 className="mb-2 text-2xl font-semibold">Uses</h2>
+          <h2 className="mb-2 text-2xl font-semibold">Usos</h2>
           <p className="mb-4">{plant.uses}</p>
         </div>
       </div>
       <div className="mt-8 rounded-lg bg-secondary p-6">
-        <h2 className="mb-4 text-2xl font-semibold">About the Author</h2>
+        <h2 className="mb-4 text-2xl font-semibold">Sobre o autor</h2>
         <p className="text-lg font-medium">{plant.author.name}</p>
         <p className="text-muted-foreground">
           {plant.author.role} at {plant.author.institution}
