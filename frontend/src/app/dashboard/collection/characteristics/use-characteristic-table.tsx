@@ -14,10 +14,11 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { type Characteristic } from "./types";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 export function useCharacteristicTable() {
+  const [selectedCharacteristic, setSelectedCharacteristic] =
+    useState<Characteristic | null>(null);
+
   const [selectedCharacteristicId, setSelectedCharacteristicId] = useState<
     string | null
   >(null);
@@ -30,7 +31,10 @@ export function useCharacteristicTable() {
 
   const resetSelectedCharacteristicImages = () =>
     setSelectedCharacteristicImages(null);
+
   const resetSelectedCharacteristicId = () => setSelectedCharacteristicId(null);
+
+  const resetSelectedCharacteristic = () => setSelectedCharacteristic(null);
 
   const columns = useMemo<ColumnDef<Characteristic>[]>(
     () => [
@@ -78,12 +82,11 @@ export function useCharacteristicTable() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <Link
-                  href={`/dashboard/collection/characteristics/${encodeURIComponent(row.original.name)}/edit`}
-                  prefetch={true}
+                <DropdownMenuItem
+                  onClick={() => setSelectedCharacteristic(row.original)}
                 >
-                  <DropdownMenuItem>Editar</DropdownMenuItem>
-                </Link>
+                  Editar
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => setSelectedCharacteristicId(row.original.id)}
@@ -101,8 +104,10 @@ export function useCharacteristicTable() {
 
   return {
     columns,
+    selectedCharacteristic,
     resetSelectedCharacteristicImages,
     resetSelectedCharacteristicId,
+    resetSelectedCharacteristic,
     selectedCharacteristicId,
     selectedCharacteristicImages,
   };

@@ -1,9 +1,12 @@
 export type Taxonomy = {
-  id: string;
+  id: number;
   name: string;
-  hierarchy: string;
+  hierarchy: {
+    id: number;
+    name: string;
+  };
   parent?: {
-    id: string;
+    id: number;
     name: string;
   };
   characteristics?: { id: string; name: string }[];

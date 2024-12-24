@@ -16,7 +16,7 @@ import {
 import { type Taxonomy } from "./types";
 
 export function useTaxonomyTable() {
-  const [selectedTaxonomyId, setSelectedTaxonomyId] = useState<string | null>(
+  const [selectedTaxonomyId, setSelectedTaxonomyId] = useState<number | null>(
     null,
   );
 
@@ -33,6 +33,7 @@ export function useTaxonomyTable() {
       {
         header: "Hierarquia",
         accessorKey: "hierarchy",
+        cell: ({ row }) => row.original.hierarchy.name,
       },
       {
         header: "Nome",

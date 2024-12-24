@@ -8,8 +8,8 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { type SpecieFormType } from "./schema";
 import { Textarea } from "~/components/ui/textarea";
+import { type SpecieFormType } from "../add-specie-dialog";
 
 type GeneralInfoFormProps = {
   form: ReturnType<typeof useForm<SpecieFormType>>;

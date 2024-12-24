@@ -11,11 +11,10 @@ import { DataTable } from "../../shared/components/data-table";
 import { useSpecieTable } from "./use-specie-table";
 import { ImageCarousel } from "../../shared/components/image-carousel";
 import { ConfirmationAlert } from "../../shared/components/confirmation-alert";
-import { Button } from "~/components/ui/button";
-import { PlusIcon } from "lucide-react";
+
 import { HeaderFiltersAndPagination } from "../../shared/components/header-filters-and-pagination";
 import { useHeaderFilters } from "../../shared/hooks/use-header-filters";
-import Link from "next/link";
+import { AddSpecie } from "./add/add-specie";
 
 export default function Page() {
   const {
@@ -24,6 +23,8 @@ export default function Page() {
     selectedSpecieImages,
     resetSelectedSpecieImages,
     resetSelectedSpecieId,
+    resetSelectedSpecie,
+    selectedSpecie,
   } = useSpecieTable();
 
   const { handleTaxonomyChange, onSearchChange, searchValue, taxonomyFilters } =
@@ -39,12 +40,10 @@ export default function Page() {
           taxonomyFilters={taxonomyFilters}
           searchPlaceholder="Busca por nome científico ou popular"
         />
-        <Link href="/dashboard/collection/species/add" prefetch={true}>
-          <Button>
-            <PlusIcon />
-            Adicionar
-          </Button>
-        </Link>
+        <AddSpecie
+          resetSelectedSpecie={resetSelectedSpecie}
+          data={selectedSpecie}
+        />
       </header>
       <DataTable
         columns={columns}

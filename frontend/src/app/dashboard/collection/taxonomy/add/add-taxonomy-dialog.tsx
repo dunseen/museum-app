@@ -36,12 +36,12 @@ type AddTaxonomyDialogProps = {
 const formTaxonomySchema = z.object({
   name: z.string({ required_error: "Campo obrigatório" }),
   hierarchy: z.object(
-    { value: z.string(), label: z.string() },
+    { value: z.number(), label: z.string() },
     {
       required_error: "Campo obrigatório",
     },
   ),
-  parentId: z.string().optional(),
+  parentId: z.number().optional(),
   characteristics: z
     .array(z.object({ value: z.string(), label: z.string() }))
     .optional(),
@@ -58,9 +58,9 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
     resolver: zodResolver(formTaxonomySchema),
     defaultValues: {
       name: data?.name ?? "",
-      hierarchy: {
-        label: data?.hierarchy ?? undefined,
-        value: data?.hierarchy ?? undefined,
+      hierarchy: data?.hierarchy && {
+        label: data?.hierarchy.name,
+        value: data?.hierarchy.id,
       },
       characteristics: data?.characteristics?.map((c) => ({
         label: c.name,
@@ -75,12 +75,12 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
   }
 
   const taxonomyLevels = [
-    { value: "kingdom", label: "Reino" },
-    { value: "division", label: "Divisão" },
-    { value: "class", label: "Classe" },
-    { value: "order", label: "Ordem" },
-    { value: "family", label: "Família" },
-    { value: "genus", label: "Gênero" },
+    { value: 1, label: "Reino" },
+    { value: 2, label: "Divisão" },
+    { value: 3, label: "Classe" },
+    { value: 4, label: "Ordem" },
+    { value: 5, label: "Família" },
+    { value: 6, label: "Gênero" },
   ];
 
   function onCloseAddDialog() {
@@ -92,10 +92,10 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
     <Dialog open={isOpen} onOpenChange={onCloseAddDialog}>
       <DialogContent className="max-w-[800px]">
         <DialogHeader>
-          <DialogTitle>{dialogActionTitle} usuário</DialogTitle>
+          <DialogTitle>{dialogActionTitle} Taxonomia</DialogTitle>
           <DialogDescription>
-            Preencha os campos obrigatórios para{" "}
-            {dialogActionTitle.toLowerCase()} um usuário.
+            Preencha os campos abaixo para {dialogActionTitle.toLowerCase()} uma
+            taxonomia.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -112,9 +112,10 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
                         <Controller
                           name={field.name}
                           control={form.control}
-                          render={({ field }) => (
+                          render={({ field: { value, ...rest } }) => (
                             <Select
-                              {...field}
+                              {...rest}
+                              defaultValue={value}
                               placeholder="Selecione a hierarquia"
                               options={taxonomyLevels}
                               isClearable

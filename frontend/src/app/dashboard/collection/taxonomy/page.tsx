@@ -45,39 +45,57 @@ export default function Page() {
         columns={columns}
         data={[
           {
-            id: "1",
+            id: 1,
             name: "Plantae",
-            hierarchy: "Reino",
+            hierarchy: {
+              id: 1,
+              name: "Reino",
+            },
           },
           {
-            id: "2",
+            id: 2,
             name: "Magnoliophyta",
-            hierarchy: "Divisão",
-            parent: { id: "1", name: "Plantae" },
+            hierarchy: {
+              id: 2,
+              name: "Divisão",
+            },
+            parent: { id: 1, name: "Plantae" },
           },
           {
-            id: "3",
+            id: 3,
             name: "Magnoliopsida",
-            hierarchy: "Classe",
-            parent: { id: "2", name: "Magnoliophyta" },
+            hierarchy: {
+              id: 3,
+              name: "Classe",
+            },
+            parent: { id: 2, name: "Magnoliophyta" },
           },
           {
-            id: "4",
+            id: 4,
             name: "Asterales",
-            hierarchy: "Ordem",
-            parent: { id: "3", name: "Magnoliopsida" },
+            hierarchy: {
+              id: 4,
+              name: "Ordem",
+            },
+            parent: { id: 3, name: "Magnoliopsida" },
           },
           {
-            id: "5",
+            id: 5,
             name: "Asteraceae",
-            hierarchy: "Família",
-            parent: { id: "4", name: "Asterales" },
+            hierarchy: {
+              id: 5,
+              name: "Família",
+            },
+            parent: { id: 4, name: "Asterales" },
           },
           {
-            id: "6",
+            id: 6,
             name: "Vernonia",
-            hierarchy: "Gênero",
-            parent: { id: "5", name: "Asteraceae" },
+            hierarchy: {
+              id: 6,
+              name: "Gênero",
+            },
+            parent: { id: 5, name: "Asteraceae" },
           },
         ]}
       />

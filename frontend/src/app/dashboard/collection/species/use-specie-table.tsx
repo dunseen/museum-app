@@ -17,6 +17,8 @@ import { type Specie } from "./types";
 import Link from "next/link";
 
 export function useSpecieTable() {
+  const [selectedSpecie, setSelectedSpecie] = useState<Specie | null>(null);
+
   const [selectedSpecieId, setSelectedSpecieId] = useState<string | null>(null);
 
   const [selectedSpecieImages, setSelectedSpecieImages] = useState<{
@@ -93,12 +95,11 @@ export function useSpecieTable() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <Link
-                  href={`/dashboard/collection/species/${encodeURIComponent(row.original.commonName.toLowerCase())}/edit`}
-                  prefetch={true}
+                <DropdownMenuItem
+                  onClick={() => setSelectedSpecie(row.original)}
                 >
-                  <DropdownMenuItem>Editar</DropdownMenuItem>
-                </Link>
+                  Editar
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => setSelectedSpecieId(row.original.id)}
@@ -117,6 +118,8 @@ export function useSpecieTable() {
   return {
     columns,
     selectedSpecieId,
+    selectedSpecie,
+    resetSelectedSpecie: () => setSelectedSpecie(null),
     selectedSpecieImages,
     resetSelectedSpecieImages,
     resetSelectedSpecieId,

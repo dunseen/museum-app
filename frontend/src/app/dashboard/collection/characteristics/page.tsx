@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "~/components/ui/button";
-import { PlusIcon } from "lucide-react";
 import { useCharacteristicTable } from "./use-characteristic-table";
 import { DataTable } from "../../shared/components/data-table";
 import {
@@ -14,7 +12,7 @@ import { ImageCarousel } from "../../shared/components/image-carousel";
 import { ConfirmationAlert } from "../../shared/components/confirmation-alert";
 import { useState } from "react";
 import { Input } from "~/components/ui/input";
-import Link from "next/link";
+import { AddCharacteristic } from "./add/add-characteristic";
 
 const Search = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -37,6 +35,8 @@ export default function Page() {
     columns,
     selectedCharacteristicId,
     selectedCharacteristicImages,
+    selectedCharacteristic,
+    resetSelectedCharacteristic,
     resetSelectedCharacteristicImages,
     resetSelectedCharacteristicId,
   } = useCharacteristicTable();
@@ -45,12 +45,10 @@ export default function Page() {
     <>
       <header className="mb-4 flex justify-between">
         <Search />
-        <Link href="/dashboard/collection/characteristics/add" prefetch={true}>
-          <Button>
-            <PlusIcon />
-            Adicionar
-          </Button>
-        </Link>
+        <AddCharacteristic
+          resetSelectedCharacteristic={resetSelectedCharacteristic}
+          data={selectedCharacteristic}
+        />
       </header>
 
       <DataTable
