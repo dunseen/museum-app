@@ -3,14 +3,11 @@ import HerbariumHero from "./components/herbarium-hero";
 import PlantGrid from "./components/plant-grid";
 import PlantSearch from "./components/plant-search";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getPostQueryConfig } from "./api";
 
 export default async function Page() {
-  // const response = await getPosts();
   const client = getCachedQueryClient();
-  // await client.prefetchInfiniteQuery({
-  //   queryKey: [GET_POST_QUERY_KEY],
-  //   queryFn: getPosts,
-  // })
+  await client.prefetchInfiniteQuery(getPostQueryConfig());
 
   const dehydratedState = dehydrate(client);
 

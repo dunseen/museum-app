@@ -1,4 +1,8 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  type DefinedInitialDataInfiniteOptions,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
+import { type AxiosRequestConfig } from "axios";
 import { api } from "~/server/api";
 import { type PaginationParams, type WithPagination } from "~/types/pagination";
 
@@ -27,38 +31,45 @@ type GetPostParams = PaginationParams;
 
 export const GET_POST_QUERY_KEY = "posts";
 
-export const getPosts = async (params?: GetPostParams) => {
-  const { data } = await api.get<PaginatedGetpostsApiResponse>("posts", {
-    params: {
-      page: params?.page ?? 1,
-      limit: params?.limit ?? 10,
-    },
-  });
-  return data;
-};
-
-export function useGetPosts(params?: GetPostParams) {
-  return useInfiniteQuery({
-    queryKey: [GET_POST_QUERY_KEY, params],
-    queryFn: async ({ pageParam, signal }) => {
-      const { data } = await api.get<PaginatedGetpostsApiResponse>("posts", {
+export const getPostQueryConfig = (
+  params?: GetPostParams,
+): DefinedInitialDataInfiniteOptions<
+  PaginatedGetpostsApiResponse,
+  unknown,
+  Post[],
+  string[]
+> => {
+  return {
+    initialData: undefined,
+    queryKey: [GET_POST_QUERY_KEY, params as unknown as string],
+    queryFn: async ({ pageParam = 1, signal }) => {
+      const requestConfig: AxiosRequestConfig = {
         params: {
           page: pageParam,
           limit: params?.limit ?? 10,
         },
         signal,
-      });
+      };
+
+      const { data } = await api.get<PaginatedGetpostsApiResponse>(
+        "posts",
+        requestConfig,
+      );
 
       return data;
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.pagination.hasMore) {
-        return lastPage.pagination.nextPage;
-      }
-
-      return undefined;
+      return lastPage.pagination.hasMore
+        ? lastPage.pagination.nextPage
+        : undefined;
     },
     initialPageParam: 1,
+  };
+};
+
+export function useGetPosts(params?: GetPostParams) {
+  return useInfiniteQuery({
+    ...getPostQueryConfig(params),
     select(data) {
       return data.pages.flatMap((p) => p.data);
     },
