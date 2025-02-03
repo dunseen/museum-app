@@ -12,14 +12,24 @@ import {
 } from "~/components/ui/accordion";
 import { Checkbox } from "~/components/ui/checkbox";
 import { FilterIcon, Search } from "lucide-react";
+import { usePost } from "../context/post-context";
 
 export default function PlantSearch() {
+  const { handleSearch } = usePost();
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   return (
     <div className="mb-8">
       <div className="mb-4 flex gap-2">
-        <Input placeholder="Pesquisar..." className="flex-grow" />
+        <Input
+          placeholder="Pesquisar por nome cientifico ou popular..."
+          className="flex-grow"
+          onChange={(e) =>
+            handleSearch({
+              name: e.target.value,
+            })
+          }
+        />
         <Button
           variant="outline"
           onClick={() => setIsFiltersOpen(!isFiltersOpen)}
