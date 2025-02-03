@@ -27,7 +27,9 @@ export type GetPostApiResponse = {
 
 export type PaginatedGetpostsApiResponse = WithPagination<GetPostApiResponse>;
 
-type GetPostParams = PaginationParams;
+type GetPostParams = PaginationParams & {
+  name?: string;
+};
 
 export const GET_POST_QUERY_KEY = "posts";
 
@@ -47,6 +49,7 @@ export const getPostQueryConfig = (
         params: {
           page: pageParam,
           limit: params?.limit ?? 10,
+          name: params?.name,
         },
         signal,
       };
@@ -73,5 +76,6 @@ export function useGetPosts(params?: GetPostParams) {
     select(data) {
       return data.pages.flatMap((p) => p.data);
     },
+    staleTime: 1000 * 60 * 5,
   });
 }

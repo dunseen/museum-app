@@ -10,6 +10,6 @@ export type Pagination = {
 export type WithPagination<T> = T & { pagination: Pagination };
 
 export type PaginationParams = {
-  page: number;
-  limit: number;
+  page?: number;
+  limit?: number;
 };

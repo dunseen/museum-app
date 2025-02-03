@@ -4,6 +4,7 @@ import PlantGrid from "./components/plant-grid";
 import PlantSearch from "./components/plant-search";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getPostQueryConfig } from "./api";
+import { PostProvider } from "./context/post-context";
 
 export default async function Page() {
   const client = getCachedQueryClient();
@@ -15,9 +16,11 @@ export default async function Page() {
     <main className="min-h-screen bg-gray-50">
       <HerbariumHero />
       <div className="container mx-auto px-4 py-8">
-        <PlantSearch />
         <HydrationBoundary state={dehydratedState}>
-          <PlantGrid />
+          <PostProvider>
+            <PlantSearch />
+            <PlantGrid />
+          </PostProvider>
         </HydrationBoundary>
       </div>
     </main>
