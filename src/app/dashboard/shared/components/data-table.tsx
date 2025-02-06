@@ -31,6 +31,22 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
   });
 
+  function colorTableRow(status: string) {
+    switch (status) {
+      case "Aprovado":
+        return "bg-emerald-100"; 
+        // border-green-500
+      case "Pendente":
+        return "bg-orange-100"; 
+        // border-orange-300
+      case "Rejeitado":
+        return "bg-red-100"; 
+        // border-red-500
+      default:
+        break;
+    }
+  }
+
   return (
     <div className="relative max-h-[600px] overflow-y-auto rounded-md border">
       <Table>
@@ -58,10 +74,23 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
+                className={colorTableRow(row.getValue("status") as string)}
               >
-                {row.getVisibleCells().map((cell) => (
+                {row.getVisibleCells().map((cell, index) => (
                   <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    {index === 0 ? ( 
+                      <a
+                        className="text-blue-500 underline cursor-pointer"
+                        onClick={() => {console.log("abrir modal")}}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </a>
+                    ) : (
+                      flexRender(cell.column.columnDef.cell, cell.getContext())
+                    )}
                   </TableCell>
                 ))}
               </TableRow>
