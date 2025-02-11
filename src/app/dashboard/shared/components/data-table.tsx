@@ -19,17 +19,32 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  handleViewData?: (id: number) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  handleViewData,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  function colorTableRow(status: string) {
+    switch (status) {
+      case "Aprovado":
+        return "bg-emerald-100 hover:bg-emerald-200";
+      case "Pendente":
+        return "bg-orange-100 hover:bg-orange-200";
+      case "Rejeitado":
+        return "bg-red-100 hover:bg-red-200";
+      default:
+        break;
+    }
+  }
 
   return (
     <div className="relative max-h-[600px] overflow-y-auto rounded-md border">
@@ -58,6 +73,7 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
+                className={`${colorTableRow(row.getValue("status") as string)} hover:opacity-80`}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
