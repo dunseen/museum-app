@@ -31,6 +31,7 @@ type AddSpecieDialogProps = {
   onClose: () => void;
   dialogActionTitle: string;
   data?: Nullable<Specie>;
+  showDescription?: boolean;
 };
 
 const formSpecieSchema = z.object({
@@ -62,6 +63,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
   isOpen,
   onClose,
   data,
+  showDescription,
 }) => {
   const form = useForm<SpecieFormType>({
     resolver: zodResolver(formSpecieSchema),
@@ -87,10 +89,12 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
       <DialogContent className="max-w-[800px]">
         <DialogHeader>
           <DialogTitle>{dialogActionTitle} Espécie</DialogTitle>
-          <DialogDescription>
-            Preencha os campos abaixo para {dialogActionTitle.toLowerCase()} uma
-            espécie.
-          </DialogDescription>
+          {showDescription !== false && (
+            <DialogDescription>
+              Preencha os campos abaixo para {dialogActionTitle.toLowerCase()}{" "}
+              uma espécie.
+            </DialogDescription>
+          )}
         </DialogHeader>
         <Form {...form}>
           <form id="edit-specie-form" onSubmit={form.handleSubmit(onSubmit)}>
