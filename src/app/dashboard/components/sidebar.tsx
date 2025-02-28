@@ -10,6 +10,7 @@ import {
   LogOut,
   Users,
 } from "lucide-react";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type PropsWithChildren } from "react";
@@ -125,6 +126,10 @@ export function DashboardSidebar({ children }: PropsWithChildren) {
   const currentDescription =
     currentBreadcrumb?.items.find((item) => item.url === pathname)
       ?.description ?? currentBreadcrumb?.description;
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+  };
 
   return (
     <SidebarProvider>
@@ -276,7 +281,7 @@ export function DashboardSidebar({ children }: PropsWithChildren) {
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <Link href="/login">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Sair</span>
                     </DropdownMenuItem>
