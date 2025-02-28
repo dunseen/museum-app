@@ -10,7 +10,7 @@ const GET_POST_DETAILS_KEY = "useGetPostDetails";
 
 async function fetchPostDetails(name: string) {
   const { data } = await api.get<GetPostDetailsApiResponse>(
-    `/posts/specie/${encodeURIComponent(name)}`,
+    `/posts/species/${encodeURIComponent(name)}`,
   );
 
   return data;

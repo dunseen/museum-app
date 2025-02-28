@@ -26,7 +26,7 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
     <LoadingErrorWrapper error={isError} loading={isLoading}>
       <section className="mx-auto min-h-screen px-4 py-8">
         <Link
-          href="/"
+          href="/museu/herbario"
           className="mb-4 flex items-center text-primary hover:underline"
         >
           <ChevronLeft className="mr-1" />
