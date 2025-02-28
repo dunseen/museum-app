@@ -11,6 +11,7 @@ import { ActivitiesTableActions } from "./components/activities-table-actions";
 import RejectActivityDialog from "./components/reject-activity-dialog";
 import { useDisclosure } from "~/hooks/use-disclosure";
 import { ConfirmationAlert } from "../../shared/components/confirmation-alert";
+import { AddSpecieDialog } from "../../collection/species/add/add-specie-dialog";
 
 const fakerUser = Array.from({ length: 50 }, () => ({
   id: faker.string.uuid(),
@@ -35,9 +36,11 @@ const fakerUser = Array.from({ length: 50 }, () => ({
 export default function Page() {
   const rejectDialog = useDisclosure();
   const approveDialog = useDisclosure();
+  const addDialog = useDisclosure();
   const [selectedActivity, setSelectedActivity] = useState<LastActivity | null>(
     null,
   );
+  const [viewSpecie, setViewSpecie] = useState("")
 
   const handleReject = useCallback(
     (activity: LastActivity) => {
@@ -54,11 +57,25 @@ export default function Page() {
     [approveDialog],
   );
 
+  const viewDataActivity = (name: string):void => {
+    setViewSpecie(name)
+    addDialog.onOpen()
+  }
+
+
   const columns = useMemo<ColumnDef<LastActivity>[]>(
     () => [
       {
         header: "Espécie",
         accessorKey: "resource",
+        cell: ({ row }) => (
+          <span
+            className="cursor-pointer underline"
+            onClick={() => viewDataActivity(row.original.resource)}
+          >
+            {row.original.resource}
+          </span>
+        ),
       },
       {
         header: "Status",
@@ -100,11 +117,24 @@ export default function Page() {
     setSelectedActivity(null);
   }
 
+  
+
+  const onCloseAddDialog = () => {
+    addDialog.onClose();
+  };
+
   return (
     <>
       <ActivitiesHeader />
 
-      <DataTable columns={columns} data={fakerUser} />
+      <DataTable
+        handleViewData={(id: number) => {
+          console.log("sexo");
+          addDialog.onOpen();
+        }}
+        columns={columns}
+        data={fakerUser}
+      />
 
       {rejectDialog.isOpen && (
         <RejectActivityDialog
@@ -122,6 +152,14 @@ export default function Page() {
           onClose={approveDialog.onClose}
         />
       )}
+
+      <AddSpecieDialog
+        dialogActionTitle={"Visualizar"}
+        showDescription={false}
+        isOpen={addDialog.isOpen}
+        onClose={onCloseAddDialog}
+        // data={data}
+      />
     </>
   );
 }
