@@ -24,13 +24,13 @@ declare module "next-auth" {
   }
 
   interface User {
-    id?: string;
+    id: string;
     email?: string | null;
-    firstName: string | null;
-    lastName: string | null;
+    firstName: string;
+    lastName: string;
     phone: string | null;
-    role?: RoleEnum | null;
-    status?: Status;
+    role: RoleEnum;
+    status: Status;
     token: string;
     refreshToken: string;
     tokenExpires: number;
