@@ -1,9 +1,16 @@
-import { type GetServerSidePropsContext } from "next";
 import {
+  type User as DefaultUser,
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
+import { type DefaultJWT } from "next-auth/jwt";
+import { type Status } from "~/interfaces/auth-user.interface";
+
+import CredentialsProvider from "next-auth/providers/credentials";
+import { z } from "zod";
+import { AuthService } from "~/services/auth.service";
+import { RoleEnum } from "~/types";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -13,17 +20,31 @@ import {
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user: DefaultSession["user"] & {
-      id: string;
-      // ...other properties
-      // role: UserRole;
-    };
+    user: User;
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    id: string;
+    email?: string | null;
+    firstName: string;
+    lastName: string;
+    phone: string | null;
+    role: RoleEnum;
+    status: Status;
+    token: string;
+    refreshToken: string;
+    tokenExpires: number;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT extends DefaultJWT, DefaultUser {
+    token: string;
+    id?: string;
+    emailVerified?: Date;
+    refreshToken: string;
+    tokenExpires: number;
+  }
 }
 
 /**
@@ -32,26 +53,87 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
-  callbacks: {
-    session: ({ session, token }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: token.sub,
+  pages: {
+    signIn: "/login",
+  },
+  session: {
+    strategy: "jwt",
+  },
+  providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      id: "credentials",
+      type: "credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const parsedCredentials = z
+          .object({ email: z.string(), password: z.string() })
+          .safeParse(credentials);
+
+        if (!parsedCredentials.success) {
+          return null;
+        }
+
+        try {
+          const { user, token, refreshToken, tokenExpires } =
+            await AuthService.login(parsedCredentials.data);
+
+          return {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            role: RoleEnum[user.role.name as keyof typeof RoleEnum],
+            status: user.status,
+            token: token,
+            refreshToken: refreshToken,
+            tokenExpires: tokenExpires,
+          };
+        } catch (error) {
+          console.error("Error logging in:", error);
+          return null;
+        }
       },
     }),
+  ],
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
+        token.phone = user.phone;
+        token.role = user.role;
+        token.status = user.status;
+        token.token = user.token;
+        token.refreshToken = user.refreshToken;
+        token.tokenExpires = user.tokenExpires;
+      }
+
+      return token;
+    },
+    session: ({ session, token }) => {
+      session.user.id = String(token.id);
+      session.user.email = String(token.email);
+      session.user.firstName = token.firstName;
+      session.user.lastName = token.lastName;
+      session.user.phone = token.phone;
+      session.user.role = token.role;
+      session.user.status = token.status;
+      session.user.token = token.token;
+      session.user.refreshToken = token.refreshToken;
+      session.user.tokenExpires = token.tokenExpires;
+
+      return session;
+    },
   },
-  providers: [],
 };
 
-/**
- * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
- *
- * @see https://next-auth.js.org/configuration/nextjs
- */
-export const getServerAuthSession = (ctx: {
-  req: GetServerSidePropsContext["req"];
-  res: GetServerSidePropsContext["res"];
-}) => {
-  return getServerSession(ctx.req, ctx.res, authOptions);
-};
+export async function auth() {
+  return getServerSession(authOptions);
+}

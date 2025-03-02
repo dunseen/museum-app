@@ -55,7 +55,7 @@ export const getPostQueryConfig = (
       };
 
       const { data } = await api.get<PaginatedGetpostsApiResponse>(
-        "posts",
+        "posts/species",
         requestConfig,
       );
 
