@@ -29,6 +29,9 @@ export type PaginatedGetpostsApiResponse = WithPagination<GetPostApiResponse>;
 
 type GetPostParams = PaginationParams & {
   name?: string;
+  characteristics?: string[];
+  family?: string;
+  genus?: string;
 };
 
 export const GET_POST_QUERY_KEY = "posts";
@@ -50,6 +53,11 @@ export const getPostQueryConfig = (
           page: pageParam,
           limit: params?.limit ?? 10,
           name: params?.name,
+          characteristicIds: params?.characteristics?.length
+            ? params?.characteristics.join(",")
+            : undefined,
+          family: params?.family,
+          genus: params?.genus,
         },
         signal,
       };

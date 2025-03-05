@@ -14,9 +14,8 @@ import LoadingErrorWrapper from "~/components/ui/loading-error-wrapper";
 export default function PlantGrid() {
   const { search } = usePost();
 
-  const { data, fetchNextPage, hasNextPage, isLoading, isError } = useGetPosts({
-    name: search.name,
-  });
+  const { data, fetchNextPage, hasNextPage, isLoading, isError } =
+    useGetPosts(search);
 
   return (
     <LoadingErrorWrapper error={isError} loading={isLoading}>
