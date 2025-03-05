@@ -7,11 +7,27 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Can } from "../context/ability-context";
+import { Can } from "../../context/ability-context";
 import Link from "next/link";
-import { RecentActivities } from "./recent-activities";
+import {
+  RecentActivities,
+  type LastPostsSimplified,
+} from "./recent-activities";
+import { useGetLastPosts } from "../api";
 
 export function ActivitiesContainer() {
+  const { data } = useGetLastPosts();
+
+  if (!data) return null;
+
+  const activities: LastPostsSimplified[] = data.map((post) => ({
+    id: post.id,
+    author: `${post?.author?.firstName} ${post?.author?.lastName}`,
+    date: new Date(post.createdAt),
+    resource: post.specie.scientificName,
+    status: post.status,
+  }));
+
   return (
     <Can I={"manage"} a={"System"}>
       <Card className="col-span-3">
@@ -30,7 +46,13 @@ export function ActivitiesContainer() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <RecentActivities />
+          {data.length === 0 && (
+            <p className="text-sm text-muted-foreground">
+              Nenhuma atividade recente.
+            </p>
+          )}
+
+          <RecentActivities data={activities} />
         </CardContent>
       </Card>
     </Can>

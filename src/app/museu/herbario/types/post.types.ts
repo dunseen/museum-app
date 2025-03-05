@@ -7,6 +7,9 @@ type SimpleUser = {
   lastName: string;
   email: string;
 };
+
+export type PostStatusFilter = "pending" | "approved" | "rejected" | "all";
+
 export interface GetPostDetailsApiResponse {
   id: string;
 
