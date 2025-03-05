@@ -21,13 +21,9 @@ export type Post = {
   };
 };
 
-export type GetPostApiResponse = {
-  data: Post[];
-};
+export type PaginatedGetpostsApiResponse = WithPagination<Post>;
 
-export type PaginatedGetpostsApiResponse = WithPagination<GetPostApiResponse>;
-
-type GetPostParams = PaginationParams & {
+export type GetPostParams = PaginationParams & {
   name?: string;
   characteristics?: string[];
   family?: string;
@@ -38,6 +34,7 @@ export const GET_POST_QUERY_KEY = "posts";
 
 export const getPostQueryConfig = (
   params?: GetPostParams,
+  queryKey = GET_POST_QUERY_KEY,
 ): DefinedInitialDataInfiniteOptions<
   PaginatedGetpostsApiResponse,
   unknown,
@@ -46,7 +43,7 @@ export const getPostQueryConfig = (
 > => {
   return {
     initialData: undefined,
-    queryKey: [GET_POST_QUERY_KEY, params as unknown as string],
+    queryKey: [queryKey, params as unknown as string],
     queryFn: async ({ pageParam = 1, signal }) => {
       const requestConfig: AxiosRequestConfig = {
         params: {

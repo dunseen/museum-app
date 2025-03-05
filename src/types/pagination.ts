@@ -7,7 +7,7 @@ export type Pagination = {
   prevPage: Nullable<number>;
 };
 
-export type WithPagination<T> = T & { pagination: Pagination };
+export type WithPagination<T> = { data: T[] } & { pagination: Pagination };
 
 export type PaginationParams = {
   page?: number;
