@@ -1,60 +1,34 @@
-import { BookOpen, Layers, List, Users } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Overview } from "./components/";
-import { ActivitiesContainer } from "./components/activities-container";
+import { SummaryChart } from "./components/";
+import { ActivitiesContainer } from "./home/components/activities-container";
+import { getHomeSummary } from "./home/api";
+import getCachedQueryClient from "~/lib/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { SummaryCountList } from "./home/components/summary-count-list";
+import { getPostQueryConfig } from "../museu/herbario/api";
+import { GET_LAST_POSTS_QUERY_KEY } from "./home/api/useGetLastPosts";
 
-export default function Page() {
-  const cards = [
-    {
-      title: "Espécies",
-      value: 3500,
-      icon: <BookOpen />,
-    },
-    {
-      title: "Famílias",
-      value: 5,
-      icon: <Users />,
-    },
-    {
-      title: "Ordens",
-      value: 12,
-      icon: <Layers />,
-    },
-    {
-      title: "Características",
-      value: 500,
-      icon: <List />,
-    },
-  ];
+export default async function Page() {
+  const client = getCachedQueryClient();
+
+  await Promise.all([
+    client.prefetchQuery(getHomeSummary()),
+    client.prefetchInfiniteQuery(
+      getPostQueryConfig({ limit: 10 }, GET_LAST_POSTS_QUERY_KEY),
+    ),
+  ]);
+
+  const dehydratedState = dehydrate(client);
 
   return (
-    <>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {cards.map((c) => (
-          <Card key={c.title}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{c.title}</CardTitle>
-              {c.icon}
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{c.value}</div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+    <HydrationBoundary state={dehydratedState}>
+      <>
+        <SummaryCountList />
+        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+          <SummaryChart />
 
-      <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Espécies Registradas</CardTitle>
-          </CardHeader>
-          <CardContent className="pl-2">
-            <Overview />
-          </CardContent>
-        </Card>
-
-        <ActivitiesContainer />
-      </div>
-    </>
+          <ActivitiesContainer />
+        </div>
+      </>
+    </HydrationBoundary>
   );
 }
