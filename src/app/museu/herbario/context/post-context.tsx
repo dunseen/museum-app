@@ -11,10 +11,15 @@ import { useDebounce } from "react-use";
 
 export type PostSearchParams = {
   name?: string;
+  characteristics?: string[];
+  family?: string;
+  genus?: string;
 };
 interface PostContextProps {
   search: PostSearchParams;
   handleSearch: (params: PostSearchParams) => void;
+  handleCharacteristicFilter: (id: string) => void;
+  handleClearAllFilters: () => void;
 }
 
 export const PostContext = createContext<PostContextProps | undefined>(
@@ -26,7 +31,9 @@ interface PostProviderProps {
 }
 
 export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
-  const [search, setSearch] = useState<PostSearchParams>({});
+  const [search, setSearch] = useState<PostSearchParams>({
+    characteristics: [],
+  });
   const [searchDebounced, setSearchDebounced] = useState<PostSearchParams>({});
 
   const handleSearch = useCallback((search: PostSearchParams) => {
@@ -34,6 +41,19 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
       ...prev,
       ...search,
     }));
+  }, []);
+
+  const handleCharacteristicFilter = useCallback((id: string) => {
+    setSearch((prev) => ({
+      ...prev,
+      characteristics: prev?.characteristics?.includes(id)
+        ? prev.characteristics.filter((c) => c !== id)
+        : [...(prev?.characteristics ?? []), id],
+    }));
+  }, []);
+
+  const handleClearAllFilters = useCallback(() => {
+    setSearch({});
   }, []);
 
   useDebounce(
@@ -45,8 +65,18 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
   );
 
   const value = useMemo(
-    () => ({ search: searchDebounced, handleSearch }),
-    [handleSearch, searchDebounced],
+    () => ({
+      search: searchDebounced,
+      handleSearch,
+      handleCharacteristicFilter,
+      handleClearAllFilters,
+    }),
+    [
+      handleSearch,
+      searchDebounced,
+      handleCharacteristicFilter,
+      handleClearAllFilters,
+    ],
   );
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
