@@ -4,10 +4,10 @@ import { AddCharacteristicDialog } from "./add-characteristic-dialog";
 import { Button } from "~/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { type Nullable } from "~/types";
-import { type Characteristic } from "../types";
+import { type GetCharacteristicApiResponse } from "~/app/museu/herbario/types/characteristic.types";
 
 type AddCharacteristicProps = {
-  data?: Nullable<Characteristic>;
+  data?: Nullable<GetCharacteristicApiResponse>;
   resetSelectedCharacteristic: () => void;
 };
 export const AddCharacteristic: React.FC<AddCharacteristicProps> = ({
