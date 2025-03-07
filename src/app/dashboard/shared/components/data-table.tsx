@@ -25,7 +25,6 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
-  handleViewData,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -73,7 +72,7 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className={`${colorTableRow(row.getValue("status") as string)} hover:opacity-80`}
+                // className={`${colorTableRow(row.getValue("status"))} hover:opacity-80`} //TODO - refactor this to receive just the classname
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
