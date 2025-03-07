@@ -13,14 +13,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { type Characteristic } from "./types";
+import { type GetCharacteristicApiResponse } from "~/app/museu/herbario/types/characteristic.types";
 
 export function useCharacteristicTable() {
   const [selectedCharacteristic, setSelectedCharacteristic] =
-    useState<Characteristic | null>(null);
+    useState<GetCharacteristicApiResponse | null>(null);
 
   const [selectedCharacteristicId, setSelectedCharacteristicId] = useState<
-    string | null
+    number | null
   >(null);
 
   const [selectedCharacteristicImages, setSelectedCharacteristicImages] =
@@ -36,7 +36,7 @@ export function useCharacteristicTable() {
 
   const resetSelectedCharacteristic = () => setSelectedCharacteristic(null);
 
-  const columns = useMemo<ColumnDef<Characteristic>[]>(
+  const columns = useMemo<ColumnDef<GetCharacteristicApiResponse>[]>(
     () => [
       {
         header: "Nome",
@@ -62,7 +62,12 @@ export function useCharacteristicTable() {
           return (
             <Button
               variant={"ghost"}
-              onClick={() => setSelectedCharacteristicImages(row.original)}
+              onClick={() =>
+                setSelectedCharacteristicImages({
+                  images: row.original.files.map((f) => f.url),
+                  name: row.original.name,
+                })
+              }
             >
               <Image />
             </Button>
