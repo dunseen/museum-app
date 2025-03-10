@@ -21,16 +21,16 @@ import { Input } from "~/components/ui/input";
 
 import { z } from "zod";
 import { type Nullable } from "~/types";
-import { type Characteristic } from "../types";
 import { Textarea } from "~/components/ui/textarea";
 import ImageManager from "~/app/dashboard/shared/components/image-manager";
 import { Button } from "~/components/ui/button";
+import { type GetCharacteristicApiResponse } from "~/app/museu/herbario/types/characteristic.types";
 
 type AddCharacteristicDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   dialogActionTitle: string;
-  data?: Nullable<Characteristic>;
+  data?: Nullable<GetCharacteristicApiResponse>;
 };
 
 const formCharacteristicSchema = z.object({
