@@ -3,7 +3,7 @@ import { api } from "~/server/api";
 
 type PostCharacteristics = {
   name: string;
-  type: string;
+  typeId: number;
   description: string;
 };
 

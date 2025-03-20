@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -39,17 +41,16 @@ type AddCharacteristicDialogProps = {
 
 const formCharacteristicSchema = z.object({
   name: z.string({ required_error: "Campo obrigatório" }),
-  type: z
-    .object(
-      {
-        value: z.string({ required_error: "Campo obrigatório" }),
-        label: z.string({ required_error: "Campo obrigatório" }),
-      },
-      {
-        required_error: "Campo obrigatório",
-      },
-    )
-    .nullable(),
+  type: z.object(
+    {
+      value: z.string({ required_error: "Campo obrigatório" }),
+      label: z.string({ required_error: "Campo obrigatório" }),
+      __isNew__: z.boolean().optional(),
+    },
+    {
+      required_error: "Campo obrigatório",
+    },
+  ),
   description: z.string(),
   images: z.array(z.string()).min(1, "Adicione ao menos uma imagem"),
 });
@@ -72,30 +73,35 @@ export const AddCharacteristicDialog: React.FC<
     defaultValues: {
       name: data?.name,
       description: data?.description,
-      type: data?.type,
+      type: undefined,
     },
   });
 
   function onSubmit(values: CharacteristicFormType) {
-    console.log(values);
+    const type = Number(values.type?.value);
 
-    // postCharacteristicsMutation.mutate(values, {
-    //   onSuccess() {
-    //     toast.success("Característica adicionada com sucesso");
-    //     onCloseAddDialog();
-    //   },
-    //   onError() {
-    //     toast.error("Erro ao adicionar característica");
-    //   },
-    // });
+    postCharacteristicsMutation.mutate(
+      {
+        description: values.description,
+        name: values.name,
+        typeId: type,
+      },
+      {
+        onSuccess() {
+          toast.success("Característica adicionada com sucesso");
+          onCloseAddDialog();
+        },
+        onError() {
+          toast.error("Erro ao adicionar característica");
+        },
+      },
+    );
   }
 
   function onCloseAddDialog() {
     onClose();
     form.reset();
   }
-
-  console.log(form.getValues("type"));
 
   return (
     <Dialog open={isOpen} onOpenChange={onCloseAddDialog}>
@@ -122,8 +128,11 @@ export const AddCharacteristicDialog: React.FC<
                       <FormLabel>Nome (*)</FormLabel>
                       <FormControl>
                         <Input
+                          id={field.name}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          ref={field.ref}
                           placeholder="Digite o nome da característica"
-                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
