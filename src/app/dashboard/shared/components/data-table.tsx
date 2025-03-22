@@ -20,11 +20,13 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   handleViewData?: (id: number) => void;
+  isLoading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  isLoading,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -32,18 +34,18 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
   });
 
-  function colorTableRow(status: string) {
-    switch (status) {
-      case "Aprovado":
-        return "bg-emerald-100 hover:bg-emerald-200";
-      case "Pendente":
-        return "bg-orange-100 hover:bg-orange-200";
-      case "Rejeitado":
-        return "bg-red-100 hover:bg-red-200";
-      default:
-        break;
-    }
-  }
+  // function colorTableRow(status: string) {
+  //   switch (status) {
+  //     case "Aprovado":
+  //       return "bg-emerald-100 hover:bg-emerald-200";
+  //     case "Pendente":
+  //       return "bg-orange-100 hover:bg-orange-200";
+  //     case "Rejeitado":
+  //       return "bg-red-100 hover:bg-red-200";
+  //     default:
+  //       break;
+  //   }
+  // }
 
   return (
     <div className="relative max-h-[600px] overflow-y-auto rounded-md border">
@@ -67,7 +69,7 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {table.getRowModel().rows?.length && !isLoading ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
@@ -84,7 +86,7 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                Nenhum registro encontrado.
+                {isLoading ? "Carregando..." : "Nenhum registro encontrado."}
               </TableCell>
             </TableRow>
           )}

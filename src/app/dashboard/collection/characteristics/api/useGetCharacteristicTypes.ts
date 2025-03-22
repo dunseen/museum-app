@@ -3,26 +3,26 @@ import {
   useInfiniteQuery,
 } from "@tanstack/react-query";
 import { type AxiosRequestConfig } from "axios";
-import { type GetCharacteristicApiResponse } from "~/app/museu/herbario/types/characteristic.types";
+import { type GetCharacteristicTypesApiResponse } from "~/app/museu/herbario/types/characteristic.types";
 import { api } from "~/server/api";
 import { type PaginationParams, type WithPagination } from "~/types/pagination";
 
-export type PaginatedGetCharacteristicsApiResponse =
-  WithPagination<GetCharacteristicApiResponse>;
+export type PaginatedGetCharacteristicTypesApiResponse =
+  WithPagination<GetCharacteristicTypesApiResponse>;
 
-export type GetCharacteristicsParams = PaginationParams & {
+export type GetCharacteristicTypesParams = PaginationParams & {
   name?: string;
 };
 
-export const GET_CHARACTERISTICS_QUERY_KEY = "useGetCharacteristics";
+export const GET_CHARACTERISTIC_TYPES_QUERY_KEY = "useGetCharacteristicsTypes";
 
-export const getCharacteristicsConfig = (
-  params?: GetCharacteristicsParams,
-  queryKey = GET_CHARACTERISTICS_QUERY_KEY,
+const getCharacteristicsConfig = (
+  params?: GetCharacteristicTypesParams,
+  queryKey = GET_CHARACTERISTIC_TYPES_QUERY_KEY,
 ): DefinedInitialDataInfiniteOptions<
-  PaginatedGetCharacteristicsApiResponse,
+  PaginatedGetCharacteristicTypesApiResponse,
   unknown,
-  GetCharacteristicApiResponse[],
+  GetCharacteristicTypesApiResponse[],
   string[]
 > => {
   return {
@@ -38,10 +38,11 @@ export const getCharacteristicsConfig = (
         signal,
       };
 
-      const { data } = await api.get<PaginatedGetCharacteristicsApiResponse>(
-        "dashboard/characteristics",
-        requestConfig,
-      );
+      const { data } =
+        await api.get<PaginatedGetCharacteristicTypesApiResponse>(
+          "dashboard/characteristic-types",
+          requestConfig,
+        );
 
       return data;
     },
@@ -54,7 +55,9 @@ export const getCharacteristicsConfig = (
   };
 };
 
-export function useGetCharacteristics(params?: GetCharacteristicsParams) {
+export function useGetCharacteristicTypes(
+  params?: GetCharacteristicTypesParams,
+) {
   return useInfiniteQuery({
     ...getCharacteristicsConfig(params),
     select(data) {

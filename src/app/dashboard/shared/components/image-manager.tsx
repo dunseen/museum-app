@@ -3,7 +3,7 @@
 
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
-import { Trash2, Plus, Upload, UploadCloud } from "lucide-react";
+import { Trash2, Plus } from "lucide-react";
 import { useImageManager } from "../hooks/use-image-manager";
 
 interface ImageManagerProps {
@@ -41,7 +41,7 @@ export default function ImageManager({
       <div className="mb-4">
         <input
           type="file"
-          accept="image/*"
+          accept=".png,.jpeg,.jpg"
           multiple
           onChange={handleFileChange}
           className="hidden"

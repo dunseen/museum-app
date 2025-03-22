@@ -15,3 +15,10 @@ export interface GetCharacteristicApiResponse {
 
   updatedAt: Date;
 }
+
+export interface GetCharacteristicTypesApiResponse {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}

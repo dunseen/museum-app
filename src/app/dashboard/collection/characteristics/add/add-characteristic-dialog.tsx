@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -25,6 +28,15 @@ import { Textarea } from "~/components/ui/textarea";
 import ImageManager from "~/app/dashboard/shared/components/image-manager";
 import { Button } from "~/components/ui/button";
 import { type GetCharacteristicApiResponse } from "~/app/museu/herbario/types/characteristic.types";
+import {
+  useGetCharacteristicTypes,
+  usePostCharacteristics,
+  usePostCharacteristicTypes,
+} from "../api";
+import { toast } from "sonner";
+import { AsyncSelect } from "~/components/ui/async-select";
+import { useDebouncedInput } from "~/hooks/use-debounced-input";
+import { appendFiles } from "~/utils/files";
 
 type AddCharacteristicDialogProps = {
   isOpen: boolean;
@@ -35,26 +47,78 @@ type AddCharacteristicDialogProps = {
 
 const formCharacteristicSchema = z.object({
   name: z.string({ required_error: "Campo obrigatório" }),
-  type: z.string({
+  type: z.object(
+    {
+      value: z.string({ required_error: "Campo obrigatório" }),
+      label: z.string({ required_error: "Campo obrigatório" }),
+      __isNew__: z.boolean().optional(),
+    },
+    {
+      required_error: "Campo obrigatório",
+      invalid_type_error: "Campo obrigatório",
+    },
+  ),
+  description: z.string({
     required_error: "Campo obrigatório",
   }),
-  description: z.string(),
-  images: z.array(z.string()).min(1, "Adicione ao menos uma imagem"),
+
+  images: z
+    .array(z.string({ required_error: "Campo obrigatório" }))
+    .min(1, "Adicione ao menos uma imagem"),
 });
 
 export type CharacteristicFormType = z.infer<typeof formCharacteristicSchema>;
 export const AddCharacteristicDialog: React.FC<
   AddCharacteristicDialogProps
 > = ({ dialogActionTitle, isOpen, onClose, data }) => {
+  const { debouncedInput, setInputValue } = useDebouncedInput();
+
+  const postCharacteristicsMutation = usePostCharacteristics();
+  const postCharacteristicTypes = usePostCharacteristicTypes();
+
+  const { data: options = [], isLoading: isLoadingCharacteristicTypes } =
+    useGetCharacteristicTypes({
+      name: debouncedInput,
+    });
+
   const form = useForm<CharacteristicFormType>({
     resolver: zodResolver(formCharacteristicSchema),
     defaultValues: {
       name: data?.name,
+      description: data?.description,
+      type: undefined,
     },
   });
 
-  function onSubmit(values: CharacteristicFormType) {
-    console.log(values);
+  async function onSubmit(values: CharacteristicFormType) {
+    try {
+      const formData = new FormData();
+      let typeId: number | undefined = undefined;
+
+      typeId = Number(values.type?.value);
+
+      if (values.type.__isNew__) {
+        const { data } = await postCharacteristicTypes.mutateAsync({
+          name: values.type.value,
+        });
+
+        typeId = data?.id;
+      }
+
+      formData.append("typeId", typeId.toString() || "");
+      formData.append("description", values.description);
+      formData.append("name", values.name);
+
+      await appendFiles(formData, "file", values.images);
+
+      await postCharacteristicsMutation.mutateAsync(formData);
+
+      toast.success("Característica adicionada com sucesso");
+      onCloseAddDialog();
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao adicionar característica");
+    }
   }
 
   function onCloseAddDialog() {
@@ -87,24 +151,35 @@ export const AddCharacteristicDialog: React.FC<
                       <FormLabel>Nome (*)</FormLabel>
                       <FormControl>
                         <Input
+                          id={field.name}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          ref={field.ref}
                           placeholder="Digite o nome da característica"
-                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="type"
-                  render={({ field }) => (
+                  render={() => (
                     <FormItem className="flex-1">
-                      <FormLabel>Tipo (*)</FormLabel>
+                      <FormLabel>Coleção (*)</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Digite o tipo da característica ex: Folha"
-                          {...field}
+                        <AsyncSelect
+                          name="type"
+                          control={form.control}
+                          onInputChange={setInputValue}
+                          isLoading={isLoadingCharacteristicTypes}
+                          options={options.map((opt) => ({
+                            label: opt.name,
+                            value: String(opt.id),
+                          }))}
+                          placeholder="Pesquisar / Adicionar coleção ex: Folha"
                         />
                       </FormControl>
                       <FormMessage />
@@ -117,7 +192,7 @@ export const AddCharacteristicDialog: React.FC<
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Descrição (opcional)</FormLabel>
+                    <FormLabel>Descrição (*)</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Informe uma breve descrição da característica"
@@ -142,9 +217,9 @@ export const AddCharacteristicDialog: React.FC<
                         render={({ field }) => (
                           <ImageManager
                             existingImages={field.value}
-                            onImagesChange={(newImages) =>
-                              field.onChange(newImages)
-                            }
+                            onImagesChange={(files) => {
+                              field.onChange(files);
+                            }}
                           />
                         )}
                       />
@@ -159,10 +234,17 @@ export const AddCharacteristicDialog: React.FC<
                 variant={"secondary"}
                 type="button"
                 onClick={onCloseAddDialog}
+                disabled={postCharacteristicsMutation.isPending}
               >
                 Cancelar
               </Button>
-              <Button type="submit">Salvar</Button>
+              <Button
+                isLoading={postCharacteristicsMutation.isPending}
+                disabled={postCharacteristicsMutation.isPending}
+                type="submit"
+              >
+                Salvar
+              </Button>
             </DialogFooter>
           </form>
         </Form>
