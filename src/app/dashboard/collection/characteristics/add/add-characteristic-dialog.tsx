@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -98,11 +95,11 @@ export const AddCharacteristicDialog: React.FC<
       typeId = Number(values.type?.value);
 
       if (values.type.__isNew__) {
-        const { data } = await postCharacteristicTypes.mutateAsync({
+        const type = await postCharacteristicTypes.mutateAsync({
           name: values.type.value,
         });
 
-        typeId = data?.id;
+        typeId = type?.id;
       }
 
       formData.append("typeId", typeId.toString() || "");

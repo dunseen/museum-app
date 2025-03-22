@@ -4,7 +4,7 @@ import { getCharacteristicsConfig } from "./api";
 
 export default async function Page() {
   const client = getCachedQueryClient();
-  await client.prefetchInfiniteQuery(getCharacteristicsConfig({ limit: 10 }));
+  await client.prefetchQuery(getCharacteristicsConfig({ limit: 10 }));
 
   return <Characteristics />;
 }

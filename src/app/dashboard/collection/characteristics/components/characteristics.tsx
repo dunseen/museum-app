@@ -15,26 +15,14 @@ import { Input } from "~/components/ui/input";
 import { AddCharacteristic } from "../add/add-characteristic";
 import { useGetCharacteristics } from "../api";
 import { useDebounce } from "react-use";
-
-const Search = () => {
-  const [searchValue, setSearchValue] = useState("");
-
-  const onSearchChange = (value: string) => setSearchValue(value);
-
-  return (
-    <div className="flex min-w-72">
-      <Input
-        value={searchValue}
-        onChange={(e) => onSearchChange(e.target.value)}
-        placeholder={"Busca por nome, tipo ou descrição"}
-      />
-    </div>
-  );
-};
+import { TablePagination } from "~/app/dashboard/shared/components/table-pagination";
 
 export default function Characteristics() {
   const [searchValue, setSearchValue] = useState("");
   const [searchDebounced, setSearchDebounced] = useState("");
+
+  const [curentPage, setCurrentPage] = useState(1);
+  const [pageLimit] = useState(15);
 
   const onSearchChange = (value: string) => setSearchValue(value);
 
@@ -48,7 +36,11 @@ export default function Characteristics() {
     resetSelectedCharacteristicId,
   } = useCharacteristicTable();
 
-  const { data, isLoading } = useGetCharacteristics({ name: searchDebounced });
+  const { data, isLoading, isFetching } = useGetCharacteristics({
+    name: searchDebounced,
+    page: curentPage,
+    limit: pageLimit,
+  });
 
   useDebounce(
     () => {
@@ -60,25 +52,39 @@ export default function Characteristics() {
 
   return (
     <>
-      <header className="mb-4 flex justify-between">
-        <div className="flex min-w-72">
-          <Input
-            value={searchValue}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder={"Busca por nome, tipo ou descrição"}
+      <header className="mb-4 flex flex-col gap-4">
+        <div className="flex justify-between gap-4">
+          <div className="flex min-w-72">
+            <Input
+              value={searchValue}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder={"Busca por nome, tipo ou descrição"}
+            />
+          </div>
+          <AddCharacteristic
+            resetSelectedCharacteristic={resetSelectedCharacteristic}
+            data={selectedCharacteristic}
           />
         </div>
-        <AddCharacteristic
-          resetSelectedCharacteristic={resetSelectedCharacteristic}
-          data={selectedCharacteristic}
+
+        <TablePagination
+          currentPage={curentPage}
+          onPageChange={(page) => setCurrentPage(page)}
+          totalPages={data?.pagination?.total ?? 0}
+          pageLimit={pageLimit}
+          hasMore={data?.pagination?.hasMore}
         />
       </header>
 
-      <DataTable columns={columns} data={data ?? []} isLoading={isLoading} />
+      <DataTable
+        columns={columns}
+        data={data?.data ?? []}
+        isLoading={isLoading || isFetching}
+      />
 
       {!!selectedCharacteristicImages ? (
         <Dialog
-          open={!!selectedCharacteristicImages}
+          open={!!selectedCharacteristicImages?.images?.length}
           onOpenChange={resetSelectedCharacteristicImages}
         >
           <DialogContent>

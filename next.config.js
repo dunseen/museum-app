@@ -24,6 +24,10 @@ const config = {
         protocol: "https",
         hostname: "upload.wikimedia.org",
       },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+      },
     ],
   },
 };

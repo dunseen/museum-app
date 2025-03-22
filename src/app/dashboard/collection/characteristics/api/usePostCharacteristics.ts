@@ -9,16 +9,18 @@ type PostCharacteristicsApiResponse = {
   type: string;
 };
 
-function postCharacteristics(data: FormData) {
-  return api.post<PostCharacteristicsApiResponse>(
+async function postCharacteristics(payload: FormData) {
+  const { data } = await api.post<PostCharacteristicsApiResponse>(
     "/dashboard/characteristics",
-    data,
+    payload,
     {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     },
   );
+
+  return data;
 }
 export function usePostCharacteristics() {
   const queryClient = useQueryClient();

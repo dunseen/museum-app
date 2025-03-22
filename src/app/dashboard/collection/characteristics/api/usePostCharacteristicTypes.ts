@@ -10,11 +10,13 @@ type PostCharacteristicTypesResponse = {
   name: string;
 };
 
-function postCharacteristicTypes(data: PostCharacteristicTypes) {
-  return api.post<PostCharacteristicTypesResponse>(
+async function postCharacteristicTypes(payload: PostCharacteristicTypes) {
+  const { data } = await api.post<PostCharacteristicTypesResponse>(
     "/dashboard/characteristic-types",
-    data,
+    payload,
   );
+
+  return data;
 }
 export function usePostCharacteristicTypes() {
   return useMutation({

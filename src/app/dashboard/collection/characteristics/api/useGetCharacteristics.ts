@@ -1,6 +1,6 @@
 import {
-  type DefinedInitialDataInfiniteOptions,
-  useInfiniteQuery,
+  type UndefinedInitialDataOptions,
+  useQuery,
 } from "@tanstack/react-query";
 import { type AxiosRequestConfig } from "axios";
 import { type GetCharacteristicApiResponse } from "~/app/museu/herbario/types/characteristic.types";
@@ -16,50 +16,39 @@ export type GetCharacteristicsParams = PaginationParams & {
 
 export const GET_CHARACTERISTICS_QUERY_KEY = "useGetCharacteristics";
 
+async function fetchCharacteristics(params?: GetCharacteristicsParams) {
+  const requestConfig: AxiosRequestConfig = {
+    params: {
+      page: params?.page ?? 1,
+      limit: params?.limit ?? 10,
+      name: params?.name ? params.name : undefined,
+    },
+  };
+
+  const { data } = await api.get<PaginatedGetCharacteristicsApiResponse>(
+    "dashboard/characteristics",
+    requestConfig,
+  );
+
+  return data;
+}
 export const getCharacteristicsConfig = (
   params?: GetCharacteristicsParams,
-  queryKey = GET_CHARACTERISTICS_QUERY_KEY,
-): DefinedInitialDataInfiniteOptions<
+): UndefinedInitialDataOptions<
   PaginatedGetCharacteristicsApiResponse,
-  unknown,
-  GetCharacteristicApiResponse[],
+  Error,
+  PaginatedGetCharacteristicsApiResponse,
   string[]
 > => {
   return {
-    initialData: undefined,
-    queryKey: [queryKey, params as unknown as string],
-    queryFn: async ({ pageParam = 1, signal }) => {
-      const requestConfig: AxiosRequestConfig = {
-        params: {
-          page: pageParam,
-          limit: params?.limit ?? 10,
-          name: params?.name ? params.name : undefined,
-        },
-        signal,
-      };
-
-      const { data } = await api.get<PaginatedGetCharacteristicsApiResponse>(
-        "dashboard/characteristics",
-        requestConfig,
-      );
-
-      return data;
-    },
-    getNextPageParam: (lastPage) => {
-      return lastPage.pagination.hasMore
-        ? lastPage.pagination.nextPage
-        : undefined;
-    },
-    initialPageParam: 1,
+    queryKey: [GET_CHARACTERISTICS_QUERY_KEY, JSON.stringify(params)],
+    queryFn: () => fetchCharacteristics(params),
   };
 };
 
 export function useGetCharacteristics(params?: GetCharacteristicsParams) {
-  return useInfiniteQuery({
+  return useQuery({
     ...getCharacteristicsConfig(params),
-    select(data) {
-      return data.pages.flatMap((p) => p.data);
-    },
     staleTime: 1000 * 60 * 5,
   });
 }
