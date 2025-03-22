@@ -33,7 +33,7 @@ export const getCharacteristicsConfig = (
         params: {
           page: pageParam,
           limit: params?.limit ?? 10,
-          name: params?.name,
+          name: params?.name ? params.name : undefined,
         },
         signal,
       };
