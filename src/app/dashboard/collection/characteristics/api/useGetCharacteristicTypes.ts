@@ -7,20 +7,20 @@ import { type GetCharacteristicTypesApiResponse } from "~/app/museu/herbario/typ
 import { api } from "~/server/api";
 import { type PaginationParams, type WithPagination } from "~/types/pagination";
 
-export type PaginatedGetCharacteristicsApiResponse =
+export type PaginatedGetCharacteristicTypesApiResponse =
   WithPagination<GetCharacteristicTypesApiResponse>;
 
-export type GetCharacteristicsParams = PaginationParams & {
+export type GetCharacteristicTypesParams = PaginationParams & {
   name?: string;
 };
 
 export const GET_CHARACTERISTIC_TYPES_QUERY_KEY = "useGetCharacteristicsTypes";
 
-export const getCharacteristicsConfig = (
-  params?: GetCharacteristicsParams,
+const getCharacteristicsConfig = (
+  params?: GetCharacteristicTypesParams,
   queryKey = GET_CHARACTERISTIC_TYPES_QUERY_KEY,
 ): DefinedInitialDataInfiniteOptions<
-  PaginatedGetCharacteristicsApiResponse,
+  PaginatedGetCharacteristicTypesApiResponse,
   unknown,
   GetCharacteristicTypesApiResponse[],
   string[]
@@ -33,15 +33,16 @@ export const getCharacteristicsConfig = (
         params: {
           page: pageParam,
           limit: params?.limit ?? 10,
-          name: params?.name,
+          name: params?.name ? params.name : undefined,
         },
         signal,
       };
 
-      const { data } = await api.get<PaginatedGetCharacteristicsApiResponse>(
-        "dashboard/characteristic-types",
-        requestConfig,
-      );
+      const { data } =
+        await api.get<PaginatedGetCharacteristicTypesApiResponse>(
+          "dashboard/characteristic-types",
+          requestConfig,
+        );
 
       return data;
     },
@@ -54,7 +55,9 @@ export const getCharacteristicsConfig = (
   };
 };
 
-export function useGetCharacteristicTypes(params?: GetCharacteristicsParams) {
+export function useGetCharacteristicTypes(
+  params?: GetCharacteristicTypesParams,
+) {
   return useInfiniteQuery({
     ...getCharacteristicsConfig(params),
     select(data) {
