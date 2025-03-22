@@ -62,6 +62,12 @@ export function useCharacteristicTable() {
           return (
             <Button
               variant={"ghost"}
+              disabled={row.original.files.length === 0}
+              title={
+                row.original.files.length === 0
+                  ? "Sem imagens"
+                  : "Visualizar imagens"
+              }
               onClick={() =>
                 setSelectedCharacteristicImages({
                   images: row.original.files.map((f) => f.url),
