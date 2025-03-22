@@ -13,11 +13,15 @@ interface TablePaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  hasMore?: boolean;
+  pageLimit?: number;
 }
 
 export const TablePagination: React.FC<TablePaginationProps> = ({
   currentPage,
   totalPages,
+  pageLimit = 10,
+  hasMore,
   onPageChange,
 }) => {
   const handlePrevious = () => {
@@ -33,11 +37,11 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
   };
 
   const renderPageNumbers = () => {
-    const maxPagesToShow = 5;
+    const maxPagesToShow = Math.min(Math.abs(totalPages / pageLimit), 5);
     const halfMaxPagesToShow = Math.floor(maxPagesToShow / 2);
 
     let startPage = Math.max(1, currentPage - halfMaxPagesToShow);
-    let endPage = Math.min(totalPages, currentPage + halfMaxPagesToShow);
+    let endPage = Math.min(totalPages, currentPage + halfMaxPagesToShow) - 1;
 
     if (currentPage <= halfMaxPagesToShow) {
       endPage = Math.min(totalPages, maxPagesToShow);
@@ -94,7 +98,7 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
         {renderPageNumbers()}
         <PaginationItem>
           <PaginationNext
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPages || !hasMore}
             className="cursor-pointer"
             onClick={handleNext}
           />
