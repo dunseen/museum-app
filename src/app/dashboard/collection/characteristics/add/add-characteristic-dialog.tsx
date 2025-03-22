@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,10 +28,15 @@ import { Textarea } from "~/components/ui/textarea";
 import ImageManager from "~/app/dashboard/shared/components/image-manager";
 import { Button } from "~/components/ui/button";
 import { type GetCharacteristicApiResponse } from "~/app/museu/herbario/types/characteristic.types";
-import { useGetCharacteristicTypes, usePostCharacteristics } from "../api";
+import {
+  useGetCharacteristicTypes,
+  usePostCharacteristics,
+  usePostCharacteristicTypes,
+} from "../api";
 import { toast } from "sonner";
 import { AsyncSelect } from "~/components/ui/async-select";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
+import { appendFiles } from "~/utils/files";
 
 type AddCharacteristicDialogProps = {
   isOpen: boolean;
@@ -49,10 +55,16 @@ const formCharacteristicSchema = z.object({
     },
     {
       required_error: "Campo obrigatório",
+      invalid_type_error: "Campo obrigatório",
     },
   ),
-  description: z.string(),
-  images: z.array(z.string()).min(1, "Adicione ao menos uma imagem"),
+  description: z.string({
+    required_error: "Campo obrigatório",
+  }),
+
+  images: z
+    .array(z.string({ required_error: "Campo obrigatório" }))
+    .min(1, "Adicione ao menos uma imagem"),
 });
 
 export type CharacteristicFormType = z.infer<typeof formCharacteristicSchema>;
@@ -62,6 +74,7 @@ export const AddCharacteristicDialog: React.FC<
   const { debouncedInput, setInputValue } = useDebouncedInput();
 
   const postCharacteristicsMutation = usePostCharacteristics();
+  const postCharacteristicTypes = usePostCharacteristicTypes();
 
   const { data: options = [], isLoading: isLoadingCharacteristicTypes } =
     useGetCharacteristicTypes({
@@ -77,25 +90,35 @@ export const AddCharacteristicDialog: React.FC<
     },
   });
 
-  function onSubmit(values: CharacteristicFormType) {
-    const type = Number(values.type?.value);
+  async function onSubmit(values: CharacteristicFormType) {
+    try {
+      const formData = new FormData();
+      let typeId: number | undefined = undefined;
 
-    postCharacteristicsMutation.mutate(
-      {
-        description: values.description,
-        name: values.name,
-        typeId: type,
-      },
-      {
-        onSuccess() {
-          toast.success("Característica adicionada com sucesso");
-          onCloseAddDialog();
-        },
-        onError() {
-          toast.error("Erro ao adicionar característica");
-        },
-      },
-    );
+      typeId = Number(values.type?.value);
+
+      if (values.type.__isNew__) {
+        const { data } = await postCharacteristicTypes.mutateAsync({
+          name: values.type.value,
+        });
+
+        typeId = data?.id;
+      }
+
+      formData.append("typeId", typeId.toString() || "");
+      formData.append("description", values.description);
+      formData.append("name", values.name);
+
+      await appendFiles(formData, "file", values.images);
+
+      await postCharacteristicsMutation.mutateAsync(formData);
+
+      toast.success("Característica adicionada com sucesso");
+      onCloseAddDialog();
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao adicionar característica");
+    }
   }
 
   function onCloseAddDialog() {
@@ -169,7 +192,7 @@ export const AddCharacteristicDialog: React.FC<
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Descrição (opcional)</FormLabel>
+                    <FormLabel>Descrição (*)</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Informe uma breve descrição da característica"
@@ -194,9 +217,9 @@ export const AddCharacteristicDialog: React.FC<
                         render={({ field }) => (
                           <ImageManager
                             existingImages={field.value}
-                            onImagesChange={(newImages) =>
-                              field.onChange(newImages)
-                            }
+                            onImagesChange={(files) => {
+                              field.onChange(files);
+                            }}
                           />
                         )}
                       />
