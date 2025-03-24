@@ -123,7 +123,7 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
   const taxonomyLevels = useMemo(
     () =>
       getHierarchies.data?.map((h) => ({
-        value: String(h.id),
+        value: h.id,
         label: h.name,
       })) ?? [],
     [getHierarchies?.data],
@@ -132,7 +132,7 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
   const characteristicOptions = useMemo(
     () =>
       getCharacteristics?.data?.data?.map((c) => ({
-        value: String(c.id),
+        value: c.id,
         label: c.name,
       })) ?? [],
     [getCharacteristics?.data],
@@ -141,7 +141,7 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
   const parentOptions = useMemo(
     () =>
       getTaxons?.data?.data?.map((c) => ({
-        value: String(c.id),
+        value: c.id,
         label: c.name,
       })) ?? [],
     [getTaxons?.data],
