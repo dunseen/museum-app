@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   useController,
   type Control,
@@ -6,9 +5,6 @@ import {
   type Path,
 } from "react-hook-form";
 import CreatableSelect from "react-select/creatable";
-import { useDebounce } from "react-use";
-import { useQuery } from "@tanstack/react-query";
-import { type GroupBase } from "react-select";
 
 interface OptionType {
   label: string;
@@ -38,7 +34,12 @@ export const AsyncSelect = <T extends FieldValues>({
 
   return (
     <CreatableSelect
-      {...field}
+      id={field.name}
+      onChange={field.onChange}
+      onBlur={field.onBlur}
+      name={field.name}
+      ref={field.ref}
+      isDisabled={field.disabled}
       options={options}
       isClearable
       isSearchable

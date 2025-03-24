@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "~/components/ui/button";
 import {
@@ -24,26 +24,43 @@ import Select from "react-select";
 
 import { z } from "zod";
 import { type Nullable } from "~/types";
-import { type Taxonomy } from "../types";
+import { type GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
+import { useGetHierarchies } from "../api/useGetHierarchy";
+import { AsyncSelect } from "~/components/ui/async-select";
+import { useDebouncedInput } from "~/hooks/use-debounced-input";
+import { useGetCharacteristics } from "../../characteristics/api";
+import { useGetTaxons } from "../api";
 
 type AddTaxonomyDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   dialogActionTitle: string;
-  data?: Nullable<Taxonomy>;
+  data?: Nullable<GetTaxonsApiResponse>;
 };
 
 const formTaxonomySchema = z.object({
   name: z.string({ required_error: "Campo obrigatório" }),
   hierarchy: z.object(
-    { value: z.number(), label: z.string() },
+    { value: z.number(), label: z.string(), __isNew__: z.boolean().optional() },
     {
       required_error: "Campo obrigatório",
     },
   ),
-  parentId: z.number().optional(),
+  parent: z
+    .object({
+      value: z.number(),
+      label: z.string(),
+      __isNew__: z.boolean().optional(),
+    })
+    .optional(),
   characteristics: z
-    .array(z.object({ value: z.string(), label: z.string() }))
+    .array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+        __isNew__: z.boolean().optional(),
+      }),
+    )
     .optional(),
 });
 
@@ -54,19 +71,48 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
   onClose,
   data,
 }) => {
+  const hierarchyHook = useDebouncedInput();
+  const characteristicsHook = useDebouncedInput();
+  const taxonomyHook = useDebouncedInput();
+
+  const getHierarchies = useGetHierarchies({
+    name: hierarchyHook.debouncedInput,
+    limit: hierarchyHook.pageLimit,
+    page: hierarchyHook.curentPage,
+  });
+
+  const getCharacteristics = useGetCharacteristics({
+    name: characteristicsHook.debouncedInput,
+    limit: characteristicsHook.pageLimit,
+    page: characteristicsHook.curentPage,
+  });
+
+  const getTaxons = useGetTaxons({
+    name: characteristicsHook.debouncedInput,
+    limit: characteristicsHook.pageLimit,
+    page: characteristicsHook.curentPage,
+  });
+
   const form = useForm<TaxonomyFormType>({
     resolver: zodResolver(formTaxonomySchema),
     defaultValues: {
-      name: data?.name ?? "",
-      hierarchy: data?.hierarchy && {
-        label: data?.hierarchy.name,
-        value: data?.hierarchy.id,
-      },
+      name: data?.name,
+      hierarchy: data?.hierarchy?.id
+        ? {
+            value: data?.hierarchy.id,
+            label: data?.hierarchy.name,
+          }
+        : undefined,
       characteristics: data?.characteristics?.map((c) => ({
         label: c.name,
-        value: c.id,
+        value: String(c.id),
       })),
-      parentId: data?.parent?.id ?? undefined,
+      parent: data?.parent?.id
+        ? {
+            value: data?.parent?.id,
+            label: data?.parent?.name,
+          }
+        : undefined,
     },
   });
 
@@ -74,14 +120,41 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
     console.log(values);
   }
 
-  const taxonomyLevels = [
-    { value: 1, label: "Reino" },
-    { value: 2, label: "Divisão" },
-    { value: 3, label: "Classe" },
-    { value: 4, label: "Ordem" },
-    { value: 5, label: "Família" },
-    { value: 6, label: "Gênero" },
-  ];
+  const taxonomyLevels = useMemo(
+    () =>
+      getHierarchies.data?.map((h) => ({
+        value: String(h.id),
+        label: h.name,
+      })) ?? [],
+    [getHierarchies?.data],
+  );
+
+  const characteristicOptions = useMemo(
+    () =>
+      getCharacteristics?.data?.data?.map((c) => ({
+        value: String(c.id),
+        label: c.name,
+      })) ?? [],
+    [getCharacteristics?.data],
+  );
+
+  const parentOptions = useMemo(
+    () =>
+      getTaxons?.data?.data?.map((c) => ({
+        value: String(c.id),
+        label: c.name,
+      })) ?? [],
+    [getTaxons?.data],
+  );
+
+  // const taxonomyLevels = [
+  //   { value: 1, label: "Reino" },
+  //   { value: 2, label: "Divisão" },
+  //   { value: 3, label: "Classe" },
+  //   { value: 4, label: "Ordem" },
+  //   { value: 5, label: "Família" },
+  //   { value: 6, label: "Gênero" },
+  // ];
 
   function onCloseAddDialog() {
     onClose();
@@ -112,15 +185,14 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
                         <Controller
                           name={field.name}
                           control={form.control}
-                          render={({ field: { value, ...rest } }) => (
-                            <Select
-                              {...rest}
-                              defaultValue={value}
-                              placeholder="Selecione a hierarquia"
+                          render={() => (
+                            <AsyncSelect
+                              name="hierarchy"
+                              control={form.control}
+                              onInputChange={hierarchyHook.onInputChange}
+                              isLoading={getHierarchies.isLoading}
                               options={taxonomyLevels}
-                              isClearable
-                              isSearchable
-                              maxMenuHeight={150}
+                              placeholder="Pesquisar / Criar Hierarquia"
                             />
                           )}
                         />
@@ -148,7 +220,7 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
               <div className="flex flex-1 flex-col gap-4">
                 <FormField
                   control={form.control}
-                  name="parentId"
+                  name="parent"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Taxonomia Pai (opcional)</FormLabel>
@@ -156,13 +228,14 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
                         <Controller
                           name={field.name}
                           control={form.control}
-                          render={({ field }) => (
-                            <Select
-                              {...field}
+                          render={() => (
+                            <AsyncSelect
+                              name="parent"
+                              control={form.control}
+                              onInputChange={taxonomyHook.onInputChange}
+                              isLoading={getTaxons.isLoading}
+                              options={parentOptions}
                               placeholder="Pesquisar taxonomia pai"
-                              isClearable
-                              isSearchable
-                              maxMenuHeight={150}
                             />
                           )}
                         />
@@ -181,26 +254,14 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
                         <Controller
                           name={field.name}
                           control={form.control}
-                          render={({ field }) => (
-                            <Select
-                              {...field}
+                          render={() => (
+                            <AsyncSelect
+                              name="characteristics"
+                              control={form.control}
+                              onInputChange={characteristicsHook.onInputChange}
+                              isLoading={getCharacteristics.isLoading}
+                              options={characteristicOptions}
                               placeholder="Pesquisar características"
-                              options={[
-                                {
-                                  label: "Característica 1",
-                                  value: "característica 1",
-                                },
-                                {
-                                  label: "Característica 2",
-                                  value: "característica 2",
-                                },
-                                {
-                                  label: "Característica 3",
-                                  value: "característica 3",
-                                },
-                              ]}
-                              isClearable
-                              isSearchable
                               isMulti
                             />
                           )}

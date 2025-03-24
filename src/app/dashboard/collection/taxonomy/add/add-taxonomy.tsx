@@ -4,10 +4,10 @@ import { AddTaxonomyDialog } from "./add-taxonomy-dialog";
 import { Button } from "~/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { type Nullable } from "~/types";
-import { type Taxonomy } from "../types";
+import { type GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
 
 type AddTaxonomyProps = {
-  data?: Nullable<Taxonomy>;
+  data?: Nullable<GetTaxonsApiResponse>;
   resetSelectedTaxonomy: () => void;
 };
 export const AddTaxonomy: React.FC<AddTaxonomyProps> = ({

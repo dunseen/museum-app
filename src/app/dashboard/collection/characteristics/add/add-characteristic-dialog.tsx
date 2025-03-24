@@ -68,7 +68,7 @@ export type CharacteristicFormType = z.infer<typeof formCharacteristicSchema>;
 export const AddCharacteristicDialog: React.FC<
   AddCharacteristicDialogProps
 > = ({ dialogActionTitle, isOpen, onClose, data }) => {
-  const { debouncedInput, setInputValue } = useDebouncedInput();
+  const { debouncedInput, onInputChange } = useDebouncedInput();
 
   const postCharacteristicsMutation = usePostCharacteristics();
   const postCharacteristicTypes = usePostCharacteristicTypes();
@@ -170,7 +170,7 @@ export const AddCharacteristicDialog: React.FC<
                         <AsyncSelect
                           name="type"
                           control={form.control}
-                          onInputChange={setInputValue}
+                          onInputChange={onInputChange}
                           isLoading={isLoadingCharacteristicTypes}
                           options={options.map((opt) => ({
                             label: opt.name,
