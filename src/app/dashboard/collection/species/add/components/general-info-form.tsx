@@ -19,27 +19,6 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({ form }) => {
     <div className="flex flex-1 flex-col gap-2">
       <FormField
         control={form.control}
-        name="commonName"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Nome popular (*)</FormLabel>
-            <FormControl>
-              <Input
-                defaultValue={field.value}
-                ref={field.ref}
-                name={field.name}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                disabled={field.disabled}
-                placeholder="Digite o nome popular"
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
         name="scientificName"
         render={({ field }) => (
           <FormItem>
@@ -59,6 +38,29 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({ form }) => {
           </FormItem>
         )}
       />
+
+      <FormField
+        control={form.control}
+        name="commonName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Nome popular (opcional)</FormLabel>
+            <FormControl>
+              <Input
+                defaultValue={field.value ?? undefined}
+                ref={field.ref}
+                name={field.name}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                disabled={field.disabled}
+                placeholder="Digite o nome popular"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
       <FormField
         control={form.control}
         name="description"

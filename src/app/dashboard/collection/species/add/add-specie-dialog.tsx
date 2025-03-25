@@ -27,6 +27,12 @@ import { GeneralInfoForm } from "./components/general-info-form";
 import { Button } from "~/components/ui/button";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
 import { AsyncSelect } from "~/components/ui/async-select";
+import { useGetTaxons } from "../../taxonomy/api";
+import { useDebouncedInput } from "~/hooks/use-debounced-input";
+import { useGetCharacteristics } from "../../characteristics/api";
+import { usePostSpecies } from "../api";
+import { toast } from "sonner";
+import { appendFiles } from "~/utils/files";
 
 type AddSpecieDialogProps = {
   isOpen: boolean;
@@ -37,23 +43,29 @@ type AddSpecieDialogProps = {
 };
 
 const formSpecieSchema = z.object({
-  commonName: z.string({ required_error: "Campo obrigatório" }),
+  commonName: z.string().optional(),
   scientificName: z.string({
     required_error: "Campo obrigatório",
   }),
   description: z.string({
     required_error: "Campo obrigatório",
   }),
-  images: z.array(z.string(), {
-    required_error: "Campo obrigatório",
-  }),
-  taxonomyId: z.object(
-    { value: z.string(), label: z.string() },
-    {
+  images: z
+    .array(z.string(), {
       required_error: "Campo obrigatório",
-      invalid_type_error: "Campo obrigatório",
-    },
-  ),
+    })
+    .nonempty("Campo obrigatório"),
+  taxonomyId: z
+    .array(
+      z.object(
+        { value: z.string(), label: z.string() },
+        {
+          required_error: "Campo obrigatório",
+          invalid_type_error: "Campo obrigatório",
+        },
+      ),
+    )
+    .nonempty("Campo obrigatório"),
   characteristics: z
     .array(z.object({ value: z.string(), label: z.string() }))
     .optional(),
@@ -67,18 +79,74 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
   data,
   showDescription,
 }) => {
+  const characteristicsHook = useDebouncedInput();
+  const taxonInput = useDebouncedInput();
+
+  const postSpeciesMutation = usePostSpecies();
+
+  const taxonomyQuery = useGetTaxons({
+    limit: taxonInput.pageLimit,
+    page: taxonInput.curentPage,
+    name: taxonInput.inputValue,
+  });
+
+  const characteristicsQuery = useGetCharacteristics({
+    name: characteristicsHook.debouncedInput,
+    limit: characteristicsHook.pageLimit,
+    page: characteristicsHook.curentPage,
+  });
+
+  const taxonOptions =
+    taxonomyQuery.data?.data?.map((t) => ({
+      label: t.name,
+      value: String(t.id),
+    })) ?? [];
+
+  const characteristicOptions =
+    characteristicsQuery?.data?.data?.map((c) => ({
+      value: String(c.id),
+      label: c.name,
+    })) ?? [];
+
   const form = useForm<SpecieFormType>({
     resolver: zodResolver(formSpecieSchema),
     defaultValues: {
       commonName: data?.commonName,
       scientificName: data?.scientificName,
-      description: data?.description ?? "",
+      description: data?.description ?? undefined,
       images: data?.files?.map((file) => file.url) ?? [],
     },
   });
 
-  function onSubmit(values: SpecieFormType) {
-    console.log(values);
+  async function onSubmit(values: SpecieFormType) {
+    try {
+      const formData = new FormData();
+
+      if (values.commonName) {
+        formData.append("commonName", values.commonName);
+      }
+
+      formData.append("scientificName", values.scientificName);
+      formData.append(
+        "taxonIds",
+        JSON.stringify(values.taxonomyId.map((t) => t.value)),
+      );
+      formData.append("description", values.description);
+      formData.append(
+        "characteristicIds",
+        JSON.stringify(values.characteristics?.map((c) => c.value) ?? []),
+      );
+
+      await appendFiles(formData, "file", values.images);
+
+      await postSpeciesMutation.mutateAsync(formData);
+
+      toast.warning("Espécie enviada para aprovação");
+      onCloseAddDialog();
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao adicionar espécie");
+    }
   }
 
   function onCloseAddDialog() {
@@ -118,13 +186,11 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                               <AsyncSelect
                                 name="taxonomyId"
                                 control={form.control}
-                                onInputChange={setInputValue}
-                                isLoading={isLoadingCharacteristicTypes}
-                                options={options.map((opt) => ({
-                                  label: opt.name,
-                                  value: String(opt.id),
-                                }))}
+                                onInputChange={taxonInput.onInputChange}
+                                isLoading={taxonomyQuery.isLoading}
+                                options={taxonOptions}
                                 placeholder="Pesquisar taxonomia"
+                                isMulti
                               />
                             )}
                           />
@@ -144,32 +210,16 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                           <Controller
                             name={field.name}
                             control={form.control}
-                            render={({ field }) => (
-                              <Select
-                                defaultValue={field.value}
-                                id={field.name}
-                                ref={field.ref}
-                                name={field.name}
-                                onChange={field.onChange}
-                                onBlur={field.onBlur}
-                                isDisabled={field.disabled}
+                            render={() => (
+                              <AsyncSelect
+                                name="characteristics"
+                                control={form.control}
+                                onInputChange={
+                                  characteristicsHook.onInputChange
+                                }
+                                isLoading={characteristicsQuery.isLoading}
+                                options={characteristicOptions}
                                 placeholder="Pesquisar características"
-                                options={[
-                                  {
-                                    label: "Característica 1",
-                                    value: "característica 1",
-                                  },
-                                  {
-                                    label: "Característica 2",
-                                    value: "característica 2",
-                                  },
-                                  {
-                                    label: "Característica 3",
-                                    value: "característica 3",
-                                  },
-                                ]}
-                                isClearable
-                                isSearchable
                                 isMulti
                               />
                             )}
@@ -185,13 +235,13 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                 control={form.control}
                 name={"images"}
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="max-w-[750px] overflow-x-auto">
                     <FormLabel>Imagens (*)</FormLabel>
                     <FormControl>
                       <Controller
                         name={field.name}
                         control={form.control}
-                        defaultValue={[]}
+                        // defaultValue={[]}
                         render={({ field }) => (
                           <ImageManager
                             existingImages={field.value}
@@ -209,13 +259,20 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
             </div>
             <DialogFooter className="pt-8">
               <Button
+                disabled={postSpeciesMutation.isPending}
                 variant={"secondary"}
                 type="button"
                 onClick={onCloseAddDialog}
               >
                 Cancelar
               </Button>
-              <Button type="submit">Salvar</Button>
+              <Button
+                type="submit"
+                disabled={postSpeciesMutation.isPending}
+                isLoading={postSpeciesMutation.isPending}
+              >
+                Salvar
+              </Button>
             </DialogFooter>
           </form>
         </Form>
