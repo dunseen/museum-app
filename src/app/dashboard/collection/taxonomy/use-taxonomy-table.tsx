@@ -13,22 +13,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { type Taxonomy } from "./types";
+import { type GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
 
 export function useTaxonomyTable() {
   const [selectedTaxonomyId, setSelectedTaxonomyId] = useState<number | null>(
     null,
   );
 
-  const [selectedTaxonomy, setSelectedTaxonomy] = useState<Taxonomy | null>(
-    null,
-  );
+  const [selectedTaxonomy, setSelectedTaxonomy] =
+    useState<GetTaxonsApiResponse | null>(null);
 
   const resetSelectedTaxonomy = () => setSelectedTaxonomy(null);
 
   const resetSelectedTaxonomyId = () => setSelectedTaxonomyId(null);
 
-  const columns = useMemo<ColumnDef<Taxonomy>[]>(
+  const columns = useMemo<ColumnDef<GetTaxonsApiResponse>[]>(
     () => [
       {
         header: "Hierarquia",
@@ -41,7 +40,7 @@ export function useTaxonomyTable() {
       },
       {
         header: "Dependente",
-        accessorKey: "parent.name",
+        accessorKey: "parent",
         cell: ({ row }) => row.original.parent?.name ?? "-",
       },
       {

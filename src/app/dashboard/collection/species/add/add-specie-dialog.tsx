@@ -25,12 +25,14 @@ import ImageManager from "~/app/dashboard/shared/components/image-manager";
 import Select from "react-select";
 import { GeneralInfoForm } from "./components/general-info-form";
 import { Button } from "~/components/ui/button";
+import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
+import { AsyncSelect } from "~/components/ui/async-select";
 
 type AddSpecieDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   dialogActionTitle: string;
-  data?: Nullable<Specie>;
+  data?: Nullable<GetSpecieApiResponse>;
   showDescription?: boolean;
 };
 
@@ -70,8 +72,8 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
     defaultValues: {
       commonName: data?.commonName,
       scientificName: data?.scientificName,
-      description: data?.description,
-      images: data?.images,
+      description: data?.description ?? "",
+      images: data?.files?.map((file) => file.url) ?? [],
     },
   });
 
@@ -112,32 +114,17 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                           <Controller
                             name={field.name}
                             control={form.control}
-                            render={({ field }) => (
-                              <Select
-                                defaultValue={field.value}
-                                id={field.name}
-                                ref={field.ref}
-                                name={field.name}
-                                onChange={field.onChange}
-                                onBlur={field.onBlur}
-                                isDisabled={field.disabled}
+                            render={() => (
+                              <AsyncSelect
+                                name="taxonomyId"
+                                control={form.control}
+                                onInputChange={setInputValue}
+                                isLoading={isLoadingCharacteristicTypes}
+                                options={options.map((opt) => ({
+                                  label: opt.name,
+                                  value: String(opt.id),
+                                }))}
                                 placeholder="Pesquisar taxonomia"
-                                options={[
-                                  {
-                                    label: "Taxonomia 1",
-                                    value: "taxonomia 1",
-                                  },
-                                  {
-                                    label: "Taxonomia 2",
-                                    value: "taxonomia 2",
-                                  },
-                                  {
-                                    label: "Taxonomia 3",
-                                    value: "taxonomia 3",
-                                  },
-                                ]}
-                                isClearable
-                                isSearchable
                               />
                             )}
                           />

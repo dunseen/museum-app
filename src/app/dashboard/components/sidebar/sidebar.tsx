@@ -1,20 +1,10 @@
 "use client";
 
-import {
-  BookOpen,
-  ChevronRight,
-  ChevronsUpDown,
-  FileText,
-  Home,
-  Leaf,
-  LogOut,
-  Users,
-} from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
+import { BookOpen, ChevronRight, FileText, Home, Users } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type PropsWithChildren } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -28,22 +18,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "~/components/ui/collapsible";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import { Separator } from "~/components/ui/separator";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
-  SidebarHeader,
   SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
@@ -78,14 +57,14 @@ const data = {
       permissions: [Action.Manage],
       items: [
         {
-          title: "Taxonomia",
-          url: "/dashboard/collection/taxonomy",
-          description: "Gerencie as categorias de classificação",
-        },
-        {
           title: "Características",
           url: "/dashboard/collection/characteristics",
           description: "Gerencie as características das espécies",
+        },
+        {
+          title: "Taxonomia",
+          url: "/dashboard/collection/taxonomy",
+          description: "Gerencie as categorias de classificação",
         },
         {
           title: "Espécies",

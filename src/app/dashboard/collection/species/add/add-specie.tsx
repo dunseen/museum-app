@@ -4,10 +4,10 @@ import { AddSpecieDialog } from "./add-specie-dialog";
 import { Button } from "~/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { type Nullable } from "~/types";
-import { type Specie } from "../types";
+import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
 
 type AddSpecieProps = {
-  data?: Nullable<Specie>;
+  data?: Nullable<GetSpecieApiResponse>;
   resetSelectedSpecie: () => void;
 };
 export const AddSpecie: React.FC<AddSpecieProps> = ({

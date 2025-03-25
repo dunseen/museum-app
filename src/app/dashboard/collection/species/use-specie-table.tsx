@@ -15,11 +15,13 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { type Specie } from "./types";
 import Link from "next/link";
+import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
 
 export function useSpecieTable() {
-  const [selectedSpecie, setSelectedSpecie] = useState<Specie | null>(null);
+  const [selectedSpecie, setSelectedSpecie] =
+    useState<GetSpecieApiResponse | null>(null);
 
-  const [selectedSpecieId, setSelectedSpecieId] = useState<string | null>(null);
+  const [selectedSpecieId, setSelectedSpecieId] = useState<number | null>(null);
 
   const [selectedSpecieImages, setSelectedSpecieImages] = useState<{
     commonName: string;
@@ -29,7 +31,7 @@ export function useSpecieTable() {
   const resetSelectedSpecieImages = () => setSelectedSpecieImages(null);
   const resetSelectedSpecieId = () => setSelectedSpecieId(null);
 
-  const columns: ColumnDef<Specie>[] = useMemo(
+  const columns: ColumnDef<GetSpecieApiResponse>[] = useMemo(
     () => [
       {
         header: "Nome científico",
@@ -43,7 +45,10 @@ export function useSpecieTable() {
         header: "Descrição",
         accessorKey: "description",
         cell: ({ row }) => (
-          <p title={row.original.description} className="max-w-96 truncate">
+          <p
+            title={row.original.description ?? ""}
+            className="max-w-96 truncate"
+          >
             {row.original.description}
           </p>
         ),
@@ -53,20 +58,8 @@ export function useSpecieTable() {
         accessorKey: "family",
       },
       {
-        header: "Classe",
-        accessorKey: "class",
-      },
-      {
         header: "Ordem",
         accessorKey: "order",
-      },
-      {
-        header: "Gênero",
-        accessorKey: "genus",
-      },
-      {
-        header: "Status",
-        accessorKey: "status",
       },
       {
         header: "Imagens",
@@ -75,7 +68,12 @@ export function useSpecieTable() {
           return (
             <Button
               variant={"ghost"}
-              onClick={() => setSelectedSpecieImages(row.original)}
+              onClick={() =>
+                setSelectedSpecieImages({
+                  commonName: row.original.commonName,
+                  images: row.original.files.map((f) => f.url),
+                })
+              }
             >
               <Image />
             </Button>

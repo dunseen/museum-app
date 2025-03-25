@@ -14,17 +14,12 @@ import { useState } from "react";
 import { Input } from "~/components/ui/input";
 import { AddCharacteristic } from "../add/add-characteristic";
 import { useGetCharacteristics } from "../api";
-import { useDebounce } from "react-use";
 import { TablePagination } from "~/app/dashboard/shared/components/table-pagination";
+import { useDebouncedInput } from "~/hooks/use-debounced-input";
 
 export default function Characteristics() {
-  const [searchValue, setSearchValue] = useState("");
-  const [searchDebounced, setSearchDebounced] = useState("");
-
   const [curentPage, setCurrentPage] = useState(1);
   const [pageLimit] = useState(15);
-
-  const onSearchChange = (value: string) => setSearchValue(value);
 
   const {
     columns,
@@ -36,19 +31,13 @@ export default function Characteristics() {
     resetSelectedCharacteristicId,
   } = useCharacteristicTable();
 
+  const { debouncedInput, inputValue, onInputChange } = useDebouncedInput();
+
   const { data, isLoading, isFetching } = useGetCharacteristics({
-    name: searchDebounced,
+    name: debouncedInput,
     page: curentPage,
     limit: pageLimit,
   });
-
-  useDebounce(
-    () => {
-      setSearchDebounced(searchValue);
-    },
-    500,
-    [searchValue],
-  );
 
   return (
     <>
@@ -56,8 +45,8 @@ export default function Characteristics() {
         <div className="flex justify-between gap-4">
           <div className="flex min-w-72">
             <Input
-              value={searchValue}
-              onChange={(e) => onSearchChange(e.target.value)}
+              value={inputValue}
+              onChange={(e) => onInputChange(e.target.value)}
               placeholder={"Busca por nome, tipo ou descrição"}
             />
           </div>
