@@ -20,8 +20,6 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 
-import Select from "react-select";
-
 import { z } from "zod";
 import { type Nullable } from "~/types";
 import { type GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
@@ -29,7 +27,8 @@ import { useGetHierarchies } from "../api/useGetHierarchy";
 import { AsyncSelect } from "~/components/ui/async-select";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
 import { useGetCharacteristics } from "../../characteristics/api";
-import { useGetTaxons } from "../api";
+import { type PostTaxonsPayload, useGetTaxons, usePostTaxons } from "../api";
+import { toast } from "sonner";
 
 type AddTaxonomyDialogProps = {
   isOpen: boolean;
@@ -41,14 +40,15 @@ type AddTaxonomyDialogProps = {
 const formTaxonomySchema = z.object({
   name: z.string({ required_error: "Campo obrigatório" }),
   hierarchy: z.object(
-    { value: z.number(), label: z.string(), __isNew__: z.boolean().optional() },
+    { value: z.string(), label: z.string(), __isNew__: z.boolean().optional() },
     {
       required_error: "Campo obrigatório",
+      invalid_type_error: "Campo obrigatório",
     },
   ),
   parent: z
     .object({
-      value: z.number(),
+      value: z.string(),
       label: z.string(),
       __isNew__: z.boolean().optional(),
     })
@@ -75,6 +75,8 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
   const characteristicsHook = useDebouncedInput();
   const taxonomyHook = useDebouncedInput();
 
+  const postTaxonomy = usePostTaxons();
+
   const getHierarchies = useGetHierarchies({
     name: hierarchyHook.debouncedInput,
     limit: hierarchyHook.pageLimit,
@@ -93,13 +95,40 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
     page: characteristicsHook.curentPage,
   });
 
+  const taxonomyLevels = useMemo(
+    () =>
+      getHierarchies.data?.map((h) => ({
+        value: String(h.id),
+        label: h.name,
+      })) ?? [],
+    [getHierarchies?.data],
+  );
+
+  const characteristicOptions = useMemo(
+    () =>
+      getCharacteristics?.data?.data?.map((c) => ({
+        value: String(c.id),
+        label: c.name,
+      })) ?? [],
+    [getCharacteristics?.data],
+  );
+
+  const parentOptions = useMemo(
+    () =>
+      getTaxons?.data?.data?.map((c) => ({
+        value: String(c.id),
+        label: c.name,
+      })) ?? [],
+    [getTaxons?.data],
+  );
+
   const form = useForm<TaxonomyFormType>({
     resolver: zodResolver(formTaxonomySchema),
     defaultValues: {
       name: data?.name,
       hierarchy: data?.hierarchy?.id
         ? {
-            value: data?.hierarchy.id,
+            value: String(data?.hierarchy.id),
             label: data?.hierarchy.name,
           }
         : undefined,
@@ -109,7 +138,7 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
       })),
       parent: data?.parent?.id
         ? {
-            value: data?.parent?.id,
+            value: String(data?.parent?.id),
             label: data?.parent?.name,
           }
         : undefined,
@@ -118,43 +147,24 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
 
   function onSubmit(values: TaxonomyFormType) {
     console.log(values);
+    const payload: PostTaxonsPayload = {
+      hierarchyId: Number(values.hierarchy.value),
+      name: values.name,
+      parentId: values?.parent?.value ? Number(values.parent.value) : undefined,
+      characteristicIds:
+        values.characteristics?.map((c) => Number(c.value)) ?? [],
+    };
+
+    postTaxonomy.mutate(payload, {
+      onSuccess: () => {
+        onCloseAddDialog();
+        toast.success("Taxonomia criada com sucesso");
+      },
+      onError: () => {
+        toast.error("Erro ao criar taxonomia");
+      },
+    });
   }
-
-  const taxonomyLevels = useMemo(
-    () =>
-      getHierarchies.data?.map((h) => ({
-        value: h.id,
-        label: h.name,
-      })) ?? [],
-    [getHierarchies?.data],
-  );
-
-  const characteristicOptions = useMemo(
-    () =>
-      getCharacteristics?.data?.data?.map((c) => ({
-        value: c.id,
-        label: c.name,
-      })) ?? [],
-    [getCharacteristics?.data],
-  );
-
-  const parentOptions = useMemo(
-    () =>
-      getTaxons?.data?.data?.map((c) => ({
-        value: c.id,
-        label: c.name,
-      })) ?? [],
-    [getTaxons?.data],
-  );
-
-  // const taxonomyLevels = [
-  //   { value: 1, label: "Reino" },
-  //   { value: 2, label: "Divisão" },
-  //   { value: 3, label: "Classe" },
-  //   { value: 4, label: "Ordem" },
-  //   { value: 5, label: "Família" },
-  //   { value: 6, label: "Gênero" },
-  // ];
 
   function onCloseAddDialog() {
     onClose();
@@ -209,7 +219,14 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
                     <FormItem>
                       <FormLabel>Nome (*)</FormLabel>
                       <FormControl>
-                        <Input placeholder="Digite o nome" {...field} />
+                        <Input
+                          ref={field.ref}
+                          id={field.name}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          disabled={field.disabled}
+                          placeholder="Digite o nome"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -282,7 +299,13 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
               >
                 Cancelar
               </Button>
-              <Button type="submit">Salvar</Button>
+              <Button
+                type="submit"
+                isLoading={postTaxonomy.isPending}
+                disabled={postTaxonomy.isPending}
+              >
+                Salvar
+              </Button>
             </DialogFooter>
           </form>
         </Form>
