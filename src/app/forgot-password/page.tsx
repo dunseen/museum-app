@@ -1,4 +1,4 @@
-import { BookOpen, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
@@ -13,7 +13,7 @@ import {
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import Footer from "../museum/herbarium/components/footer";
+import Footer from "../museu/herbario/components/footer";
 
 export default function Page() {
   return (

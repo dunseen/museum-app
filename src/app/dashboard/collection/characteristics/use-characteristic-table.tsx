@@ -43,7 +43,7 @@ export function useCharacteristicTable() {
         accessorKey: "name",
       },
       {
-        header: "Tipo",
+        header: "Característica",
         accessorKey: "type",
       },
       {

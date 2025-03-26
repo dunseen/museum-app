@@ -146,7 +146,6 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
   });
 
   function onSubmit(values: TaxonomyFormType) {
-    console.log(values);
     const payload: PostTaxonsPayload = {
       hierarchyId: Number(values.hierarchy.value),
       name: values.name,

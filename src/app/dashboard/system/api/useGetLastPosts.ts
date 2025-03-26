@@ -1,6 +1,6 @@
 import {
-  type DefinedInitialDataInfiniteOptions,
-  useInfiniteQuery,
+  type UndefinedInitialDataOptions,
+  useQuery,
 } from "@tanstack/react-query";
 import { type AxiosRequestConfig } from "axios";
 import {
@@ -20,50 +20,39 @@ export type GetLastPostsParams = PaginationParams & {
 
 export const GET_LAST_POSTS_QUERY_KEY = "useGetLastPosts";
 
+async function fetchLastPosts(params?: GetLastPostsParams) {
+  const requestConfig: AxiosRequestConfig = {
+    params: {
+      page: params?.page ?? 1,
+      limit: params?.limit ?? 10,
+      name: params?.name,
+      status: params?.status ?? "all",
+    },
+  };
+
+  const { data } = await api.get<PaginatedGetLastPostsApiResponse>(
+    "dashboard/posts",
+    requestConfig,
+  );
+
+  return data;
+}
 export const getLastPostsConfig = (
   params?: GetLastPostsParams,
   queryKey = GET_LAST_POSTS_QUERY_KEY,
-): DefinedInitialDataInfiniteOptions<
+): UndefinedInitialDataOptions<
   PaginatedGetLastPostsApiResponse,
   unknown,
-  GetPostDetailsApiResponse[],
+  PaginatedGetLastPostsApiResponse,
   string[]
 > => {
   return {
     initialData: undefined,
     queryKey: [queryKey, params as unknown as string],
-    queryFn: async ({ pageParam = 1, signal }) => {
-      const requestConfig: AxiosRequestConfig = {
-        params: {
-          page: pageParam,
-          limit: params?.limit ?? 10,
-          name: params?.name,
-          status: params?.status ?? "all",
-        },
-        signal,
-      };
-
-      const { data } = await api.get<PaginatedGetLastPostsApiResponse>(
-        "dashboard/posts",
-        requestConfig,
-      );
-
-      return data;
-    },
-    getNextPageParam: (lastPage) => {
-      return lastPage.pagination.hasMore
-        ? lastPage.pagination.nextPage
-        : undefined;
-    },
-    initialPageParam: 1,
+    queryFn: () => fetchLastPosts(params),
   };
 };
 
 export function useGetLastPosts(params?: GetLastPostsParams) {
-  return useInfiniteQuery({
-    ...getLastPostsConfig(params),
-    select(data) {
-      return data.pages.flatMap((p) => p.data);
-    },
-  });
+  return useQuery(getLastPostsConfig(params));
 }

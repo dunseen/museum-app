@@ -3,7 +3,7 @@
 import { Button } from "~/components/ui/button";
 import { MoreHorizontal, PlusIcon } from "lucide-react";
 import { Input } from "~/components/ui/input";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { DataTable } from "../../shared/components/data-table";
 import { ConfirmationAlert } from "../../shared/components/confirmation-alert";
 import type { User } from "../types";
@@ -119,10 +119,13 @@ export function Users() {
     console.log(data);
   }
 
-  function onEditUser(userId: string) {
-    setSelectedUserId(userId);
-    addUserDialog.onOpen();
-  }
+  const onEditUser = useCallback(
+    (userId: string) => {
+      setSelectedUserId(userId);
+      addUserDialog.onOpen();
+    },
+    [addUserDialog],
+  );
 
   function onCloseAddDialog() {
     setSelectedUserId(null);
@@ -130,10 +133,13 @@ export function Users() {
     addUserDialog.onClose();
   }
 
-  function onDeleteAlertOpen(userId: string) {
-    setSelectedUserId(userId);
-    deleteUserDialog.onOpen();
-  }
+  const onDeleteAlertOpen = useCallback(
+    (userId: string) => {
+      setSelectedUserId(userId);
+      deleteUserDialog.onOpen();
+    },
+    [deleteUserDialog],
+  );
 
   function onDeleteAlertClose() {
     setSelectedUserId(null);
@@ -186,7 +192,7 @@ export function Users() {
         },
       },
     ],
-    [],
+    [onDeleteAlertOpen, onEditUser],
   );
 
   const dialogActionTitle = selectedUser ? "Editar" : "Adicionar";

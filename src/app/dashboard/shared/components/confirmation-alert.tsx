@@ -14,12 +14,14 @@ type ConfirmationAlertProps = {
   onClose: () => void;
   onConfirm: () => void;
   onCancel: () => void;
+  isLoading?: boolean;
 };
 export function ConfirmationAlert({
   isOpen,
   onClose,
   onCancel,
   onConfirm,
+  isLoading,
 }: ConfirmationAlertProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
@@ -33,8 +35,12 @@ export function ConfirmationAlert({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={onCancel}>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>Confirmar</AlertDialogAction>
+          <AlertDialogCancel disabled={isLoading} onClick={onCancel}>
+            Cancelar
+          </AlertDialogCancel>
+          <AlertDialogAction disabled={isLoading} onClick={onConfirm}>
+            Confirmar
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

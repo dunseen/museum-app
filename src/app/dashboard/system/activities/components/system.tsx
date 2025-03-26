@@ -3,8 +3,7 @@
 import { DataTable } from "../../../shared/components/data-table";
 import { useCallback, useMemo, useState } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
-import type { LastActivity } from "../types";
-import { fakerPT_BR as faker } from "@faker-js/faker";
+
 import { ActivitiesHeader } from "../components/activities-header";
 
 import { ActivitiesTableActions } from "../components/activities-table-actions";
@@ -12,89 +11,104 @@ import RejectActivityDialog from "../components/reject-activity-dialog";
 import { useDisclosure } from "~/hooks/use-disclosure";
 import { ConfirmationAlert } from "../../../shared/components/confirmation-alert";
 import { AddSpecieDialog } from "../../../collection/species/add/add-specie-dialog";
+import { useDebouncedInput } from "~/hooks/use-debounced-input";
+import { useGetLastPosts, usePostValidation } from "../../api";
+import { type GetPostDetailsApiResponse } from "~/app/museu/herbario/types/post.types";
+import { toast } from "sonner";
+import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
 
-const fakerUser = Array.from({ length: 50 }, () => ({
-  id: faker.string.uuid(),
-  validator: {
-    id: faker.string.uuid(),
-    name: faker.person.fullName(),
-    email: faker.internet.email(),
-  },
-  author: {
-    id: faker.string.uuid(),
-    name: faker.person.fullName(),
-    email: faker.internet.email(),
-  },
-  date: faker.date.past().toLocaleDateString(),
-  resource: faker.food.fruit(),
-  reason: Math.random() > 0.5 ? faker.lorem.sentence() : "-",
-  status:
-    ["Aprovado", "Rejeitado", "Pendente"][Math.floor(Math.random() * 3)] ??
-    "Pendente",
-}));
-
+const STATUS_PARSER = {
+  pending: "Pendente",
+  published: "Publicado",
+  rejected: "Rejeitado",
+};
 export default function System() {
+  const lastPostHook = useDebouncedInput();
+
+  const lastPostsQuery = useGetLastPosts({
+    limit: lastPostHook.pageLimit,
+    page: lastPostHook.curentPage,
+    name: lastPostHook.inputValue,
+  });
+
+  const postValidationMutation = usePostValidation();
+
   const rejectDialog = useDisclosure();
   const approveDialog = useDisclosure();
   const addDialog = useDisclosure();
-  const [selectedActivity, setSelectedActivity] = useState<LastActivity | null>(
+  const [selectedActivity, setSelectedActivity] =
+    useState<GetPostDetailsApiResponse | null>(null);
+  const [viewSpecie, setViewSpecie] = useState<GetSpecieApiResponse | null>(
     null,
   );
-  const [viewSpecie, setViewSpecie] = useState("");
 
   const handleReject = useCallback(
-    (activity: LastActivity) => {
+    (activity: GetPostDetailsApiResponse) => {
       setSelectedActivity(activity);
       rejectDialog.onOpen();
     },
     [rejectDialog],
   );
   const handleApprove = useCallback(
-    (activity: LastActivity) => {
+    (activity: GetPostDetailsApiResponse) => {
       setSelectedActivity(activity);
       approveDialog.onOpen();
     },
     [approveDialog],
   );
 
-  const viewDataActivity = (name: string): void => {
-    setViewSpecie(name);
-    addDialog.onOpen();
-  };
+  const viewDataActivity = useCallback(
+    (specie: GetSpecieApiResponse): void => {
+      setViewSpecie(specie);
+      addDialog.onOpen();
+    },
+    [addDialog],
+  );
 
-  const columns = useMemo<ColumnDef<LastActivity>[]>(
+  const columns = useMemo<ColumnDef<GetPostDetailsApiResponse>[]>(
     () => [
       {
         header: "Espécie",
-        accessorKey: "resource",
+        accessorKey: "specie",
         cell: ({ row }) => (
           <span
             className="cursor-pointer underline"
-            onClick={() => viewDataActivity(row.original.resource)}
+            onClick={() => viewDataActivity(row.original.specie)}
           >
-            {row.original.resource}
+            {row.original.specie.scientificName}
           </span>
         ),
       },
       {
         header: "Status",
         accessorKey: "status",
+        cell: ({ row }) =>
+          STATUS_PARSER[row.original.status as keyof typeof STATUS_PARSER],
       },
       {
         header: "Autor",
-        accessorKey: "author.name",
+        accessorKey: "author",
+        cell: ({ row }) =>
+          `${row.original.author.firstName} ${row.original.author.lastName}`,
       },
       {
         header: "Validador",
-        accessorKey: "validator.name",
+        accessorKey: "validator",
+        cell: ({ row }) => {
+          if (row.original.validator) {
+            return `${row.original.validator.firstName} ${row.original.validator.lastName}`;
+          }
+          return "-";
+        },
       },
       {
         header: "Comentário",
-        accessorKey: "reason",
+        accessorKey: "rejectReason",
       },
       {
         header: "Data",
-        accessorKey: "date",
+        accessorKey: "updatedAt",
+        cell: ({ row }) => new Date(row.original.updatedAt).toLocaleString(),
       },
       {
         header: "Ações",
@@ -107,30 +121,65 @@ export default function System() {
         ),
       },
     ],
-    [handleApprove, handleReject],
+    [handleApprove, handleReject, viewDataActivity],
   );
 
   function onReject(reason: string) {
-    console.log("Reject", selectedActivity?.id, reason);
-    rejectDialog.onClose();
-    setSelectedActivity(null);
+    postValidationMutation.mutate(
+      {
+        id: String(selectedActivity?.id),
+        rejectReason: reason,
+      },
+      {
+        onSuccess() {
+          rejectDialog.onClose();
+          setSelectedActivity(null);
+          toast.success("Publicação rejeitada com sucesso");
+        },
+        onError() {
+          toast.error("Erro ao rejeitar publicação");
+        },
+      },
+    );
+  }
+
+  function onApprove() {
+    postValidationMutation.mutate(
+      {
+        id: String(selectedActivity?.id),
+      },
+      {
+        onSuccess() {
+          approveDialog.onClose();
+          setSelectedActivity(null);
+          toast.success("Publicação aprovada com sucesso");
+        },
+        onError() {
+          toast.error("Erro ao aprovar publicação");
+        },
+      },
+    );
   }
 
   const onCloseAddDialog = () => {
     addDialog.onClose();
+    setViewSpecie(null);
   };
 
   return (
     <>
-      <ActivitiesHeader />
+      <ActivitiesHeader
+        currentPage={lastPostHook.curentPage}
+        totalPages={lastPostsQuery.data?.pagination?.total ?? 0}
+        onPageChange={lastPostHook.setCurrentPage}
+        onSearch={lastPostHook.onInputChange}
+      />
 
       <DataTable
-        handleViewData={(id: number) => {
-          console.log("sexo");
-          addDialog.onOpen();
-        }}
+        handleViewData={addDialog.onOpen}
         columns={columns}
-        data={fakerUser}
+        isLoading={lastPostsQuery.isLoading}
+        data={lastPostsQuery.data?.data ?? []}
       />
 
       {rejectDialog.isOpen && (
@@ -138,6 +187,7 @@ export default function System() {
           isOpen={rejectDialog.isOpen}
           onClose={rejectDialog.onClose}
           onReject={onReject}
+          isLoading={postValidationMutation.isPending}
         />
       )}
 
@@ -145,8 +195,9 @@ export default function System() {
         <ConfirmationAlert
           isOpen={approveDialog.isOpen}
           onCancel={approveDialog.onClose}
-          onConfirm={approveDialog.onClose}
+          onConfirm={onApprove}
           onClose={approveDialog.onClose}
+          isLoading={postValidationMutation.isPending}
         />
       )}
 
@@ -155,7 +206,7 @@ export default function System() {
         showDescription={false}
         isOpen={addDialog.isOpen}
         onClose={onCloseAddDialog}
-        // data={data}
+        data={viewSpecie}
       />
     </>
   );

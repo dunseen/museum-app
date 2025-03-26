@@ -35,11 +35,11 @@ export default function PlantGrid() {
               <Card className="h-full cursor-pointer transition-shadow hover:shadow-lg">
                 <CardHeader className="p-0">
                   <Image
-                    src={post.specie.files?.[0]?.path ?? defaultImage}
+                    title={post.specie.scientificName}
+                    src={post.specie.files?.[0]?.url ?? defaultImage}
                     alt={`image-of-${post.specie.scientificName}`}
                     width={200}
                     height={200}
-                    placeholder="blur"
                     className="h-48 w-full rounded-t-lg object-cover transition-opacity group-hover:opacity-90"
                   />
                 </CardHeader>

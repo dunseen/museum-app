@@ -20,9 +20,7 @@ import {
 
 import { z } from "zod";
 import { type Nullable } from "~/types";
-import { type Specie } from "../types";
 import ImageManager from "~/app/dashboard/shared/components/image-manager";
-import Select from "react-select";
 import { GeneralInfoForm } from "./components/general-info-form";
 import { Button } from "~/components/ui/button";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
@@ -39,6 +37,7 @@ type AddSpecieDialogProps = {
   onClose: () => void;
   dialogActionTitle: string;
   data?: Nullable<GetSpecieApiResponse>;
+  isReadOnly?: boolean;
   showDescription?: boolean;
 };
 
@@ -115,6 +114,11 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
       scientificName: data?.scientificName,
       description: data?.description ?? undefined,
       images: data?.files?.map((file) => file.url) ?? [],
+      characteristics: data?.characteristics?.map((c) => ({
+        value: String(c.id),
+        label: c.name,
+      })),
+      taxonomyId: [],
     },
   });
 

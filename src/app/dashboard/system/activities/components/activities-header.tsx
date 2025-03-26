@@ -2,19 +2,36 @@
 
 import { TablePagination } from "~/app/dashboard/shared/components/table-pagination";
 import { Input } from "~/components/ui/input";
-import Select from "react-select";
-import { DatePickerWithRange } from "~/components/ui/date-range-picker";
-import { Button } from "~/components/ui/button";
-import { FilterX } from "lucide-react";
-export const ActivitiesHeader: React.FC = () => {
+// import Select from "react-select";
+// import { DatePickerWithRange } from "~/components/ui/date-range-picker";
+// import { Button } from "~/components/ui/button";
+// import { FilterX } from "lucide-react";
+
+type ActivitiesHeaderProps = {
+  onSearch: (value: string) => void;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (value: number) => void;
+  // onFilter: (value: string) => void;
+  // onDateChange: (value: string) => void;
+  // onClearFilters: () => void;
+  // onStatusChange: (value: string) => void;
+};
+export const ActivitiesHeader: React.FC<Readonly<ActivitiesHeaderProps>> = ({
+  currentPage,
+  onPageChange,
+  onSearch,
+  totalPages,
+}) => {
   return (
     <header className="z-10 mb-4 flex flex-col gap-4">
       <div className="flex justify-between">
         <Input
           className="max-w-[300px]"
           placeholder="Busca por autor, validador"
+          onChange={(e) => onSearch(e.target.value)}
         />
-        <div className="flex gap-4">
+        {/* <div className="flex gap-4">
           <Select
             id="status"
             className="min-w-fit"
@@ -36,12 +53,12 @@ export const ActivitiesHeader: React.FC = () => {
           >
             <FilterX />
           </Button>
-        </div>
+        </div> */}
       </div>
       <TablePagination
-        currentPage={1}
-        onPageChange={(a) => console.log(a)}
-        totalPages={20}
+        currentPage={currentPage}
+        onPageChange={onPageChange}
+        totalPages={totalPages}
       />
     </header>
   );

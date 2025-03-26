@@ -12,7 +12,7 @@ import {
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import Footer from "../museum/herbarium/components/footer";
+import Footer from "../museu/herbario/components/footer";
 
 export default function Page() {
   return (

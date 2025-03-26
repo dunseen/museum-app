@@ -20,7 +20,7 @@ export function ActivitiesContainer() {
 
   if (!data) return null;
 
-  const activities: LastPostsSimplified[] = data.map((post) => ({
+  const activities: LastPostsSimplified[] = data?.data?.map((post) => ({
     id: post.id,
     author: `${post?.author?.firstName} ${post?.author?.lastName}`,
     date: new Date(post.createdAt),
@@ -46,7 +46,7 @@ export function ActivitiesContainer() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {data.length === 0 && (
+          {data?.data?.length === 0 && (
             <p className="text-sm text-muted-foreground">
               Nenhuma atividade recente.
             </p>
