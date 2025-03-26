@@ -20,15 +20,23 @@ export const ImageCarousel: React.FC<Readonly<ImageCarouselProps>> = ({
   return (
     <Carousel>
       <CarouselContent>
-        {files?.map((file) => (
-          <CarouselItem key={file.id}>
-            <Image
-              src={file.path}
-              alt={`${specieName}-image-${file.id}`}
-              width={600}
-              height={400}
-              className="h-[400px] w-full rounded-lg object-cover"
-            />
+        {files?.map((file, index) => (
+          <CarouselItem
+            key={file.id}
+            className="flex items-center justify-center"
+          >
+            <div className="flex flex-col items-center gap-2">
+              <Image
+                src={file.url}
+                alt={`${specieName}-image-${file.id}`}
+                width={600}
+                height={400}
+                className="object-fit h-[400px] rounded-lg"
+              />
+              <span>
+                {index + 1} de {files?.length ?? 0}
+              </span>
+            </div>
           </CarouselItem>
         ))}
       </CarouselContent>

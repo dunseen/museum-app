@@ -5,7 +5,7 @@ import getCachedQueryClient from "~/lib/react-query";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { SummaryCountList } from "./home/components/summary-count-list";
 import { getPostQueryConfig } from "../museu/herbario/api";
-import { GET_LAST_POSTS_QUERY_KEY } from "./home/api/useGetLastPosts";
+import { GET_LAST_POSTS_QUERY_KEY } from "./system/api/useGetLastPosts";
 
 export default async function Page() {
   const client = getCachedQueryClient();

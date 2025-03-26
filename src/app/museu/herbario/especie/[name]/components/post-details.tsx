@@ -8,6 +8,7 @@ import { useGetPostDetails } from "../../../api";
 import defaultImage from "public/default-fallback-image.png";
 import LoadingErrorWrapper from "~/components/ui/loading-error-wrapper";
 import { Badge } from "~/components/ui/badge";
+import { ImageCarousel } from "./image-carousel";
 
 type PostDetailsProps = {
   name?: string;
@@ -33,15 +34,13 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
           Voltar para o início
         </Link>
         <div className="grid gap-8 md:grid-cols-2">
-          <div>
-            <Image
-              src={data?.specie?.files[0]?.path ?? defaultImage}
-              alt={`${data?.specie?.scientificName}`}
-              width={600}
-              height={400}
-              className="h-[400px] w-full rounded-lg object-cover"
+          <div className="p-8">
+            <ImageCarousel
+              files={data?.specie.files ?? []}
+              specieName={data?.specie.scientificName ?? ""}
             />
           </div>
+
           <div>
             <h1 className="mb-2 text-3xl font-bold">{title}</h1>
             <p className="mb-4 text-xl italic text-muted-foreground">
@@ -63,8 +62,9 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
                     {c.description}
                   </p>
                 </div>
+                {/* TODO ADD DIALOG WITH CAROUSEL */}
                 <Image
-                  src={c?.files[0]?.path ?? defaultImage}
+                  src={c?.files[0]?.url ?? defaultImage}
                   alt={`${c.type}-${c.name}-${c.description}-`}
                   width={100}
                   height={100}

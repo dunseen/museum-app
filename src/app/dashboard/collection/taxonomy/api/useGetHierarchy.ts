@@ -5,7 +5,7 @@ import {
 import { type AxiosRequestConfig } from "axios";
 import { type GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
 import { api } from "~/server/api";
-import { type PaginationParams, type WithPagination } from "~/types/pagination";
+import { type PaginationParams } from "~/types/pagination";
 
 export type GetHierarchyParams = PaginationParams & {
   name?: string;

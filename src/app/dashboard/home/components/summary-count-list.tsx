@@ -25,7 +25,7 @@ const cards: SummaryCard[] = [
     icon: <Users />,
   },
   {
-    title: "Ordens",
+    title: "Gêneros",
     key: "genusCount",
     value: 0,
     icon: <Layers />,

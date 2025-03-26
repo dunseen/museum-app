@@ -57,9 +57,9 @@ const data = {
       permissions: [Action.Manage],
       items: [
         {
-          title: "Características",
+          title: "Parâmetros",
           url: "/dashboard/collection/characteristics",
-          description: "Gerencie as características das espécies",
+          description: "Gerencie os parâmetros das espécies",
         },
         {
           title: "Taxonomia",

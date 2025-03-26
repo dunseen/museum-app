@@ -13,8 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { type Specie } from "./types";
-import Link from "next/link";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
 
 export function useSpecieTable() {

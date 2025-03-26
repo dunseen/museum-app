@@ -1,9 +1,11 @@
 import {
+  type PathValue,
   useController,
   type Control,
   type FieldValues,
   type Path,
 } from "react-hook-form";
+import { type GroupBase } from "react-select";
 import CreatableSelect from "react-select/creatable";
 
 interface OptionType {
@@ -34,13 +36,14 @@ export const AsyncSelect = <T extends FieldValues>({
 
   return (
     <CreatableSelect
+      defaultValue={field.value}
       id={field.name}
       onChange={field.onChange}
       onBlur={field.onBlur}
       name={field.name}
       ref={field.ref}
       isDisabled={field.disabled}
-      options={options}
+      options={options as unknown as GroupBase<PathValue<T, Path<T>>>[]}
       isClearable
       isSearchable
       isMulti={isMulti}
@@ -49,7 +52,7 @@ export const AsyncSelect = <T extends FieldValues>({
       onInputChange={onInputChange}
       noOptionsMessage={() => "Nenhum resultado encontrado"}
       loadingMessage={() => "Carregando..."}
-      getOptionValue={(option) => option.value}
+      getOptionValue={(option) => option.value as Path<T>}
       isLoading={isLoading}
     />
   );

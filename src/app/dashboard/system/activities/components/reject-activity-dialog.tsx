@@ -6,7 +6,7 @@ import {
   Dialog,
   DialogContent,
   DialogFooter,
-  DialogHeader,
+  DialogTitle,
 } from "~/components/ui/dialog";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
@@ -15,18 +15,20 @@ type RejectActivityDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   onReject: (reason: string) => void;
+  isLoading?: boolean;
 };
 export default function RejectActivityDialog({
   isOpen,
   onClose,
   onReject,
+  isLoading,
 }: RejectActivityDialogProps) {
   const [reason, setReason] = useState("");
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
-        <DialogHeader>Rejeitar atividade</DialogHeader>
+        <DialogTitle>Rejeitar atividade</DialogTitle>
         <Label htmlFor="reason">Motivo da rejeição</Label>
         <Textarea
           id={"reason"}
@@ -36,10 +38,16 @@ export default function RejectActivityDialog({
           placeholder="Descreva o motivo da rejeição"
         />
         <DialogFooter>
-          <Button variant="secondary" onClick={onClose}>
+          <Button disabled={isLoading} variant="secondary" onClick={onClose}>
             Cancelar
           </Button>
-          <Button onClick={() => onReject(reason)}>Rejeitar</Button>
+          <Button
+            disabled={isLoading}
+            isLoading={isLoading}
+            onClick={() => onReject(reason)}
+          >
+            Rejeitar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

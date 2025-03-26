@@ -22,7 +22,7 @@ export const RecentActivities: React.FC<Readonly<RecentActivitiesProps>> = ({
       color: "border-orange-300",
       label: "Pendente",
     },
-    approved: {
+    published: {
       icon: <CheckCircle color="green" />,
       color: "border-green-500",
       label: "Aprovado",

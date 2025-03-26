@@ -16,6 +16,7 @@ export type Post = {
     files: {
       id: string;
       path: string;
+      url: string;
     }[];
     taxonomy: Record<string, string>;
   };
