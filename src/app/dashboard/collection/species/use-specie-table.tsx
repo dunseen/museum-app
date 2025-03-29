@@ -79,6 +79,27 @@ export function useSpecieTable() {
         },
       },
       {
+        header: "Local",
+        accessorKey: "location",
+        cell: ({ row }) => {
+          return <p>{row.original?.location?.address} - {row.original?.location?.city?.name}/{row.original?.location?.state?.code}</p>;
+        },
+      },
+      {
+        header: "Data",
+        accessorKey: "collectedAt",
+        cell: ({ row }) => {
+          return <p>{new Date(row.original?.collectedAt).toLocaleString()}</p>;
+        }
+      },
+      {
+        header: "Coordenadas",
+        accessorKey: "location",
+        cell: ({ row }) => {
+          return <p>{row.original?.location?.lat} , {row.original?.location?.long}</p>;
+        }
+      },
+      {
         id: "actions",
         header: "Ações",
         cell: ({ row }) => {
