@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
+import { decimalToDMS } from "~/utils/lat-long";
 
 export function useSpecieTable() {
   const [selectedSpecie, setSelectedSpecie] =
@@ -29,23 +30,36 @@ export function useSpecieTable() {
   const resetSelectedSpecieImages = () => setSelectedSpecieImages(null);
   const resetSelectedSpecieId = () => setSelectedSpecieId(null);
 
-  const columns: ColumnDef<GetSpecieApiResponse>[] = useMemo(
+  const columns = useMemo<ColumnDef<GetSpecieApiResponse>[]>(
     () => [
       {
         header: "Nome científico",
-        accessorKey: "scientificName",
+        cell: ({ row }) => (
+          <p
+            title={row.original.scientificName ?? ""}
+            className="max-w-96 truncate"
+          >
+            {row.original.scientificName}
+          </p>
+        ),
       },
       {
         header: "Nome popular",
-        accessorKey: "commonName",
+        cell: ({ row }) => (
+          <p
+            title={row.original.commonName ?? ""}
+            className="max-w-96 truncate"
+          >
+            {row.original.commonName}
+          </p>
+        ),
       },
       {
         header: "Descrição",
-        accessorKey: "description",
         cell: ({ row }) => (
           <p
             title={row.original.description ?? ""}
-            className="max-w-96 truncate"
+            className="max-w-60 truncate"
           >
             {row.original.description}
           </p>
@@ -53,19 +67,39 @@ export function useSpecieTable() {
       },
       {
         header: "Família",
-        accessorKey: "family",
+        cell: ({ row }) => {
+          const family = row.original?.taxons.find(
+            (taxon) => taxon?.hierarchy?.toLowerCase() === "família",
+          );
+
+          return (
+            <p title={family?.name} className="max-w-80 truncate">
+              {family?.name}
+            </p>
+          );
+        },
       },
       {
         header: "Ordem",
-        accessorKey: "order",
+        cell: ({ row }) => {
+          const ordem = row.original?.taxons.find(
+            (taxon) => taxon?.hierarchy?.toLowerCase() === "ordem",
+          );
+
+          return (
+            <p title={ordem?.name} className="max-w-80 truncate">
+              {ordem?.name}
+            </p>
+          );
+        },
       },
       {
         header: "Imagens",
-        accessorKey: "images",
         cell: ({ row }) => {
           return (
             <Button
               variant={"ghost"}
+              disabled={!row.original?.files.length}
               onClick={() =>
                 setSelectedSpecieImages({
                   commonName: row.original.commonName,
@@ -75,6 +109,42 @@ export function useSpecieTable() {
             >
               <Image />
             </Button>
+          );
+        },
+      },
+      {
+        header: "Local",
+        cell: ({ row }) => {
+          const text = `${row.original?.location?.address} - ${row.original?.location?.city?.name}/${row.original?.location?.state?.code}`;
+
+          return (
+            <p title={text} className="max-w-80 truncate">
+              {text}
+            </p>
+          );
+        },
+      },
+
+      {
+        header: "Coordenadas",
+        cell: ({ row }) => {
+          const text = `${decimalToDMS(row.original?.location?.lat, true)} , ${decimalToDMS(row.original?.location?.long, false)}`;
+          return (
+            <p title={text} className="max-w-80 truncate">
+              {text}
+            </p>
+          );
+        },
+      },
+      {
+        header: "Data de coleta",
+        cell: ({ row }) => {
+          const text = new Date(row.original?.collectedAt).toLocaleString();
+
+          return (
+            <p title={text} className="max-w-80 truncate">
+              {text}
+            </p>
           );
         },
       },

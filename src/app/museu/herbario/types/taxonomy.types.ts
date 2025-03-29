@@ -3,12 +3,8 @@ import { type GetCharacteristicApiResponse } from "./characteristic.types";
 import { type GetHierarchyApiResponse } from "./hierarchy";
 
 export interface GetTaxonApiResponse {
-  kingdom: string;
-  division: string;
-  class: string;
-  order: string;
-  family: string;
-  genus: string;
+  name: string;
+  hierarchy: string;
 }
 
 type Parent = {

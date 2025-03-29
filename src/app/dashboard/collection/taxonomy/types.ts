@@ -11,3 +11,25 @@ export type Taxonomy = {
   };
   characteristics?: { id: string; name: string }[];
 };
+
+export type GetCitiesApiResponse = {
+  id: number;
+  name: string;
+  state: {
+    id: number;
+    name: string;
+    code: string;
+  };
+};
+
+export type GetStatesApiResponse = {
+  id: number;
+  name: string;
+  state: {
+    id: number;
+    name: string;
+    code: string;
+  };
+};
+
+

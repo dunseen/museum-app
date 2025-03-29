@@ -5,6 +5,7 @@ import {
 import { type AxiosRequestConfig } from "axios";
 import { api } from "~/server/api";
 import { type PaginationParams, type WithPagination } from "~/types/pagination";
+import { type GetTaxonApiResponse } from "../types/taxonomy.types";
 
 export type Post = {
   id: string;
@@ -18,7 +19,7 @@ export type Post = {
       path: string;
       url: string;
     }[];
-    taxonomy: Record<string, string>;
+    taxons: GetTaxonApiResponse[];
   };
 };
 

@@ -16,7 +16,7 @@ type GeneralInfoFormProps = {
 };
 export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({ form }) => {
   return (
-    <div className="flex flex-1 flex-col gap-2">
+    <div className="flex flex-col gap-2">
       <FormField
         control={form.control}
         name="scientificName"

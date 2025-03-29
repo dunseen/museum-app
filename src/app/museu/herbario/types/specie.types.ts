@@ -2,6 +2,7 @@ import { type Nullable } from "~/types";
 import { type FileTypeApiResponse } from "./file.types";
 import { type GetCharacteristicApiResponse } from "./characteristic.types";
 import { type GetTaxonApiResponse } from "./taxonomy.types";
+import { type LocalTypeApiResponse } from "./local.types";
 
 export interface GetSpecieApiResponse {
   id: number;
@@ -12,7 +13,11 @@ export interface GetSpecieApiResponse {
 
   description: Nullable<string>;
 
-  taxonomy: GetTaxonApiResponse;
+  taxons: GetTaxonApiResponse[];
+
+  location: LocalTypeApiResponse;
+
+  collectedAt: Date;
 
   characteristics: GetCharacteristicApiResponse[];
 
