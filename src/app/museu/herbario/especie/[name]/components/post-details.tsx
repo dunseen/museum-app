@@ -18,10 +18,7 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
 
   const title = data?.specie?.commonName ?? data?.specie?.scientificName;
   const subtitle = data?.specie?.commonName ? data.specie.scientificName : "-";
-
-  const taxonomy = data?.specie?.taxonomy
-    ? (Object.values(data?.specie.taxonomy) as string[])
-    : [];
+  const taxons = data?.specie?.taxons;
 
   return (
     <LoadingErrorWrapper error={isError} loading={isLoading}>
@@ -47,7 +44,12 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
               {subtitle}
             </p>
             <div className="mb-4 flex flex-wrap gap-2">
-              {taxonomy?.map((t) => <Badge key={t}>{t}</Badge>)}
+              {taxons?.map((t) => (
+                <div key={t.name}>
+                  <p className="capitalize">{t.hierarchy}</p>
+                  <Badge>{t.name}</Badge>
+                </div>
+              ))}
             </div>
             <p className="mb-8">{data?.specie?.description}</p>
 

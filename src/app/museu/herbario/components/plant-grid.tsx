@@ -10,12 +10,25 @@ import defaultImage from "public/default-fallback-image.png";
 import { Skeleton } from "~/components/ui/skeleton";
 import { usePost } from "../context/post-context";
 import LoadingErrorWrapper from "~/components/ui/loading-error-wrapper";
+import { type GetTaxonApiResponse } from "../types/taxonomy.types";
 
 export default function PlantGrid() {
   const { search } = usePost();
 
   const { data, fetchNextPage, hasNextPage, isLoading, isError } =
     useGetPosts(search);
+
+  const getFamilyFromTaxons = (taxons: GetTaxonApiResponse[]) => {
+    const family = taxons.find(
+      (taxon) => taxon?.hierarchy?.toLowerCase() === "família",
+    );
+
+    if (family) {
+      return family.name;
+    }
+
+    return null;
+  };
 
   return (
     <LoadingErrorWrapper error={isError} loading={isLoading}>
@@ -52,7 +65,7 @@ export default function PlantGrid() {
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <Badge variant="outline">
-                      {post.specie.taxonomy.family}
+                      {getFamilyFromTaxons(post.specie.taxons)}
                     </Badge>
                   </div>
                 </CardContent>
