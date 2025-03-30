@@ -12,6 +12,7 @@ export type PaginatedGetTaxonsApiResponse =
 
 export type GetTaxonsParams = PaginationParams & {
   name?: string;
+  hierarchyId?: string;
 };
 
 export const GET_TAXONS_QUERY_KEY = "useGetTaxons";
@@ -22,6 +23,9 @@ async function fetchTaxons(params?: GetTaxonsParams) {
       page: params?.page ?? 1,
       limit: params?.limit ?? 10,
       name: params?.name ? params.name : undefined,
+      hierarchyId: params?.hierarchyId
+        ? Number(params?.hierarchyId)
+        : undefined,
     },
   };
 
@@ -41,7 +45,7 @@ export const getTaxonsConfig = (
   string[]
 > => {
   return {
-    queryKey: [GET_TAXONS_QUERY_KEY, JSON.stringify(params)],
+    queryKey: [GET_TAXONS_QUERY_KEY, params as unknown as string],
     queryFn: () => fetchTaxons(params),
   };
 };
