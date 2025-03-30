@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useMemo } from "react";
-import { Controller, useForm } from "react-hook-form";
+import React from "react";
+import { useForm } from "react-hook-form";
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -23,12 +23,12 @@ import { Input } from "~/components/ui/input";
 import { z } from "zod";
 import { type Nullable } from "~/types";
 import { type GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
-import { useGetHierarchies } from "../api/useGetHierarchy";
-import { AsyncSelect } from "~/components/ui/async-select";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
-import { useGetCharacteristics } from "../../characteristics/api";
-import { type PostTaxonsPayload, useGetTaxons, usePostTaxons } from "../api";
+import { type PostTaxonsPayload, usePostTaxons } from "../api";
 import { toast } from "sonner";
+import { HierarchyFormField } from "./components/hierarchy-form-field";
+import { TaxonomyFormField } from "./components/taxonomy-form-field";
+import { CharacteristicFormField } from "./components/characteristic-form-field";
 
 type AddTaxonomyDialogProps = {
   isOpen: boolean;
@@ -100,54 +100,6 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
     },
   });
 
-  const hierarchyWatch = form.watch("hierarchy.value");
-
-  const getHierarchies = useGetHierarchies({
-    name: hierarchyHook.debouncedInput,
-    limit: hierarchyHook.pageLimit,
-    page: hierarchyHook.curentPage,
-  });
-
-  const getCharacteristics = useGetCharacteristics({
-    name: characteristicsHook.debouncedInput,
-    limit: characteristicsHook.pageLimit,
-    page: characteristicsHook.curentPage,
-  });
-
-  const getTaxons = useGetTaxons({
-    name: characteristicsHook.debouncedInput,
-    limit: characteristicsHook.pageLimit,
-    page: characteristicsHook.curentPage,
-    hierarchyId: hierarchyWatch,
-  });
-
-  const taxonomyLevels = useMemo(
-    () =>
-      getHierarchies.data?.map((h) => ({
-        value: String(h.id),
-        label: h.name,
-      })) ?? [],
-    [getHierarchies?.data],
-  );
-
-  const characteristicOptions = useMemo(
-    () =>
-      getCharacteristics?.data?.data?.map((c) => ({
-        value: String(c.id),
-        label: c.name,
-      })) ?? [],
-    [getCharacteristics?.data],
-  );
-
-  const parentOptions = useMemo(
-    () =>
-      getTaxons?.data?.data?.map((c) => ({
-        value: String(c.id),
-        label: c.name,
-      })) ?? [],
-    [getTaxons?.data],
-  );
-
   function onSubmit(values: TaxonomyFormType) {
     const payload: PostTaxonsPayload = {
       hierarchyId: Number(values.hierarchy.value),
@@ -187,31 +139,9 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
           <form id="edit-specie-form" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex gap-4">
               <div className="flex flex-1 flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name="hierarchy"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Hierarquia (*)</FormLabel>
-                      <FormControl>
-                        <Controller
-                          name={field.name}
-                          control={form.control}
-                          render={() => (
-                            <AsyncSelect
-                              name="hierarchy"
-                              control={form.control}
-                              onInputChange={hierarchyHook.onInputChange}
-                              isLoading={getHierarchies.isLoading}
-                              options={taxonomyLevels}
-                              placeholder="Pesquisar / Criar Hierarquia"
-                            />
-                          )}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                <HierarchyFormField
+                  form={form}
+                  debouncedInputHook={hierarchyHook}
                 />
 
                 <FormField
@@ -237,59 +167,13 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
               </div>
 
               <div className="flex flex-1 flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name="parent"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Taxonomia Pai (opcional)</FormLabel>
-                      <FormControl>
-                        <Controller
-                          name={field.name}
-                          control={form.control}
-                          render={() => (
-                            <AsyncSelect
-                              name="parent"
-                              control={form.control}
-                              onInputChange={taxonomyHook.onInputChange}
-                              isLoading={getTaxons.isLoading}
-                              options={parentOptions}
-                              placeholder="Pesquisar taxonomia pai"
-                              isDisabled={!hierarchyWatch}
-                            />
-                          )}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                <TaxonomyFormField
+                  form={form}
+                  debouncedInputHook={taxonomyHook}
                 />
-                <FormField
-                  control={form.control}
-                  name={"characteristics"}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Características (opcional)</FormLabel>
-                      <FormControl>
-                        <Controller
-                          name={field.name}
-                          control={form.control}
-                          render={() => (
-                            <AsyncSelect
-                              name="characteristics"
-                              control={form.control}
-                              onInputChange={characteristicsHook.onInputChange}
-                              isLoading={getCharacteristics.isLoading}
-                              options={characteristicOptions}
-                              placeholder="Pesquisar características"
-                              isMulti
-                            />
-                          )}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                <CharacteristicFormField
+                  form={form}
+                  debouncedInputHook={characteristicsHook}
                 />
               </div>
             </div>
