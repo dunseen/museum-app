@@ -20,6 +20,7 @@ interface AsyncSelectProps<T extends FieldValues> {
   placeholder?: string;
   isMulti?: boolean;
   isLoading?: boolean;
+  isDisabled?: boolean;
   onInputChange?: (value: string) => void;
 }
 
@@ -30,6 +31,7 @@ export const AsyncSelect = <T extends FieldValues>({
   placeholder = "Pesquisar...",
   isMulti = false,
   isLoading,
+  isDisabled,
   onInputChange,
 }: AsyncSelectProps<T>) => {
   const { field } = useController({ name, control });
@@ -42,7 +44,7 @@ export const AsyncSelect = <T extends FieldValues>({
       onBlur={field.onBlur}
       name={field.name}
       ref={field.ref}
-      isDisabled={field.disabled}
+      isDisabled={field.disabled ?? isDisabled}
       options={options as unknown as GroupBase<PathValue<T, Path<T>>>[]}
       isClearable
       isSearchable

@@ -77,6 +77,31 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
 
   const postTaxonomy = usePostTaxons();
 
+  const form = useForm<TaxonomyFormType>({
+    resolver: zodResolver(formTaxonomySchema),
+    defaultValues: {
+      name: data?.name,
+      hierarchy: data?.hierarchy?.id
+        ? {
+            value: String(data?.hierarchy.id),
+            label: data?.hierarchy.name,
+          }
+        : undefined,
+      characteristics: data?.characteristics?.map((c) => ({
+        label: c.name,
+        value: String(c.id),
+      })),
+      parent: data?.parent?.id
+        ? {
+            value: String(data?.parent?.id),
+            label: data?.parent?.name,
+          }
+        : undefined,
+    },
+  });
+
+  const hierarchyWatch = form.watch("hierarchy.value");
+
   const getHierarchies = useGetHierarchies({
     name: hierarchyHook.debouncedInput,
     limit: hierarchyHook.pageLimit,
@@ -93,6 +118,7 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
     name: characteristicsHook.debouncedInput,
     limit: characteristicsHook.pageLimit,
     page: characteristicsHook.curentPage,
+    hierarchyId: hierarchyWatch,
   });
 
   const taxonomyLevels = useMemo(
@@ -121,29 +147,6 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
       })) ?? [],
     [getTaxons?.data],
   );
-
-  const form = useForm<TaxonomyFormType>({
-    resolver: zodResolver(formTaxonomySchema),
-    defaultValues: {
-      name: data?.name,
-      hierarchy: data?.hierarchy?.id
-        ? {
-            value: String(data?.hierarchy.id),
-            label: data?.hierarchy.name,
-          }
-        : undefined,
-      characteristics: data?.characteristics?.map((c) => ({
-        label: c.name,
-        value: String(c.id),
-      })),
-      parent: data?.parent?.id
-        ? {
-            value: String(data?.parent?.id),
-            label: data?.parent?.name,
-          }
-        : undefined,
-    },
-  });
 
   function onSubmit(values: TaxonomyFormType) {
     const payload: PostTaxonsPayload = {
@@ -252,6 +255,7 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
                               isLoading={getTaxons.isLoading}
                               options={parentOptions}
                               placeholder="Pesquisar taxonomia pai"
+                              isDisabled={!hierarchyWatch}
                             />
                           )}
                         />

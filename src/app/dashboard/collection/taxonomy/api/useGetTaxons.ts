@@ -12,6 +12,7 @@ export type PaginatedGetTaxonsApiResponse =
 
 export type GetTaxonsParams = PaginationParams & {
   name?: string;
+  hierarchyId: string;
 };
 
 export const GET_TAXONS_QUERY_KEY = "useGetTaxons";
@@ -22,6 +23,7 @@ async function fetchTaxons(params?: GetTaxonsParams) {
       page: params?.page ?? 1,
       limit: params?.limit ?? 10,
       name: params?.name ? params.name : undefined,
+      hierarchyId: Number(params?.hierarchyId),
     },
   };
 
