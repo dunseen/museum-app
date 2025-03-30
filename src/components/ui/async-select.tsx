@@ -22,6 +22,7 @@ interface AsyncSelectProps<T extends FieldValues> {
   isLoading?: boolean;
   isDisabled?: boolean;
   onInputChange?: (value: string) => void;
+  defaultValue?: PathValue<T, Path<T>>;
 }
 
 export const AsyncSelect = <T extends FieldValues>({
@@ -32,13 +33,14 @@ export const AsyncSelect = <T extends FieldValues>({
   isMulti = false,
   isLoading,
   isDisabled,
+  defaultValue,
   onInputChange,
 }: AsyncSelectProps<T>) => {
   const { field } = useController({ name, control });
 
   return (
     <CreatableSelect
-      defaultValue={field.value}
+      defaultValue={defaultValue}
       id={field.name}
       onChange={field.onChange}
       onBlur={field.onBlur}

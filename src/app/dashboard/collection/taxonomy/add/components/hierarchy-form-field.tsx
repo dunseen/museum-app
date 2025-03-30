@@ -14,11 +14,16 @@ import { useGetHierarchies } from "../../api";
 type HierarchyFormFieldProps = {
   form: ReturnType<typeof useForm<TaxonomyFormType>>;
   debouncedInputHook: ReturnType<typeof useDebouncedInput>;
+  defaultValue?: {
+    label: string;
+    value: string;
+  };
 };
 
 export const HierarchyFormField: React.FC<HierarchyFormFieldProps> = ({
   form,
   debouncedInputHook,
+  defaultValue,
 }) => {
   const { curentPage, pageLimit, debouncedInput, onInputChange } =
     debouncedInputHook;
@@ -50,6 +55,7 @@ export const HierarchyFormField: React.FC<HierarchyFormFieldProps> = ({
               isLoading={getHierarchies.isLoading}
               options={taxonomyLevels}
               placeholder="Pesquisar / Criar Hierarquia"
+              defaultValue={defaultValue}
             />
           </FormControl>
           <FormMessage />
