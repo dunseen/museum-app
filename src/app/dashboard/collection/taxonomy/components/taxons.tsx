@@ -6,9 +6,10 @@ import { Input } from "~/components/ui/input";
 import { useState } from "react";
 import { ConfirmationAlert } from "../../../shared/components/confirmation-alert";
 import { AddTaxonomy } from "../add/add-taxonomy";
-import { useGetTaxons } from "../api";
+import { useDeleteTaxons, useGetTaxons } from "../api";
 import { TablePagination } from "~/app/dashboard/shared/components/table-pagination";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
+import { toast } from "sonner";
 
 export default function Taxons() {
   const [curentPage, setCurrentPage] = useState(1);
@@ -21,6 +22,25 @@ export default function Taxons() {
     resetSelectedTaxonomy,
     resetSelectedTaxonomyId,
   } = useTaxonomyTable();
+
+  const deleteTaxon = useDeleteTaxons();
+
+  const handleDeleteTaxon = () => {
+    if (!selectedTaxonomyId) return;
+
+    deleteTaxon.mutate(
+      { id: selectedTaxonomyId },
+      {
+        onSuccess() {
+          toast.success("Taxonomia deletada com sucesso");
+          resetSelectedTaxonomyId();
+        },
+        onError() {
+          toast.error("Erro ao deletar taxonomia");
+        },
+      },
+    );
+  };
 
   const { debouncedInput, inputValue, onInputChange } = useDebouncedInput();
 
@@ -62,7 +82,8 @@ export default function Taxons() {
           isOpen={!!selectedTaxonomyId}
           onClose={resetSelectedTaxonomyId}
           onCancel={resetSelectedTaxonomyId}
-          onConfirm={resetSelectedTaxonomyId}
+          onConfirm={handleDeleteTaxon}
+          isLoading={deleteTaxon.isPending}
         />
       ) : null}
     </>

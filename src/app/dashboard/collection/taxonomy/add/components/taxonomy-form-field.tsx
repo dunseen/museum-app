@@ -14,11 +14,16 @@ import Select from "react-select";
 type LocationInfoFormProps = {
   form: ReturnType<typeof useForm<TaxonomyFormType>>;
   debouncedInputHook: ReturnType<typeof useDebouncedInput>;
+  defaultValue?: {
+    value: string;
+    label: string;
+  };
 };
 
 export const TaxonomyFormField: React.FC<LocationInfoFormProps> = ({
   form,
   debouncedInputHook,
+  defaultValue,
 }) => {
   const { curentPage, debouncedInput, onInputChange, pageLimit } =
     debouncedInputHook;
@@ -55,7 +60,7 @@ export const TaxonomyFormField: React.FC<LocationInfoFormProps> = ({
               id={field.name}
               onBlur={field.onBlur}
               onChange={field.onChange}
-              defaultValue={field.value}
+              defaultValue={defaultValue}
               isDisabled={field.disabled ?? !hierarchyWatch}
               loadingMessage={() => "Carregando..."}
               isLoading={getTaxons.isLoading || getTaxons.isFetching}

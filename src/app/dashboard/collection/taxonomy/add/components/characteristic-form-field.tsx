@@ -14,11 +14,15 @@ import { useGetCharacteristics } from "../../../characteristics/api";
 type CharacteristicFormFieldProps = {
   form: ReturnType<typeof useForm<TaxonomyFormType>>;
   debouncedInputHook: ReturnType<typeof useDebouncedInput>;
+  defaultValue?: {
+    value: string;
+    label: string;
+  }[];
 };
 
 export const CharacteristicFormField: React.FC<
   CharacteristicFormFieldProps
-> = ({ form, debouncedInputHook }) => {
+> = ({ form, debouncedInputHook, defaultValue }) => {
   const { curentPage, debouncedInput, onInputChange, pageLimit } =
     debouncedInputHook;
 
@@ -51,7 +55,7 @@ export const CharacteristicFormField: React.FC<
               id={field.name}
               onBlur={field.onBlur}
               onChange={field.onChange}
-              defaultValue={field.value}
+              defaultValue={defaultValue}
               isDisabled={field.disabled}
               loadingMessage={() => "Carregando..."}
               isLoading={

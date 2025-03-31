@@ -24,7 +24,7 @@ import { z } from "zod";
 import { type Nullable } from "~/types";
 import { type GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
-import { type PostTaxonsPayload, usePostTaxons } from "../api";
+import { type PostTaxonsPayload, usePostTaxons, usePutTaxons } from "../api";
 import { toast } from "sonner";
 import { HierarchyFormField } from "./components/hierarchy-form-field";
 import { TaxonomyFormField } from "./components/taxonomy-form-field";
@@ -76,6 +76,7 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
   const taxonomyHook = useDebouncedInput();
 
   const postTaxonomy = usePostTaxons();
+  const putTaxonomy = usePutTaxons();
 
   const form = useForm<TaxonomyFormType>({
     resolver: zodResolver(formTaxonomySchema),
@@ -108,6 +109,26 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
       characteristicIds:
         values.characteristics?.map((c) => Number(c.value)) ?? [],
     };
+
+    if (data) {
+      putTaxonomy.mutate(
+        {
+          id: data.id,
+          ...payload,
+        },
+        {
+          onSuccess: () => {
+            onCloseAddDialog();
+            toast.success("Taxonomia atualizada com sucesso");
+          },
+          onError: () => {
+            toast.error("Erro ao atualizar taxonomia");
+          },
+        },
+      );
+
+      return;
+    }
 
     postTaxonomy.mutate(payload, {
       onSuccess: () => {
@@ -142,6 +163,14 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
                 <HierarchyFormField
                   form={form}
                   debouncedInputHook={hierarchyHook}
+                  defaultValue={
+                    data?.hierarchy?.name
+                      ? {
+                          label: data?.hierarchy.name,
+                          value: String(data?.hierarchy?.id),
+                        }
+                      : undefined
+                  }
                 />
 
                 <FormField
@@ -154,6 +183,7 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
                         <Input
                           ref={field.ref}
                           id={field.name}
+                          defaultValue={data?.name}
                           onChange={field.onChange}
                           onBlur={field.onBlur}
                           disabled={field.disabled}
@@ -170,10 +200,24 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
                 <TaxonomyFormField
                   form={form}
                   debouncedInputHook={taxonomyHook}
+                  defaultValue={
+                    data?.parent?.name
+                      ? {
+                          label: data?.parent.name,
+                          value: String(data?.parent?.id),
+                        }
+                      : undefined
+                  }
                 />
                 <CharacteristicFormField
                   form={form}
                   debouncedInputHook={characteristicsHook}
+                  defaultValue={
+                    data?.characteristics?.map((c) => ({
+                      label: c.name,
+                      value: String(c.id),
+                    })) ?? []
+                  }
                 />
               </div>
             </div>
@@ -183,13 +227,14 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
                 variant={"secondary"}
                 type="button"
                 onClick={onCloseAddDialog}
+                disabled={postTaxonomy.isPending ?? putTaxonomy.isPending}
               >
                 Cancelar
               </Button>
               <Button
                 type="submit"
-                isLoading={postTaxonomy.isPending}
-                disabled={postTaxonomy.isPending}
+                isLoading={postTaxonomy.isPending ?? putTaxonomy.isPending}
+                disabled={postTaxonomy.isPending ?? putTaxonomy.isPending}
               >
                 Salvar
               </Button>
