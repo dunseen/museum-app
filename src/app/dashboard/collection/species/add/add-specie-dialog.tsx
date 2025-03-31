@@ -54,6 +54,17 @@ const selectSchema = z.object(
   },
 );
 
+const imageSchema = z.object(
+  {
+    id: z.string(),
+    url: z.string(),
+    removed: z.boolean().optional(),
+  },
+  {
+    required_error: "Campo obrigatório",
+  },
+);
+
 const formSpecieSchema = z.object({
   commonName: z.string().optional(),
   collectedAt: z.date({
@@ -77,11 +88,7 @@ const formSpecieSchema = z.object({
   }),
   scientificName: stringSchema,
   description: stringSchema,
-  images: z
-    .array(z.string(), {
-      required_error: "Campo obrigatório",
-    })
-    .nonempty("Campo obrigatório"),
+  images: z.array(imageSchema).nonempty("Campo obrigatório"),
   taxonomyId: z.array(selectSchema).nonempty("Campo obrigatório"),
   characteristics: z.array(selectSchema).optional(),
 });
@@ -103,7 +110,11 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
       scientificName: data?.scientificName,
       collectedAt: data?.collectedAt ?? undefined,
       description: data?.description ?? undefined,
-      images: data?.files?.map((file) => file.url) ?? [],
+      images:
+        data?.files?.map((file) => ({
+          id: file.id,
+          url: file.url,
+        })) ?? [],
       characteristics: data?.characteristics?.map((c) => ({
         value: String(c.id),
         label: c.name,
@@ -146,7 +157,11 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
         );
       }
 
-      await appendFiles(formData, "file", values.images);
+      await appendFiles(
+        formData,
+        "file",
+        values.images.map((f) => f.url),
+      );
 
       await postSpeciesMutation.mutateAsync(formData);
 

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "~/components/ui/button";
 import {
@@ -142,9 +142,40 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
   }
 
   function onCloseAddDialog() {
+    form.resetField("name");
+    form.resetField("hierarchy");
+    form.resetField("characteristics");
+    form.resetField("parent");
+
     onClose();
-    form.reset();
   }
+
+  useEffect(() => {
+    if (data) {
+      form.setValue("name", data.name);
+      form.setValue("hierarchy", {
+        value: String(data.hierarchy.id),
+        label: data.hierarchy.name,
+      });
+
+      if (data?.characteristics?.length) {
+        form.setValue(
+          "characteristics",
+          data.characteristics.map((c) => ({
+            label: c.name,
+            value: String(c.id),
+          })),
+        );
+      }
+
+      if (data.parent) {
+        form.setValue("parent", {
+          value: String(data.parent.id),
+          label: data.parent.name,
+        });
+      }
+    }
+  }, [data, form]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onCloseAddDialog}>
@@ -227,14 +258,14 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
                 variant={"secondary"}
                 type="button"
                 onClick={onCloseAddDialog}
-                disabled={postTaxonomy.isPending ?? putTaxonomy.isPending}
+                disabled={postTaxonomy.isPending || putTaxonomy.isPending}
               >
                 Cancelar
               </Button>
               <Button
                 type="submit"
-                isLoading={postTaxonomy.isPending ?? putTaxonomy.isPending}
-                disabled={postTaxonomy.isPending ?? putTaxonomy.isPending}
+                isLoading={postTaxonomy.isPending || putTaxonomy.isPending}
+                disabled={postTaxonomy.isPending || putTaxonomy.isPending}
               >
                 Salvar
               </Button>

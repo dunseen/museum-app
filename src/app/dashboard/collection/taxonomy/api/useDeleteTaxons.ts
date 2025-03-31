@@ -2,21 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "~/server/api";
 import { GET_TAXONS_QUERY_KEY } from "./useGetTaxons";
 
-type PutTaxonsApiResponse = {
-  id: number;
-  name: string;
-  description: string;
-  type: string;
-};
-
 export type DeleteTaxonsPayload = {
   id: number;
 };
 
 async function deleteTaxons(payload: DeleteTaxonsPayload) {
-  const { data } = await api.delete<PutTaxonsApiResponse>(
-    `/dashboard/taxons/${payload.id}`,
-  );
+  const { data } = await api.delete<void>(`/dashboard/taxons/${payload.id}`);
 
   return data;
 }

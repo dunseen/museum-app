@@ -13,9 +13,10 @@ import { ConfirmationAlert } from "../../../shared/components/confirmation-alert
 import { useState } from "react";
 import { Input } from "~/components/ui/input";
 import { AddCharacteristic } from "../add/add-characteristic";
-import { useGetCharacteristics } from "../api";
+import { useDeleteCharacteristic, useGetCharacteristics } from "../api";
 import { TablePagination } from "~/app/dashboard/shared/components/table-pagination";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
+import { toast } from "sonner";
 
 export default function Characteristics() {
   const [curentPage, setCurrentPage] = useState(1);
@@ -30,6 +31,25 @@ export default function Characteristics() {
     resetSelectedCharacteristicImages,
     resetSelectedCharacteristicId,
   } = useCharacteristicTable();
+
+  const deleteCharacteristic = useDeleteCharacteristic();
+
+  const handleDeleteCharacteristic = () => {
+    if (!selectedCharacteristicId) return;
+
+    deleteCharacteristic.mutate(
+      { id: selectedCharacteristicId },
+      {
+        onSuccess() {
+          toast.success("Característica deletada com sucesso");
+          resetSelectedCharacteristicId();
+        },
+        onError() {
+          toast.error("Erro ao deletar característica");
+        },
+      },
+    );
+  };
 
   const { debouncedInput, inputValue, onInputChange } = useDebouncedInput();
 
@@ -90,7 +110,8 @@ export default function Characteristics() {
           isOpen={!!selectedCharacteristicId}
           onClose={resetSelectedCharacteristicId}
           onCancel={resetSelectedCharacteristicId}
-          onConfirm={resetSelectedCharacteristicId}
+          onConfirm={handleDeleteCharacteristic}
+          isLoading={deleteCharacteristic.isPending}
         />
       ) : null}
     </>

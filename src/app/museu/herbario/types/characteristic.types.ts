@@ -4,15 +4,9 @@ export interface GetCharacteristicApiResponse {
   id: number;
 
   name: string;
-
-  description: string;
-
-  type: string;
-
+  type: GetCharacteristicTypesApiResponse;
   files: FileTypeApiResponse[];
-
   createdAt: Date;
-
   updatedAt: Date;
 }
 
