@@ -20,7 +20,7 @@ export default function PlantGrid() {
 
   const getFamilyFromTaxons = (taxons: GetTaxonApiResponse[]) => {
     const family = taxons.find(
-      (taxon) => taxon?.hierarchy?.toLowerCase() === "família",
+      (taxon) => taxon?.hierarchy?.name?.toLowerCase() === "família",
     );
 
     if (family) {

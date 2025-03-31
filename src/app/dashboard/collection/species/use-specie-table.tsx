@@ -69,7 +69,7 @@ export function useSpecieTable() {
         header: "Família",
         cell: ({ row }) => {
           const family = row.original?.taxons.find(
-            (taxon) => taxon?.hierarchy?.toLowerCase() === "família",
+            (taxon) => taxon?.hierarchy?.name?.toLowerCase() === "família",
           );
 
           return (
@@ -83,7 +83,7 @@ export function useSpecieTable() {
         header: "Ordem",
         cell: ({ row }) => {
           const ordem = row.original?.taxons.find(
-            (taxon) => taxon?.hierarchy?.toLowerCase() === "ordem",
+            (taxon) => taxon?.hierarchy?.name?.toLowerCase() === "ordem",
           );
 
           return (

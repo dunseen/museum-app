@@ -11,11 +11,12 @@ import {
 } from "~/components/ui/dialog";
 import { AddSpecie } from "../add/add-specie";
 import { useSpecieTable } from "../use-specie-table";
-import { useGetSpecies } from "../api";
+import { useDeleteSpecie, useGetSpecies } from "../api";
 import { TablePagination } from "~/app/dashboard/shared/components/table-pagination";
 import { useState } from "react";
 import { Input } from "~/components/ui/input";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
+import { toast } from "sonner";
 
 export default function Species() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,6 +31,25 @@ export default function Species() {
     resetSelectedSpecie,
     selectedSpecie,
   } = useSpecieTable();
+
+  const deleteSpecie = useDeleteSpecie();
+
+  const handleDeleteSpecie = () => {
+    if (!selectedSpecieId) return;
+
+    deleteSpecie.mutate(
+      { id: selectedSpecieId },
+      {
+        onSuccess() {
+          toast.success("Espécie deletada com sucesso");
+          resetSelectedSpecieId();
+        },
+        onError() {
+          toast.error("Erro ao deletar espécie");
+        },
+      },
+    );
+  };
 
   const { debouncedInput, inputValue, onInputChange } = useDebouncedInput();
 
@@ -83,7 +103,8 @@ export default function Species() {
           isOpen={!!selectedSpecieId}
           onClose={resetSelectedSpecieId}
           onCancel={resetSelectedSpecieId}
-          onConfirm={resetSelectedSpecieId}
+          onConfirm={handleDeleteSpecie}
+          isLoading={deleteSpecie.isPending}
         />
       ) : null}
     </>

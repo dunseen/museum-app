@@ -46,7 +46,7 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
             <div className="mb-4 flex flex-wrap gap-2">
               {taxons?.map((t) => (
                 <div key={t.name}>
-                  <p className="capitalize">{t.hierarchy}</p>
+                  <p className="capitalize">{t.hierarchy.name}</p>
                   <Badge>{t.name}</Badge>
                 </div>
               ))}

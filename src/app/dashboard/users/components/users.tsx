@@ -3,10 +3,9 @@
 import { Button } from "~/components/ui/button";
 import { MoreHorizontal, PlusIcon } from "lucide-react";
 import { Input } from "~/components/ui/input";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { DataTable } from "../../shared/components/data-table";
 import { ConfirmationAlert } from "../../shared/components/confirmation-alert";
-import type { User } from "../types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +14,6 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import type { ColumnDef } from "@tanstack/react-table";
-import { fakerPT_BR as faker } from "@faker-js/faker";
 import { useDisclosure } from "~/hooks/use-disclosure";
 import {
   Dialog,
@@ -37,8 +35,24 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import Select from "react-select";
-const addUserSchema = z.object({
-  name: z.string({
+import { useDeleteUsers, useGetUsers, usePostUsers, usePutUsers } from "../api";
+import { useDebouncedInput } from "~/hooks/use-debounced-input";
+import { type GetUserApiResponse } from "~/app/museu/herbario/types/users.types";
+import { RoleEnum } from "~/types";
+import { parseRole, parseRoleToNumber } from "~/utils/role";
+import { TablePagination } from "../../shared/components/table-pagination";
+import { toast } from "sonner";
+
+const roleParser = {
+  ADMIN: "Administrador",
+  EDITOR: "Editor",
+  OPERATOR: "Operador",
+};
+const editUserSchema = z.object({
+  firstName: z.string({
+    required_error: "Campo obrigatório",
+  }),
+  lastName: z.string({
     required_error: "Campo obrigatório",
   }),
   email: z
@@ -46,11 +60,19 @@ const addUserSchema = z.object({
       required_error: "Campo obrigatório",
     })
     .email({
-      message: "email inválido",
+      message: "Email inválido",
     }),
-  phone: z.string({
-    required_error: "Campo obrigatório",
-  }),
+  phone: z
+    .string({
+      required_error: "Campo obrigatório",
+      invalid_type_error: "Campo deve ser um número",
+    })
+    .min(10, {
+      message: "Campo deve ter no mínimo 10 dígitos",
+    })
+    .max(11, {
+      message: "Campo deve ter no máximo 11 dígitos",
+    }),
 
   role: z.object(
     {
@@ -63,60 +85,91 @@ const addUserSchema = z.object({
   ),
 });
 
+const addUserSchema = editUserSchema.extend({
+  password: z
+    .string({
+      required_error: "Campo obrigatório",
+    })
+    .min(6, {
+      message: "Campo deve ter no mínimo 6 dígitos",
+    }),
+});
+
 type AddUserFormType = z.infer<typeof addUserSchema>;
 
-const Search = () => {
-  const [searchValue, setSearchValue] = useState("");
-
-  const onSearchChange = (value: string) => setSearchValue(value);
-
-  return (
-    <Input
-      value={searchValue}
-      onChange={(e) => onSearchChange(e.target.value)}
-      placeholder={"Busca por nome ou email"}
-    />
-  );
-};
 export function Users() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const addUserDialog = useDisclosure();
   const deleteUserDialog = useDisclosure();
+  const userHook = useDebouncedInput();
 
-  const fakerUser: User[] = useMemo(
-    () =>
-      Array.from({ length: 10 }, () => ({
-        id: faker.string.uuid(),
-        email: faker.internet.email(),
-        name: faker.person.fullName(),
-        phone: faker.phone.number().toString(),
-        role: "Admin",
-      })),
-    [],
-  );
+  const postUsers = usePostUsers();
+  const putUsers = usePutUsers();
+  const deleteUsers = useDeleteUsers();
+
+  const { data: users } = useGetUsers({
+    name: userHook.debouncedInput,
+    limit: userHook.pageLimit,
+    page: userHook.curentPage,
+  });
 
   const selectedUser = useMemo(
-    () => fakerUser.find((u) => u.id === selectedUserId),
-    [fakerUser, selectedUserId],
+    () => users?.data?.find((u) => u.id === selectedUserId),
+    [users, selectedUserId],
   );
 
   const form = useForm<AddUserFormType>({
-    resolver: zodResolver(addUserSchema),
-    defaultValues: {
-      name: selectedUser?.name ?? "",
-      email: selectedUser?.email ?? "",
-      phone: selectedUser?.phone ?? "",
-      role: selectedUser?.role
-        ? {
-            value: selectedUser?.role,
-            label: selectedUser?.role,
-          }
-        : undefined,
-    },
+    resolver: zodResolver(selectedUser ? editUserSchema : addUserSchema),
   });
 
   function onSubmit(data: AddUserFormType) {
-    console.log(data);
+    if (selectedUser) {
+      putUsers.mutate(
+        {
+          id: selectedUser.id,
+          email: data.email,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phone: data.phone,
+          role: {
+            id: Number(data.role.value),
+          },
+        },
+        {
+          onSuccess() {
+            addUserDialog.onClose();
+            toast.success("Usuário editado com sucesso");
+          },
+          onError() {
+            toast.error("Erro ao editar usuário");
+          },
+        },
+      );
+
+      return;
+    }
+
+    postUsers.mutate(
+      {
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phone: data.phone,
+        role: {
+          id: Number(data.role.value),
+        },
+        password: data.password,
+      },
+      {
+        onSuccess() {
+          addUserDialog.onClose();
+          toast.success("Usuário adicionado com sucesso");
+        },
+        onError() {
+          toast.error("Erro ao adicionar usuário");
+        },
+      },
+    );
   }
 
   const onEditUser = useCallback(
@@ -127,9 +180,31 @@ export function Users() {
     [addUserDialog],
   );
 
+  function onDeleteUser() {
+    if (!selectedUserId) return;
+
+    deleteUsers.mutate(
+      { id: selectedUserId },
+      {
+        onSuccess() {
+          toast.success("Usuário deletado com sucesso");
+          deleteUserDialog.onClose();
+        },
+        onError() {
+          toast.error("Erro ao deletar usuário");
+        },
+      },
+    );
+  }
+
   function onCloseAddDialog() {
+    form.resetField("email");
+    form.resetField("firstName");
+    form.resetField("lastName");
+    form.resetField("phone");
+    form.resetField("role");
+
     setSelectedUserId(null);
-    form.reset();
     addUserDialog.onClose();
   }
 
@@ -146,11 +221,15 @@ export function Users() {
     deleteUserDialog.onClose();
   }
 
-  const columns = useMemo<ColumnDef<User>[]>(
+  const columns = useMemo<ColumnDef<GetUserApiResponse>[]>(
     () => [
       {
         header: "Nome",
-        accessorKey: "name",
+        cell: ({ row }) => (
+          <p className="max-w-96 truncate">
+            {row.original.firstName} {row.original.lastName}
+          </p>
+        ),
       },
       {
         header: "Email",
@@ -162,7 +241,14 @@ export function Users() {
       },
       {
         header: "Permissão",
-        accessorKey: "role",
+        cell: ({ row }) => {
+          const role = row.original.role;
+          return (
+            <p className="max-w-80 truncate">
+              {roleParser[role.name as keyof typeof roleParser]}
+            </p>
+          );
+        },
       },
       {
         id: "actions",
@@ -197,20 +283,51 @@ export function Users() {
 
   const dialogActionTitle = selectedUser ? "Editar" : "Adicionar";
 
+  const roleOptions = Object.entries(RoleEnum).map(([key, value]) => ({
+    label: parseRole(key as RoleEnum),
+    value: String(parseRoleToNumber(value as RoleEnum)),
+  }));
+
+  useEffect(() => {
+    if (selectedUser) {
+      form.setValue("firstName", selectedUser.firstName);
+      form.setValue("lastName", selectedUser.lastName);
+      form.setValue("email", selectedUser.email);
+      form.setValue("phone", selectedUser.phone);
+
+      form.setValue("role", {
+        label: roleParser[selectedUser.role.name as keyof typeof roleParser],
+        value: selectedUser.role.name,
+      });
+    }
+  }, [form, selectedUser]);
+
   return (
     <>
-      <header className="mb-4 flex justify-between">
-        <div className="flex min-w-72">
-          <Search />
-        </div>
-        <Button onClick={addUserDialog.onOpen}>
-          <PlusIcon />
+      <header className="mb-4 flex flex-col gap-4">
+        <div className="flex justify-between gap-4">
+          <div className="flex min-w-72">
+            <Input
+              value={userHook.inputValue}
+              onChange={(e) => userHook.onInputChange(e.target.value)}
+              placeholder={"Busca por nome ou email"}
+            />
+          </div>
+          <Button onClick={addUserDialog.onOpen}>
+            <PlusIcon />
 
-          {dialogActionTitle}
-        </Button>
+            {dialogActionTitle}
+          </Button>
+        </div>
+
+        <TablePagination
+          currentPage={userHook.curentPage}
+          onPageChange={userHook.setCurrentPage}
+          totalPages={users?.pagination?.total ?? 0}
+        />
       </header>
 
-      <DataTable columns={columns} data={fakerUser} />
+      <DataTable columns={columns} data={users?.data ?? []} />
 
       <Dialog open={addUserDialog.isOpen} onOpenChange={onCloseAddDialog}>
         <DialogContent className="sm:max-w-[425px]">
@@ -225,15 +342,40 @@ export function Users() {
               <div className="grid gap-4 py-4">
                 <FormField
                   control={form.control}
-                  name="name"
+                  name="firstName"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel htmlFor={field.name}>Nome</FormLabel>
                       <FormControl>
                         <Input
-                          id={field.name}
-                          {...field}
+                          defaultValue={field.value}
+                          ref={field.ref}
+                          name={field.name}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          disabled={field.disabled}
                           placeholder="Digite o nome"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor={field.name}>Sobrenome</FormLabel>
+                      <FormControl>
+                        <Input
+                          defaultValue={field.value}
+                          ref={field.ref}
+                          name={field.name}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          disabled={field.disabled}
+                          placeholder="Digite o sobrenome"
                         />
                       </FormControl>
                       <FormMessage />
@@ -248,8 +390,13 @@ export function Users() {
                       <FormLabel htmlFor={field.name}>Email</FormLabel>
                       <FormControl>
                         <Input
-                          id={field.name}
-                          {...field}
+                          defaultValue={field.value}
+                          ref={field.ref}
+                          name={field.name}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          disabled={field.disabled}
+                          type="email"
                           placeholder="Digite o email"
                         />
                       </FormControl>
@@ -257,6 +404,30 @@ export function Users() {
                     </FormItem>
                   )}
                 />
+                {!selectedUser && (
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor={field.name}>Senha</FormLabel>
+                        <FormControl>
+                          <Input
+                            defaultValue={field.value}
+                            ref={field.ref}
+                            name={field.name}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            disabled={field.disabled}
+                            type="password"
+                            placeholder="Digite uma senha"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
                 <FormField
                   control={form.control}
                   name="phone"
@@ -265,9 +436,15 @@ export function Users() {
                       <FormLabel htmlFor={field.name}>Telefone</FormLabel>
                       <FormControl>
                         <Input
-                          id={field.name}
-                          {...field}
-                          placeholder="Digite o telefone"
+                          defaultValue={field.value}
+                          ref={field.ref}
+                          name={field.name}
+                          onChange={field.onChange}
+                          onBlur={field.onBlur}
+                          disabled={field.disabled}
+                          type="tel"
+                          maxLength={11}
+                          placeholder="Digite o telefone com DDD"
                         />
                       </FormControl>
                       <FormMessage />
@@ -284,15 +461,16 @@ export function Users() {
                       </FormLabel>
                       <FormControl>
                         <Select
+                          name={field.name}
                           id={field.name}
-                          {...field}
                           isSearchable={false}
                           placeholder="Selecione uma permissão"
-                          options={[
-                            { label: "Administrador", value: "admin" },
-                            { label: "Editor", value: "editor" },
-                            { label: "Usuário", value: "user" },
-                          ]}
+                          options={roleOptions}
+                          onBlur={field.onBlur}
+                          onChange={field.onChange}
+                          defaultValue={field.value}
+                          isDisabled={field.disabled}
+                          ref={field.ref}
                         />
                       </FormControl>
                       <FormMessage />
@@ -306,10 +484,17 @@ export function Users() {
                   variant={"secondary"}
                   type="button"
                   onClick={onCloseAddDialog}
+                  disabled={postUsers.isPending || putUsers.isPending}
                 >
                   Cancelar
                 </Button>
-                <Button type="submit">Salvar</Button>
+                <Button
+                  disabled={postUsers.isPending || putUsers.isPending}
+                  isLoading={postUsers.isPending || putUsers.isPending}
+                  type="submit"
+                >
+                  Salvar
+                </Button>
               </DialogFooter>
             </form>
           </Form>
@@ -321,7 +506,8 @@ export function Users() {
           isOpen={deleteUserDialog.isOpen}
           onClose={onDeleteAlertClose}
           onCancel={onDeleteAlertClose}
-          onConfirm={onDeleteAlertClose}
+          onConfirm={onDeleteUser}
+          isLoading={deleteUsers.isPending}
         />
       ) : null}
     </>
