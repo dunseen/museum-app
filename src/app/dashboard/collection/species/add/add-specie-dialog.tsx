@@ -36,7 +36,6 @@ type AddSpecieDialogProps = {
   dialogActionTitle: string;
   data?: Nullable<GetSpecieApiResponse>;
   isReadOnly?: boolean;
-  showDescription?: boolean;
 };
 
 const stringSchema = z.string({
@@ -101,7 +100,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
   isOpen,
   onClose,
   data,
-  showDescription,
+  isReadOnly,
 }) => {
   const postSpeciesMutation = usePostSpecies();
   const putSpeciesMutation = usePutSpecies();
@@ -247,7 +246,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
       <DialogContent className="h-screen max-w-[1200px] overflow-auto lg:h-fit lg:min-w-[500px]">
         <DialogHeader>
           <DialogTitle>{dialogActionTitle} Espécie</DialogTitle>
-          {showDescription !== false && (
+          {!isReadOnly && (
             <DialogDescription>
               Preencha os campos abaixo para {dialogActionTitle.toLowerCase()}{" "}
               uma espécie.
@@ -259,10 +258,10 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
             <div className="flex flex-col gap-4">
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 <div className="flex flex-col gap-4">
-                  <GeneralInfoForm form={form} />
-                  <CharacteristicInfoForm form={form} />
+                  <GeneralInfoForm isReadOnly={isReadOnly} form={form} />
+                  <CharacteristicInfoForm isReadOnly={isReadOnly} form={form} />
                 </div>
-                <LocationInfoForm form={form} />
+                <LocationInfoForm isReadOnly={isReadOnly} form={form} />
               </div>
               <FormField
                 control={form.control}
@@ -271,18 +270,12 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                   <FormItem className="max-w-[750px] overflow-x-auto">
                     <FormLabel>Imagens (*)</FormLabel>
                     <FormControl>
-                      <Controller
-                        name={field.name}
-                        control={form.control}
-                        defaultValue={[]}
-                        render={({ field }) => (
-                          <ImageManager
-                            existingImages={field.value}
-                            onImagesChange={(newImages) =>
-                              field.onChange(newImages)
-                            }
-                          />
-                        )}
+                      <ImageManager
+                        existingImages={field.value}
+                        isReadOnly={isReadOnly}
+                        onImagesChange={(newImages) =>
+                          field.onChange(newImages)
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -290,23 +283,26 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                 )}
               />
             </div>
-            <DialogFooter className="gap-2 pt-8">
-              <Button
-                disabled={postSpeciesMutation.isPending}
-                variant={"secondary"}
-                type="button"
-                onClick={onCloseAddDialog}
-              >
-                Cancelar
-              </Button>
-              <Button
-                type="submit"
-                disabled={postSpeciesMutation.isPending}
-                isLoading={postSpeciesMutation.isPending}
-              >
-                Salvar
-              </Button>
-            </DialogFooter>
+
+            {!isReadOnly && (
+              <DialogFooter className="gap-2 pt-8">
+                <Button
+                  disabled={postSpeciesMutation.isPending}
+                  variant={"secondary"}
+                  type="button"
+                  onClick={onCloseAddDialog}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={postSpeciesMutation.isPending}
+                  isLoading={postSpeciesMutation.isPending}
+                >
+                  Salvar
+                </Button>
+              </DialogFooter>
+            )}
           </form>
         </Form>
       </DialogContent>

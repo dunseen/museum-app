@@ -18,9 +18,14 @@ import {
 type DatePickerProps = {
   value: Date | undefined;
   onChange: (date: Date | undefined) => void;
+  isDisabled?: boolean;
 };
 
-export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange }) => {
+export const DatePicker: React.FC<DatePickerProps> = ({
+  value,
+  onChange,
+  isDisabled,
+}) => {
   function formatDate(date: Date) {
     return format(date, "dd LLL, y", {
       locale: ptBR,
@@ -29,7 +34,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange }) => {
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild disabled={isDisabled}>
         <Button
           variant={"outline"}
           className={cn(

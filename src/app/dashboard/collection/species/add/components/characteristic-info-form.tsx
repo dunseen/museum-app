@@ -15,9 +15,11 @@ import { AsyncSelect } from "~/components/ui/async-select";
 
 type CharacteristicInfoFormProps = {
   form: ReturnType<typeof useForm<SpecieFormType>>;
+  isReadOnly?: boolean;
 };
 export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
   form,
+  isReadOnly,
 }) => {
   const characteristicsHook = useDebouncedInput();
 
@@ -67,6 +69,7 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
                     isLoading={taxonomyQuery.isLoading}
                     options={taxonOptions}
                     defaultValue={field.value}
+                    isDisabled={isReadOnly}
                     placeholder="Pesquisar taxonomia"
                   />
                 )}
@@ -95,6 +98,7 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
                     isLoading={characteristicsQuery.isLoading}
                     options={characteristicOptions}
                     placeholder="Pesquisar características"
+                    isDisabled={isReadOnly}
                     isMulti
                   />
                 )}

@@ -13,8 +13,12 @@ import { type SpecieFormType } from "../add-specie-dialog";
 
 type GeneralInfoFormProps = {
   form: ReturnType<typeof useForm<SpecieFormType>>;
+  isReadOnly?: boolean;
 };
-export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({ form }) => {
+export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({
+  form,
+  isReadOnly,
+}) => {
   return (
     <div className="flex flex-col gap-2">
       <FormField
@@ -31,6 +35,7 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({ form }) => {
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 disabled={field.disabled}
+                readOnly={isReadOnly}
                 placeholder="Digite o nome cientifico"
               />
             </FormControl>
@@ -52,6 +57,7 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({ form }) => {
                 name={field.name}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
+                readOnly={isReadOnly}
                 disabled={field.disabled}
                 placeholder="Digite o nome popular"
               />
@@ -75,6 +81,7 @@ export const GeneralInfoForm: React.FC<GeneralInfoFormProps> = ({ form }) => {
                 onChange={field.onChange}
                 onBlur={field.onBlur}
                 disabled={field.disabled}
+                readOnly={isReadOnly}
                 placeholder="Informe uma breve descrição da espécie"
               />
             </FormControl>
