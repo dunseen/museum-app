@@ -1,18 +1,17 @@
 type StateTypeApiResponse = {
-    code: string;
-      id: number;
-}
+  code: string;
+  id: number;
+};
 
 type CityTypeApiResponse = {
-    id: number;
-    name: string;
-}
+  id: number;
+  name: string;
+};
 
 export type LocalTypeApiResponse = {
-    lat: number;
-    long: number;
-    address: string;
-    state: StateTypeApiResponse;
-    city: CityTypeApiResponse
+  lat: string;
+  long: string;
+  address: string;
+  state: StateTypeApiResponse;
+  city: CityTypeApiResponse;
 };
-  

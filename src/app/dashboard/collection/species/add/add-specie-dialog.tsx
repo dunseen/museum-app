@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Dialog,
@@ -24,7 +24,7 @@ import ImageManager from "~/app/dashboard/shared/components/image-manager";
 import { GeneralInfoForm } from "./components/general-info-form";
 import { Button } from "~/components/ui/button";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
-import { usePostSpecies } from "../api";
+import { usePostSpecies, usePutSpecies } from "../api";
 import { toast } from "sonner";
 import { appendFiles } from "~/utils/files";
 import { LocationInfoForm } from "./components/location-info-form";
@@ -59,6 +59,7 @@ const imageSchema = z.object(
     id: z.string(),
     url: z.string(),
     removed: z.boolean().optional(),
+    isNew: z.boolean().optional(),
   },
   {
     required_error: "Campo obrigatório",
@@ -66,12 +67,11 @@ const imageSchema = z.object(
 );
 
 const formSpecieSchema = z.object({
-  commonName: z.string().optional(),
+  commonName: z.string().optional().nullable(),
   collectedAt: z.date({
     required_error: "Campo obrigatório",
   }),
   location: z.object({
-    // validate format latitude
     lat: z
       .string({ required_error: "Campo obrigatório" })
       .refine((val) => !isNaN(parseFloat(val)), {
@@ -88,8 +88,10 @@ const formSpecieSchema = z.object({
   }),
   scientificName: stringSchema,
   description: stringSchema,
-  images: z.array(imageSchema).nonempty("Campo obrigatório"),
-  taxonomyId: z.array(selectSchema).nonempty("Campo obrigatório"),
+  images: z.array(imageSchema, {
+    required_error: "Campo obrigatório",
+  }),
+  taxonomy: selectSchema,
   characteristics: z.array(selectSchema).optional(),
 });
 
@@ -102,25 +104,10 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
   showDescription,
 }) => {
   const postSpeciesMutation = usePostSpecies();
+  const putSpeciesMutation = usePutSpecies();
 
   const form = useForm<SpecieFormType>({
     resolver: zodResolver(formSpecieSchema),
-    defaultValues: {
-      commonName: data?.commonName,
-      scientificName: data?.scientificName,
-      collectedAt: data?.collectedAt ?? undefined,
-      description: data?.description ?? undefined,
-      images:
-        data?.files?.map((file) => ({
-          id: file.id,
-          url: file.url,
-        })) ?? [],
-      characteristics: data?.characteristics?.map((c) => ({
-        value: String(c.id),
-        label: c.name,
-      })),
-      taxonomyId: [],
-    },
   });
 
   async function onSubmit(values: SpecieFormType) {
@@ -144,10 +131,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
       formData.append("collectedAt", values.collectedAt.toISOString());
 
       formData.append("scientificName", values.scientificName);
-      formData.append(
-        "taxonIds",
-        values.taxonomyId.map((t) => t.value).join(","),
-      );
+      formData.append("taxonIds", values.taxonomy.value);
       formData.append("description", values.description);
 
       if (values.characteristics?.length) {
@@ -157,11 +141,36 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
         );
       }
 
-      await appendFiles(
-        formData,
-        "file",
-        values.images.map((f) => f.url),
-      );
+      if (values.images.length > 0) {
+        const removedFiles = values.images
+          .filter((f) => f.removed && !f.isNew)
+          .map((f) => f.id);
+
+        if (removedFiles.length > 0) {
+          formData.append("filesToDelete", removedFiles.join(","));
+        }
+
+        const newFiles = values.images.filter((f) => f.isNew);
+
+        if (newFiles.length > 0) {
+          await appendFiles(
+            formData,
+            "file",
+            newFiles.map((f) => f.url),
+          );
+        }
+      }
+
+      if (data) {
+        await putSpeciesMutation.mutateAsync({
+          id: data.id,
+          formData,
+        });
+
+        toast.warning("Espécie atualizada e enviada para aprovação");
+        onCloseAddDialog();
+        return;
+      }
 
       await postSpeciesMutation.mutateAsync(formData);
 
@@ -169,18 +178,73 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
       onCloseAddDialog();
     } catch (error) {
       console.error(error);
-      toast.error("Erro ao adicionar espécie");
+      toast.error(`Erro ao ${data ? "editar" : "adicionar"} espécie`);
     }
   }
 
   function onCloseAddDialog() {
+    form.resetField("commonName");
+    form.resetField("scientificName");
+    form.resetField("collectedAt");
+    form.resetField("description");
+    form.resetField("images");
+    form.resetField("characteristics");
+    form.resetField("taxonomy");
+    form.resetField("location");
     onClose();
-    form.reset();
   }
+
+  useEffect(() => {
+    if (data) {
+      form.setValue("commonName", data.commonName);
+      form.setValue("scientificName", data.scientificName);
+      form.setValue("collectedAt", new Date(data.collectedAt));
+      form.setValue("description", data.description ?? "");
+
+      form.setValue(
+        "characteristics",
+        data.characteristics?.map((c) => ({
+          value: String(c.id),
+          label: c.name,
+        })) ?? [],
+      );
+
+      if (data.taxons?.length) {
+        form.setValue("taxonomy", {
+          label: data?.taxons?.[0]?.name ?? "",
+          value: String(data?.taxons?.[0]?.id ?? ""),
+        });
+      }
+
+      form.setValue("location", {
+        address: data.location.address,
+        lat: data.location.lat,
+        long: data.location.long,
+        state: {
+          label: data.location.state.code,
+          value: String(data.location.state.id),
+        },
+        city: {
+          label: data.location.city.name,
+          value: String(data.location.city.id),
+        },
+      });
+
+      form.setValue(
+        "images",
+        data.files.map((file) => ({
+          id: file.id,
+          url: file.url,
+          removed: false,
+          isNew: false,
+        })),
+      );
+    }
+  }, [data, form]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onCloseAddDialog}>
-      <DialogContent className="h-screen max-w-full overflow-auto lg:min-w-[500px]">
+      <DialogContent className="h-screen max-w-[1200px] overflow-auto lg:h-fit lg:min-w-[500px]">
         <DialogHeader>
           <DialogTitle>{dialogActionTitle} Espécie</DialogTitle>
           {showDescription !== false && (
@@ -210,7 +274,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                       <Controller
                         name={field.name}
                         control={form.control}
-                        // defaultValue={[]}
+                        defaultValue={[]}
                         render={({ field }) => (
                           <ImageManager
                             existingImages={field.value}

@@ -3,8 +3,9 @@ import { type GetCharacteristicApiResponse } from "./characteristic.types";
 import { type GetHierarchyApiResponse } from "./hierarchy";
 
 export interface GetTaxonApiResponse {
+  id: number;
   name: string;
-  hierarchy: string;
+  hierarchy: GetHierarchyApiResponse;
 }
 
 type Parent = {

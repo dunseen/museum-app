@@ -51,7 +51,7 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
     <div className="flex flex-1 flex-col gap-2">
       <FormField
         control={form.control}
-        name={"taxonomyId"}
+        name={"taxonomy"}
         render={({ field }) => (
           <FormItem>
             <FormLabel>Taxonomia (*)</FormLabel>
@@ -61,13 +61,13 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
                 control={form.control}
                 render={() => (
                   <AsyncSelect
-                    name="taxonomyId"
+                    name="taxonomy"
                     control={form.control}
                     onInputChange={taxonInput.onInputChange}
                     isLoading={taxonomyQuery.isLoading}
                     options={taxonOptions}
+                    defaultValue={field.value}
                     placeholder="Pesquisar taxonomia"
-                    isMulti
                   />
                 )}
               />
