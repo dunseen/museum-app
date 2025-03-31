@@ -14,9 +14,13 @@ import { DatePicker } from "~/components/ui/date-picker";
 
 type LocationInfoFormProps = {
   form: ReturnType<typeof useForm<SpecieFormType>>;
+  isReadOnly?: boolean;
 };
 
-export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({ form }) => {
+export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({
+  form,
+  isReadOnly,
+}) => {
   const stateWatch = form.watch("location.state");
 
   const { data: cityDataOptions, isLoading: cityLoading } = useGetCities({
@@ -58,7 +62,7 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({ form }) => {
                   onBlur={field.onBlur}
                   onChange={field.onChange}
                   defaultValue={field.value}
-                  isDisabled={field.disabled ?? stateLoading}
+                  isDisabled={field.disabled ?? (stateLoading || isReadOnly)}
                   loadingMessage={() => "Carregando..."}
                   isLoading={stateLoading}
                   ref={field.ref}
@@ -87,7 +91,7 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({ form }) => {
                   onBlur={field.onBlur}
                   onChange={field.onChange}
                   defaultValue={field.value}
-                  isDisabled={field.disabled ?? !stateWatch}
+                  isDisabled={field.disabled ?? (!stateWatch || isReadOnly)}
                   loadingMessage={() => "Carregando cidades..."}
                   ref={field.ref}
                 />
@@ -112,6 +116,7 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({ form }) => {
                   name={field.name}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
+                  readOnly={isReadOnly}
                   disabled={field.disabled}
                 />
               </FormControl>
@@ -135,6 +140,7 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({ form }) => {
                   placeholder="ex: -46.6333"
                   onChange={field.onChange}
                   onBlur={field.onBlur}
+                  readOnly={isReadOnly}
                   disabled={field.disabled}
                 />
               </FormControl>
@@ -156,6 +162,7 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({ form }) => {
                   ref={field.ref}
                   name={field.name}
                   onChange={field.onChange}
+                  readOnly={isReadOnly}
                   onBlur={field.onBlur}
                   disabled={field.disabled}
                 />
@@ -173,7 +180,11 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({ form }) => {
             <FormItem>
               <FormLabel>Data da Coleta (*)</FormLabel>
               <FormControl>
-                <DatePicker onChange={field.onChange} value={field.value} />
+                <DatePicker
+                  onChange={field.onChange}
+                  value={field.value}
+                  isDisabled={isReadOnly}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -16,11 +16,14 @@ export type ImageType = {
 interface ImageManagerProps {
   existingImages?: ImageType[];
   onImagesChange: (images: ImageType[]) => void;
+
+  isReadOnly?: boolean;
 }
 
 export default function ImageManager({
   existingImages = [],
   onImagesChange,
+  isReadOnly,
 }: ImageManagerProps) {
   const {
     fileInputRef,
@@ -35,16 +38,18 @@ export default function ImageManager({
 
   return (
     <div className="mx-auto">
-      <div className="flex items-center gap-2">
-        <Button
-          size={"icon"}
-          type="button"
-          onClick={handleAddImageClick}
-          title="Adicionar imagens"
-        >
-          <Plus />
-        </Button>
-      </div>
+      {!isReadOnly && (
+        <div className="flex items-center gap-2">
+          <Button
+            size={"icon"}
+            type="button"
+            onClick={handleAddImageClick}
+            title="Adicionar imagens"
+          >
+            <Plus />
+          </Button>
+        </div>
+      )}
       <div className="mb-4">
         <input
           type="file"
@@ -71,16 +76,19 @@ export default function ImageManager({
                     sizes="100%"
                   />
                 </div>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  type="button"
-                  className="absolute right-2 top-2 opacity-0 transition-opacity group-hover:opacity-100"
-                  onClick={() => handleRemoveImage(index)}
-                  aria-label={`Remover imagem ${index + 1}`}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+
+                {!isReadOnly && (
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    type="button"
+                    className="absolute right-2 top-2 opacity-0 transition-opacity group-hover:opacity-100"
+                    onClick={() => handleRemoveImage(index)}
+                    aria-label={`Remover imagem ${index + 1}`}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
               </CardContent>
             </Card>
           ))}

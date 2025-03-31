@@ -28,7 +28,7 @@ export default function System() {
   const lastPostsQuery = useGetLastPosts({
     limit: lastPostHook.pageLimit,
     page: lastPostHook.curentPage,
-    name: lastPostHook.inputValue,
+    name: lastPostHook.debouncedInput,
   });
 
   const postValidationMutation = usePostValidation();
@@ -203,10 +203,10 @@ export default function System() {
 
       <AddSpecieDialog
         dialogActionTitle={"Visualizar"}
-        showDescription={false}
         isOpen={addDialog.isOpen}
         onClose={onCloseAddDialog}
         data={viewSpecie}
+        isReadOnly
       />
     </>
   );

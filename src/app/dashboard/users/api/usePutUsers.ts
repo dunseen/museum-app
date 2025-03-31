@@ -7,9 +7,10 @@ export type PutTaxonsPayload = {
   id: string;
   firstName: string;
   lastName: string;
+  password?: string;
   email: string;
-  phone: string;
-  role: {
+  phone?: string;
+  role?: {
     id: number;
   };
 };
