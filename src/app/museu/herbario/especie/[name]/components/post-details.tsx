@@ -1,14 +1,16 @@
 "use client";
 
-import { ChevronLeft } from "lucide-react";
-import Image from "next/image";
+import { ChevronLeft, ImageIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { useGetPostDetails } from "../../../api";
-import defaultImage from "public/default-fallback-image.png";
 import LoadingErrorWrapper from "~/components/ui/loading-error-wrapper";
 import { Badge } from "~/components/ui/badge";
 import { ImageCarousel } from "./image-carousel";
+import { decimalToDMS } from "~/utils/lat-long";
+import { Button } from "~/components/ui/button";
+import { Dialog, DialogContent, DialogHeader } from "~/components/ui/dialog";
+import { type FileTypeApiResponse } from "../../../types/file.types";
 
 type PostDetailsProps = {
   name?: string;
@@ -19,6 +21,14 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
   const title = data?.specie?.commonName ?? data?.specie?.scientificName;
   const subtitle = data?.specie?.commonName ? data.specie.scientificName : "-";
   const taxons = data?.specie?.taxons;
+
+  const [selectedImages, setSelectedImages] = React.useState<
+    FileTypeApiResponse[]
+  >([]);
+
+  const handleImageClick = (files: FileTypeApiResponse[]) => {
+    setSelectedImages(files);
+  };
 
   return (
     <LoadingErrorWrapper error={isError} loading={isLoading}>
@@ -51,26 +61,45 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
                 </div>
               ))}
             </div>
-            <p className="mb-8">{data?.specie?.description}</p>
+            <ul className="mb-8">
+              <li>
+                <span className="font-semibold">Descrição: </span>{" "}
+                {data?.specie?.description}
+              </li>
+              <li>
+                <span className="font-semibold">Localização: </span>{" "}
+                {data?.specie?.location.address} -{" "}
+                {data?.specie.location.city.name} /{" "}
+                {data?.specie.location.state.code}
+              </li>
+              <li>
+                <span className="font-semibold">Coordenadas: </span>{" "}
+                {decimalToDMS(data?.specie.location.lat ?? "0", true)} /{" "}
+                {decimalToDMS(data?.specie.location.long ?? "0", false)}
+              </li>
+            </ul>
 
-            <h2 className="mb-4 text-2xl font-bold">Características:</h2>
+            <h2 className="mb-4 text-xl font-bold">Características:</h2>
 
             {data?.specie.characteristics?.map((c) => (
               <section key={c.id} className="mb-4 flex items-center gap-8">
                 <div>
-                  <h3 className="text-xl font-semibold capitalize">
+                  <h3 className="text-lg font-semibold capitalize">
                     {c.type.name}
                   </h3>
                   <p className="mb-1">{c.name}</p>
                 </div>
-                {/* TODO ADD DIALOG WITH CAROUSEL */}
-                <Image
-                  src={c?.files[0]?.url ?? defaultImage}
-                  alt={`${c.type.name}-${c.name}`}
-                  width={100}
-                  height={100}
-                  className="h-[100px] w-[100px] rounded-lg object-cover"
-                />
+
+                <Button
+                  variant="outline"
+                  className="self-end"
+                  size="icon"
+                  disabled={!c.files?.length}
+                  title={c.files?.length ? "Ver imagem" : "Sem imagem"}
+                  onClick={() => handleImageClick(c.files ?? [])}
+                >
+                  <ImageIcon />
+                </Button>
               </section>
             ))}
           </div>
@@ -86,6 +115,19 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
           </p>
         </div>
       </section>
+
+      {!!selectedImages.length ? (
+        <Dialog
+          open={!!selectedImages.length}
+          onOpenChange={() => setSelectedImages([])}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <ImageCarousel specieName="" files={selectedImages} />
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      ) : null}
     </LoadingErrorWrapper>
   );
 };
