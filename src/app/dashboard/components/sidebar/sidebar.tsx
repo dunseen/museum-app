@@ -64,7 +64,7 @@ const data = {
         {
           title: "Taxonomia",
           url: "/dashboard/collection/taxonomy",
-          description: "Gerencie as categorias de classificação",
+          description: "Gerencie as taxonomias do herbário",
         },
         {
           title: "Espécies",

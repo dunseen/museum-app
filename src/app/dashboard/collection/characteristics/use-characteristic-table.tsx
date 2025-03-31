@@ -44,16 +44,9 @@ export function useCharacteristicTable() {
       },
       {
         header: "Característica",
-        accessorKey: "type",
-      },
-      {
-        header: "Descrição",
-        accessorKey: "description",
-        cell: ({ row }) => (
-          <p title={row.original.description} className="max-w-96 truncate">
-            {row.original.description}
-          </p>
-        ),
+        cell: ({ row }) => {
+          return <p>{row.original.type.name}</p>;
+        },
       },
       {
         header: "Imagens",

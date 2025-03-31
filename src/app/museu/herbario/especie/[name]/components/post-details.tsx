@@ -58,16 +58,15 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
             {data?.specie.characteristics?.map((c) => (
               <section key={c.id} className="mb-4 flex items-center gap-8">
                 <div>
-                  <h3 className="text-xl font-semibold capitalize">{c.type}</h3>
+                  <h3 className="text-xl font-semibold capitalize">
+                    {c.type.name}
+                  </h3>
                   <p className="mb-1">{c.name}</p>
-                  <p className="text-sm italic text-gray-400">
-                    {c.description}
-                  </p>
                 </div>
                 {/* TODO ADD DIALOG WITH CAROUSEL */}
                 <Image
                   src={c?.files[0]?.url ?? defaultImage}
-                  alt={`${c.type}-${c.name}-${c.description}-`}
+                  alt={`${c.type.name}-${c.name}`}
                   width={100}
                   height={100}
                   className="h-[100px] w-[100px] rounded-lg object-cover"
