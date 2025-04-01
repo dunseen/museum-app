@@ -8,11 +8,11 @@ export default function Header() {
       label: "Início",
     },
     {
-      href: "#",
+      href: "/museu/herbario/about",
       label: "Sobre",
     },
     {
-      href: "#",
+      href: "/museu/herbario/contacts",
       label: "Contato",
     },
     {
