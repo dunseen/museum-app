@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { type GetCharacteristicApiResponse } from "~/app/museu/herbario/types/characteristic.types";
+import { Can } from "../../context/ability-context";
 
 export function useCharacteristicTable() {
   const [selectedCharacteristic, setSelectedCharacteristic] =
@@ -91,12 +92,14 @@ export function useCharacteristicTable() {
                 >
                   Editar
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => setSelectedCharacteristicId(row.original.id)}
-                >
-                  Deletar
-                </DropdownMenuItem>
+                <Can I="delete" a="Collection">
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => setSelectedCharacteristicId(row.original.id)}
+                  >
+                    Deletar
+                  </DropdownMenuItem>
+                </Can>
               </DropdownMenuContent>
             </DropdownMenu>
           );

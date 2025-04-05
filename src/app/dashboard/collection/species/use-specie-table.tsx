@@ -15,6 +15,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
 import { decimalToDMS } from "~/utils/lat-long";
+import { Can } from "../../context/ability-context";
 
 export function useSpecieTable() {
   const [selectedSpecie, setSelectedSpecie] =
@@ -166,12 +167,14 @@ export function useSpecieTable() {
                 >
                   Editar
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => setSelectedSpecieId(row.original.id)}
-                >
-                  Deletar
-                </DropdownMenuItem>
+                <Can I="delete" a="Collection">
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => setSelectedSpecieId(row.original.id)}
+                  >
+                    Deletar
+                  </DropdownMenuItem>
+                </Can>
               </DropdownMenuContent>
             </DropdownMenu>
           );

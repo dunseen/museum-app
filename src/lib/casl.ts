@@ -25,15 +25,19 @@ export function defineAbilityFor(user?: Session["user"]) {
 
     // Default permissions
     can("view", "Home");
-    can("manage", "Collection");
+    can("view", "Collection");
+    can("edit", "Collection");
+    can("create", "Collection");
 
     // Role-based permissions
     if (isAdmin) {
       can("manage", "User");
+      can("delete", "Collection");
     }
 
     if (isEditor || isAdmin) {
       can("manage", "System");
+      can("delete", "Collection");
     }
   });
 

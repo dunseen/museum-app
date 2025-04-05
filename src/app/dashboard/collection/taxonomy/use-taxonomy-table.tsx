@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { type GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
+import { Can } from "../../context/ability-context";
 
 export function useTaxonomyTable() {
   const [selectedTaxonomyId, setSelectedTaxonomyId] = useState<number | null>(
@@ -61,12 +62,14 @@ export function useTaxonomyTable() {
                 >
                   Editar
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => setSelectedTaxonomyId(row.original.id)}
-                >
-                  Deletar
-                </DropdownMenuItem>
+                <Can I="delete" a="Collection">
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => setSelectedTaxonomyId(row.original.id)}
+                  >
+                    Deletar
+                  </DropdownMenuItem>
+                </Can>
               </DropdownMenuContent>
             </DropdownMenu>
           );
