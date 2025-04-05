@@ -1,30 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import { NavList } from "./nav-list";
 
-export default function Header() {
-  const links = [
-    {
-      href: "/",
-      label: "Início",
-    },
-    {
-      href: "/museu/herbario/about",
-      label: "Sobre",
-    },
-    {
-      href: "/museu/herbario/contacts",
-      label: "Contato",
-    },
-    {
-      href: "/login",
-      label: "Gerenciar",
-    },
-  ];
-
+export default async function Header() {
   return (
     <header className="bg-[#006633] p-4 text-white">
       <div className="container mx-auto flex flex-wrap items-center justify-between gap-6">
-        <Link href="/" className="flex items-center space-x-2">
+        <Link href="/museu/herbario" className="flex items-center space-x-2">
           <Image
             src="/ufra-logo.png"
             alt="UFRA Logo"
@@ -39,15 +21,7 @@ export default function Header() {
             </span>
           </div>
         </Link>
-        <nav>
-          <ul className="flex space-x-4">
-            {links.map((link) => (
-              <li key={link.label}>
-                <Link href={link.href}>{link.label}</Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <NavList />
       </div>
     </header>
   );

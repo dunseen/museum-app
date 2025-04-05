@@ -18,7 +18,7 @@ export const ImageCarousel: React.FC<Readonly<ImageCarouselProps>> = ({
   specieName,
 }) => {
   return (
-    <Carousel>
+    <Carousel className="relative">
       <CarouselContent>
         {files?.map((file, index) => (
           <CarouselItem
@@ -40,8 +40,11 @@ export const ImageCarousel: React.FC<Readonly<ImageCarouselProps>> = ({
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
+
+      <div className="hidden md:block">
+        <CarouselPrevious />
+        <CarouselNext />
+      </div>
     </Carousel>
   );
 };

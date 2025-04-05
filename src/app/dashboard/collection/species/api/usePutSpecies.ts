@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "~/server/api";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
 import { GET_SPECIES_QUERY_KEY } from "./useGetSpecies";
+import { GET_LAST_POSTS_QUERY_KEY } from "~/app/dashboard/home/api";
 
 type PutSpecieApiPayload = {
   id: number;
@@ -27,10 +28,16 @@ export function usePutSpecies() {
   return useMutation({
     mutationFn: putSpecies,
     async onSuccess() {
-      await queryClient.invalidateQueries({
-        queryKey: [GET_SPECIES_QUERY_KEY],
-        exact: false,
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: [GET_SPECIES_QUERY_KEY],
+          exact: false,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [GET_LAST_POSTS_QUERY_KEY],
+          exact: false,
+        }),
+      ]);
     },
   });
 }

@@ -9,11 +9,21 @@ import { Badge } from "~/components/ui/badge";
 import { ImageCarousel } from "./image-carousel";
 import { decimalToDMS } from "~/utils/lat-long";
 import { Button } from "~/components/ui/button";
-import { Dialog, DialogContent, DialogHeader } from "~/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
 import { type FileTypeApiResponse } from "../../../types/file.types";
 
 type PostDetailsProps = {
   name?: string;
+};
+
+type SelectedFilesProps = {
+  files: FileTypeApiResponse[];
+  name: string;
 };
 export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
   const { data, isLoading, isError } = useGetPostDetails(name ?? "");
@@ -22,12 +32,14 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
   const subtitle = data?.specie?.commonName ? data.specie.scientificName : "-";
   const taxons = data?.specie?.taxons;
 
-  const [selectedImages, setSelectedImages] = React.useState<
-    FileTypeApiResponse[]
-  >([]);
+  const [selectedImages, setSelectedImages] =
+    React.useState<SelectedFilesProps | null>(null);
 
-  const handleImageClick = (files: FileTypeApiResponse[]) => {
-    setSelectedImages(files);
+  const handleImageClick = (name: string, files: FileTypeApiResponse[]) => {
+    setSelectedImages({
+      files,
+      name,
+    });
   };
 
   return (
@@ -41,7 +53,7 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
           Voltar para o início
         </Link>
         <div className="grid gap-8 md:grid-cols-2">
-          <div className="p-8">
+          <div className="px:0 relative max-w-[600px] lg:px-8">
             <ImageCarousel
               files={data?.specie.files ?? []}
               specieName={data?.specie.scientificName ?? ""}
@@ -96,7 +108,7 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
                   size="icon"
                   disabled={!c.files?.length}
                   title={c.files?.length ? "Ver imagem" : "Sem imagem"}
-                  onClick={() => handleImageClick(c.files ?? [])}
+                  onClick={() => handleImageClick(c.name, c.files ?? [])}
                 >
                   <ImageIcon />
                 </Button>
@@ -116,14 +128,20 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
         </div>
       </section>
 
-      {!!selectedImages.length ? (
+      {!!selectedImages?.files?.length ? (
         <Dialog
-          open={!!selectedImages.length}
-          onOpenChange={() => setSelectedImages([])}
+          open={!!selectedImages?.files?.length}
+          onOpenChange={() => setSelectedImages(null)}
         >
           <DialogContent>
+            <DialogTitle className="capitalize">
+              {selectedImages.name}
+            </DialogTitle>
             <DialogHeader>
-              <ImageCarousel specieName="" files={selectedImages} />
+              <ImageCarousel
+                specieName={selectedImages.name}
+                files={selectedImages?.files ?? []}
+              />
             </DialogHeader>
           </DialogContent>
         </Dialog>

@@ -45,30 +45,31 @@ export default function PlantSearch() {
 
   return (
     <div className="mb-8">
-      <div className="mb-4 flex gap-2">
+      <div className="mb-4 flex flex-wrap gap-2 md:flex-nowrap">
         <Input
           placeholder="Pesquisar por nome cientifico ou popular..."
-          className="flex-grow"
           onChange={(e) =>
             handleSearch({
               name: e.target.value,
             })
           }
         />
-        <Button
-          variant="outline"
-          onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-        >
-          {isFiltersOpen ? (
-            <FilterXIcon className="mr-2 h-4 w-4" />
-          ) : (
-            <FilterIcon className="mr-2 h-4 w-4" />
-          )}
-          Filtros
-        </Button>
-        <Button>
-          <Search className="mr-2 h-4 w-4" /> Buscar
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button>
+            <Search className="mr-2 h-4 w-4" /> Buscar
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+          >
+            {isFiltersOpen ? (
+              <FilterXIcon className="mr-2 h-4 w-4" />
+            ) : (
+              <FilterIcon className="mr-2 h-4 w-4" />
+            )}
+            Filtros
+          </Button>
+        </div>
       </div>
 
       <FiltersBadge search={search} handleClearAllFilters={onClearFilters} />

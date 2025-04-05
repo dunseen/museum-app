@@ -28,12 +28,6 @@ export const getPostDetailsQueryConfig = (
     queryKey: [GET_POST_DETAILS_KEY, name],
     queryFn: () => fetchPostDetails(name),
     enabled: !!name,
-    select(data) {
-      return {
-        ...data,
-        updatedAt: formatDate(data.updatedAt),
-      };
-    },
   };
 };
 

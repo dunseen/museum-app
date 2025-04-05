@@ -1,29 +1,42 @@
 import axios from "axios";
 import { env } from "~/env";
+import { getSession } from "next-auth/react";
+import { auth } from "~/server/auth";
+import { isTokenExpired } from "~/utils/token";
+import { type Session } from "next-auth";
 
+let cachedSession: Session | null = null;
+
+const getAccessToken = async () => {
+  if (cachedSession && !isTokenExpired(cachedSession.user.tokenExpires)) {
+    return cachedSession.user.token;
+  }
+
+  if (typeof window === "undefined") {
+    const session = await auth();
+
+    if (session) {
+      cachedSession = session;
+    }
+  } else {
+    const session = await getSession();
+
+    if (session) {
+      cachedSession = session;
+    }
+  }
+
+  return cachedSession?.user.token;
+};
 const api = axios.create({
   baseURL: env.NEXT_PUBLIC_API_URL,
 });
 
 api.interceptors.request.use(async (config) => {
-  if (typeof window === "undefined") {
-    const { auth } = await import("./auth");
+  const token = await getAccessToken();
 
-    const session = await auth();
-
-    if (session) {
-      config.headers.Authorization = `Bearer ${session.user.token}`;
-    }
-
-    return config;
-  }
-
-  const { getSession } = await import("next-auth/react");
-
-  const session = await getSession();
-
-  if (session) {
-    config.headers.Authorization = `Bearer ${session.user.token}`;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
 
   return config;

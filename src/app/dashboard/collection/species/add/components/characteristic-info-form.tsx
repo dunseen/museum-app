@@ -97,6 +97,7 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
                     onInputChange={characteristicsHook.onInputChange}
                     isLoading={characteristicsQuery.isLoading}
                     options={characteristicOptions}
+                    defaultValue={field.value}
                     placeholder="Pesquisar características"
                     isDisabled={isReadOnly}
                     isMulti

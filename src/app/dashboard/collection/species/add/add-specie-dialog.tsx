@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   Dialog,
   DialogContent,
@@ -287,7 +287,10 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
             {!isReadOnly && (
               <DialogFooter className="gap-2 pt-8">
                 <Button
-                  disabled={postSpeciesMutation.isPending}
+                  disabled={
+                    postSpeciesMutation.isPending ||
+                    putSpeciesMutation.isPending
+                  }
                   variant={"secondary"}
                   type="button"
                   onClick={onCloseAddDialog}
@@ -296,8 +299,14 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                 </Button>
                 <Button
                   type="submit"
-                  disabled={postSpeciesMutation.isPending}
-                  isLoading={postSpeciesMutation.isPending}
+                  disabled={
+                    postSpeciesMutation.isPending ||
+                    putSpeciesMutation.isPending
+                  }
+                  isLoading={
+                    postSpeciesMutation.isPending ||
+                    putSpeciesMutation.isPending
+                  }
                 >
                   Salvar
                 </Button>
