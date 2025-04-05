@@ -19,7 +19,7 @@ export default async function DashboardLayout({
 
   return (
     <DashboardProvider session={session}>
-      <DashboardSidebar>{children}</DashboardSidebar>;
+      <DashboardSidebar>{children}</DashboardSidebar>
     </DashboardProvider>
   );
 }

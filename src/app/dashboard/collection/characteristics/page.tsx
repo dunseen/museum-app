@@ -11,7 +11,7 @@ export default async function Page() {
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <Characteristics />;
+      <Characteristics />
     </HydrationBoundary>
   );
 }

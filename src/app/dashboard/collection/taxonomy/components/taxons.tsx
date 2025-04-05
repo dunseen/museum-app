@@ -53,7 +53,7 @@ export default function Taxons() {
   return (
     <>
       <header className="mb-4 flex flex-col gap-4">
-        <div className="flex justify-between gap-4">
+        <div className="flex flex-wrap justify-between gap-4">
           <div className="flex min-w-72">
             <Input
               value={inputValue}

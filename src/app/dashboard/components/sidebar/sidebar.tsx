@@ -54,7 +54,7 @@ const data = {
       icon: BookOpen,
       defaultUrl: "#",
       entity: "Collection",
-      permissions: [Action.Manage],
+      permissions: [Action.View],
       items: [
         {
           title: "Parâmetros",
