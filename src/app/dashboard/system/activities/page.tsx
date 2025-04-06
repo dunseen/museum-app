@@ -22,7 +22,7 @@ export default async function Page() {
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <System />;
+      <System />
     </HydrationBoundary>
   );
 }

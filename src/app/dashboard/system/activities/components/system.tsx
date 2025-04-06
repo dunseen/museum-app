@@ -16,6 +16,7 @@ import { useGetLastPosts, usePostValidation } from "../../api";
 import { type GetPostDetailsApiResponse } from "~/app/museu/herbario/types/post.types";
 import { toast } from "sonner";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
+import { useGeneratePdf } from "../../hooks/useExportPdf";
 
 const STATUS_PARSER = {
   pending: "Pendente",
@@ -36,6 +37,9 @@ export default function System() {
   const rejectDialog = useDisclosure();
   const approveDialog = useDisclosure();
   const addDialog = useDisclosure();
+
+  const { generatePDF } = useGeneratePdf();
+
   const [selectedActivity, setSelectedActivity] =
     useState<GetPostDetailsApiResponse | null>(null);
   const [viewSpecie, setViewSpecie] = useState<GetSpecieApiResponse | null>(
@@ -117,11 +121,13 @@ export default function System() {
           <ActivitiesTableActions
             onApprove={() => handleApprove(row.original)}
             onReject={() => handleReject(row.original)}
+            onGeneratePDF={() => generatePDF({ post: row.original })}
+            isPublished={row.original.status === "published"}
           />
         ),
       },
     ],
-    [handleApprove, handleReject, viewDataActivity],
+    [generatePDF, handleApprove, handleReject, viewDataActivity],
   );
 
   function onReject(reason: string) {

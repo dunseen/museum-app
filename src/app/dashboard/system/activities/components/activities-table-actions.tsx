@@ -13,10 +13,14 @@ import {
 type ActivitiesTableActionsProps = {
   onApprove: () => void;
   onReject: () => void;
+  onGeneratePDF: () => void;
+  isPublished?: boolean;
 };
 export function ActivitiesTableActions({
   onApprove,
   onReject,
+  onGeneratePDF,
+  isPublished,
 }: ActivitiesTableActionsProps) {
   return (
     <DropdownMenu>
@@ -27,10 +31,20 @@ export function ActivitiesTableActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={onApprove}>Aprovar</DropdownMenuItem>
+        {!isPublished && (
+          <>
+            <DropdownMenuItem onClick={onApprove}>Aprovar</DropdownMenuItem>
 
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={onReject}>Rejeitar</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={onReject}>Rejeitar</DropdownMenuItem>
+          </>
+        )}
+
+        {isPublished && (
+          <DropdownMenuItem onClick={onGeneratePDF}>
+            Gerar ficha
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
