@@ -33,8 +33,8 @@ const config = {
         hostname: "localhost",
       },
       {
-        protocol: "http",
-        hostname: "146.235.33.144",
+        protocol: "https",
+        hostname: "herbarium-storage-api.themodaboutique.store",
       },
     ],
   },
