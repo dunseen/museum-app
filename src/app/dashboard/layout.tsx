@@ -6,7 +6,7 @@ import { DashboardProvider } from "./providers/dashboard-provider";
 import { auth } from "~/server/auth";
 
 export const metadata: Metadata = {
-  title: "UFRA - SIGHERB",
+  title: "UFRA - SIGHFC",
   description: "Acesse o sistema de gerenciamento do herbário virtual da UFRA.",
 };
 

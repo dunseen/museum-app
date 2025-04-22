@@ -78,7 +78,7 @@ export default function Page() {
               <div className="flex items-center space-x-2">
                 <BookOpen className="h-6 w-6 text-green-600" />
                 <CardTitle className="text-2xl text-green-800">
-                  SIGHERB
+                  SIGHFC
                 </CardTitle>
               </div>
               <CardDescription className="text-green-700">
