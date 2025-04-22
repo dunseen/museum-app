@@ -181,10 +181,12 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
     <Dialog open={isOpen} onOpenChange={onCloseAddDialog}>
       <DialogContent className="max-w-[800px]">
         <DialogHeader>
-          <DialogTitle>{dialogActionTitle} Taxonomia</DialogTitle>
+          <DialogTitle>
+            {dialogActionTitle} Características Taxonômicas
+          </DialogTitle>
           <DialogDescription>
             Preencha os campos abaixo para {dialogActionTitle.toLowerCase()} uma
-            taxonomia.
+            característica taxonômica.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

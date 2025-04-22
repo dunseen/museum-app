@@ -8,7 +8,7 @@ import "~/styles/globals.css";
 const openSans = Open_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "UFRA - Herbário Virtual",
+  title: "UFRA - Herbário Virtual FC",
   description:
     "Explore a coleção de plantas da Universidade Federal Rural da Amazônia",
 };
