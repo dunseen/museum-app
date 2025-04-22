@@ -62,9 +62,9 @@ const data = {
           description: "Gerencie os parâmetros das espécies",
         },
         {
-          title: "Taxonomia",
+          title: "Características Taxonômicas",
           url: "/dashboard/collection/taxonomy",
-          description: "Gerencie as taxonomias do herbário",
+          description: "Gerencie as características taxonômicas do herbário",
         },
         {
           title: "Espécies",
