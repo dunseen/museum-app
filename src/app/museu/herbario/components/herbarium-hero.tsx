@@ -9,7 +9,8 @@ export default function HerbariumHero() {
           Herbário Virtual Felisberto Camargo
         </h1>
         <p className="text-md mb-8 md:text-xl">
-          Explore a coleção de plantas da Universidade Federal Rural da Amazônia
+          Explore a coleção de plantas do herbário virtual da universidade
+          federal rural da amazônia.
         </p>
       </div>
     </div>
