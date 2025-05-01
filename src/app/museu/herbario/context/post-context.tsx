@@ -31,8 +31,6 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
   });
   const [searchDebounced, setSearchDebounced] = useState<PostSearchParams>({});
 
-  console.log("search", search);
-
   const handleSearch = useCallback((search: PostSearchParams) => {
     setSearch((prev) => ({
       ...prev,
