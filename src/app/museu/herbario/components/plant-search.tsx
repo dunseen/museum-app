@@ -13,7 +13,7 @@ import {
 import { Checkbox } from "~/components/ui/checkbox";
 import { FilterIcon, FilterXIcon, Search } from "lucide-react";
 import { usePost } from "../context/post-context";
-import { useGetCharacteristicFilters } from "../api";
+import { useGetCharacteristicFilters, useGetHierarchies } from "../api";
 import { FiltersBadge } from "./filters-badge";
 
 export default function PlantSearch() {
@@ -27,6 +27,7 @@ export default function PlantSearch() {
   } = usePost();
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const { data } = useGetCharacteristicFilters();
+  const { data: hierarchies } = useGetHierarchies();
 
   const onCheckedChange = (id: number) => {
     const parsedId = String(id);
@@ -41,6 +42,31 @@ export default function PlantSearch() {
   const onClearFilters = () => {
     handleClearAllFilters();
     setAccordionValue("");
+  };
+
+  const handleSearchByTaxon = (id: number, field: string, value: string) => {
+    switch (field) {
+      case "família":
+        handleSearch({
+          familyName: value,
+          familyHierarchyId: value ? id : undefined,
+        });
+        break;
+      case "gênero":
+        handleSearch({
+          genusName: value,
+          genusHierarchyId: value ? id : undefined,
+        });
+        break;
+      case "ordem":
+        handleSearch({
+          orderName: value,
+          orderHierarchyId: value ? id : undefined,
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -86,30 +112,21 @@ export default function PlantSearch() {
             <AccordionTrigger>Taxonomia</AccordionTrigger>
             <AccordionContent>
               <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-                <div>
-                  <Label>Família</Label>
-                  <Input
-                    defaultValue={search?.family}
-                    placeholder="ex., Fabaceae"
-                    onChange={(e) =>
-                      handleSearch({
-                        family: e.target.value,
-                      })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label>Gênero</Label>
-                  <Input
-                    defaultValue={search?.genus}
-                    placeholder="ex., Acacia"
-                    onChange={(e) =>
-                      handleSearch({
-                        genus: e.target.value,
-                      })
-                    }
-                  />
-                </div>
+                {hierarchies?.map((hierarchy) => (
+                  <div key={hierarchy.id}>
+                    <Label className="capitalize">{hierarchy.name}</Label>
+                    <Input
+                      placeholder="ex., Fabaceae"
+                      onChange={(e) =>
+                        handleSearchByTaxon(
+                          hierarchy.id,
+                          hierarchy.name,
+                          e.target.value,
+                        )
+                      }
+                    />
+                  </div>
+                ))}
               </div>
             </AccordionContent>
           </AccordionItem>

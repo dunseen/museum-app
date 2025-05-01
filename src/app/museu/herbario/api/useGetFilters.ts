@@ -30,7 +30,7 @@ export const getCharacteristicFilters = (): UndefinedInitialDataOptions<
 > => {
   return {
     queryKey: [GET_CHARACTERISTIC_FILTERS_KEY],
-    queryFn: () => fetchFilters(),
+    queryFn: fetchFilters,
   };
 };
 

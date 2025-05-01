@@ -3,12 +3,17 @@ import HerbariumHero from "./components/herbarium-hero";
 import PlantGrid from "./components/plant-grid";
 import PlantSearch from "./components/plant-search";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { getPostQueryConfig } from "./api";
+import { getCharacteristicFilters, getPostQueryConfig } from "./api";
 import { PostProvider } from "./context/post-context";
+import { getHierarchiesConfig } from "~/app/dashboard/collection/taxonomy/api";
 
 export default async function Page() {
   const client = getCachedQueryClient();
-  await client.prefetchInfiniteQuery(getPostQueryConfig());
+  await Promise.all([
+    client.prefetchInfiniteQuery(getPostQueryConfig()),
+    client.prefetchQuery(getHierarchiesConfig()),
+    client.prefetchQuery(getCharacteristicFilters()),
+  ]);
 
   const dehydratedState = dehydrate(client);
 
