@@ -8,13 +8,8 @@ import React, {
   useCallback,
 } from "react";
 import { useDebounce } from "react-use";
+import { type PostSearchParams } from "../api";
 
-export type PostSearchParams = {
-  name?: string;
-  characteristics?: string[];
-  family?: string;
-  genus?: string;
-};
 interface PostContextProps {
   search: PostSearchParams;
   handleSearch: (params: PostSearchParams) => void;
@@ -35,6 +30,8 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
     characteristics: [],
   });
   const [searchDebounced, setSearchDebounced] = useState<PostSearchParams>({});
+
+  console.log("search", search);
 
   const handleSearch = useCallback((search: PostSearchParams) => {
     setSearch((prev) => ({

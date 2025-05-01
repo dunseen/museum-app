@@ -23,22 +23,33 @@ export type Post = {
   };
 };
 
-export type PaginatedGetpostsApiResponse = WithPagination<Post>;
+export type PaginatedGetPostsApiResponse = WithPagination<Post>;
 
-export type GetPostParams = PaginationParams & {
+export type PostSearchParams = {
   name?: string;
   characteristics?: string[];
-  family?: string;
-  genus?: string;
+  orderHierarchyId?: number;
+  orderName?: string;
+  familyHierarchyId?: number;
+  familyName?: string;
+  genusHierarchyId?: number;
+  genusName?: string;
 };
+
+export type GetPostParams = PaginationParams & PostSearchParams;
 
 export const GET_POST_QUERY_KEY = "posts";
 
+function sanitizeParams(value: string | number | undefined) {
+  if (!value) return undefined;
+
+  return value;
+}
 export const getPostQueryConfig = (
   params?: GetPostParams,
   queryKey = GET_POST_QUERY_KEY,
 ): DefinedInitialDataInfiniteOptions<
-  PaginatedGetpostsApiResponse,
+  PaginatedGetPostsApiResponse,
   unknown,
   Post[],
   string[]
@@ -51,17 +62,21 @@ export const getPostQueryConfig = (
         params: {
           page: pageParam,
           limit: params?.limit ?? 10,
-          name: params?.name,
+          name: sanitizeParams(params?.name),
           characteristicIds: params?.characteristics?.length
             ? params?.characteristics.join(",")
             : undefined,
-          family: params?.family,
-          genus: params?.genus,
+          familyHierarchyId: sanitizeParams(params?.familyHierarchyId),
+          familyName: sanitizeParams(params?.familyName),
+          genusHierarchyId: sanitizeParams(params?.genusHierarchyId),
+          genusName: sanitizeParams(params?.genusName),
+          orderHierarchyId: sanitizeParams(params?.orderHierarchyId),
+          orderName: sanitizeParams(params?.orderName),
         },
         signal,
       };
 
-      const { data } = await api.get<PaginatedGetpostsApiResponse>(
+      const { data } = await api.get<PaginatedGetPostsApiResponse>(
         "posts/species",
         requestConfig,
       );
