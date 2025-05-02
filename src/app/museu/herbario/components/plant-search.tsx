@@ -81,9 +81,6 @@ export default function PlantSearch() {
           }
         />
         <div className="flex items-center gap-2">
-          <Button>
-            <Search className="mr-2 h-4 w-4" /> Buscar
-          </Button>
           <Button
             variant="outline"
             onClick={() => setIsFiltersOpen(!isFiltersOpen)}

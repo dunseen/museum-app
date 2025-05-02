@@ -2,7 +2,7 @@ import { XCircle } from "lucide-react";
 import React from "react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { type PostSearchParams } from "../context/post-context";
+import { type PostSearchParams } from "../api";
 
 type FiltersBadgeProps = {
   search: PostSearchParams;
@@ -12,14 +12,23 @@ export const FiltersBadge: React.FC<Readonly<FiltersBadgeProps>> = ({
   search,
   handleClearAllFilters,
 }) => {
-  if (!search.characteristics?.length && !search?.family && !search?.genus)
+  if (
+    !search.characteristics?.length &&
+    !search?.orderName &&
+    !search?.familyName &&
+    !search?.genusName
+  )
     return null;
 
-  const characteristics = search.characteristics;
-  const familyCount = search.family ? 1 : 0;
-  const genusCount = search.genus ? 1 : 0;
+  const safeCount = (value?: string) => (value ? 1 : 0);
 
-  const count = (characteristics?.length ?? 0) + familyCount + genusCount;
+  const characteristics = search.characteristics;
+  const orderCount = safeCount(search.orderName);
+  const familyCount = safeCount(search.familyName);
+  const genusCount = safeCount(search.genusName);
+
+  const count =
+    (characteristics?.length ?? 0) + familyCount + genusCount + orderCount;
 
   return (
     <div className="mb-2 flex items-center gap-2">
