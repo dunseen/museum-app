@@ -34,7 +34,7 @@ const config = {
       },
       {
         protocol: "https",
-        hostname: "herbarium-storage-api.themodaboutique.store",
+        hostname: "herb-storage-api.dlima-consulting.com",
       },
     ],
   },
