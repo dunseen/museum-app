@@ -61,7 +61,7 @@
   "devDependencies": {
     "@faker-js/faker": "^9.2.0",
     "@tanstack/eslint-plugin-query": "^5.62.1",
-    "@types/eslint": "^8.56.10",
+    "@types/eslint": "^9.0.0",
     "@types/node": "^20.14.10",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.3.3",
