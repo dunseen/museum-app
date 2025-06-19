@@ -282,9 +282,10 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 <div className="flex flex-col gap-4">
                   <GeneralInfoForm isReadOnly={isReadOnly} form={form} />
-                  <SpecialistInfoForm isReadOnly={isReadOnly} form={form} />
+
                   <CharacteristicInfoForm isReadOnly={isReadOnly} form={form} />
                 </div>
+                <SpecialistInfoForm isReadOnly={isReadOnly} form={form} />
                 <LocationInfoForm isReadOnly={isReadOnly} form={form} />
               </div>
               <FormField
