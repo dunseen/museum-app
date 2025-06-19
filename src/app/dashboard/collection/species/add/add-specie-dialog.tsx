@@ -22,6 +22,7 @@ import { z } from "zod";
 import { type Nullable } from "~/types";
 import ImageManager from "~/app/dashboard/shared/components/image-manager";
 import { GeneralInfoForm } from "./components/general-info-form";
+import { SpecialistInfoForm } from "./components/specialist-info-form";
 import { Button } from "~/components/ui/button";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
 import { usePostSpecies, usePutSpecies } from "../api";
@@ -70,6 +71,9 @@ const formSpecieSchema = z.object({
   collectedAt: z.date({
     required_error: "Campo obrigatório",
   }),
+  determinatedAt: z.date({
+    required_error: "Campo obrigatório",
+  }),
   location: z.object({
     lat: z
       .string({ required_error: "Campo obrigatório" })
@@ -90,6 +94,8 @@ const formSpecieSchema = z.object({
   images: z.array(imageSchema, {
     required_error: "Campo obrigatório",
   }),
+  collector: selectSchema,
+  determinator: selectSchema,
   taxonomy: selectSchema,
   characteristics: z.array(selectSchema).optional(),
 });
@@ -128,10 +134,13 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
       formData.append("location", JSON.stringify(location));
 
       formData.append("collectedAt", values.collectedAt.toISOString());
+      formData.append("determinatedAt", values.determinatedAt.toISOString());
 
       formData.append("scientificName", values.scientificName);
       formData.append("taxonIds", values.taxonomy.value);
       formData.append("description", values.description);
+      formData.append("collectorId", values.collector.value);
+      formData.append("determinatorId", values.determinator.value);
 
       if (values.characteristics?.length) {
         formData.append(
@@ -185,10 +194,13 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
     form.resetField("commonName");
     form.resetField("scientificName");
     form.resetField("collectedAt");
+    form.resetField("determinatedAt");
     form.resetField("description");
     form.resetField("images");
     form.resetField("characteristics");
     form.resetField("taxonomy");
+    form.resetField("collector");
+    form.resetField("determinator");
     form.resetField("location");
     onClose();
   }
@@ -198,6 +210,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
       form.setValue("commonName", data.commonName);
       form.setValue("scientificName", data.scientificName);
       form.setValue("collectedAt", new Date(data.collectedAt));
+      form.setValue("determinatedAt", new Date(data.determinatedAt));
       form.setValue("description", data.description ?? "");
 
       form.setValue(
@@ -207,6 +220,16 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
           label: c.name,
         })) ?? [],
       );
+
+      form.setValue("collector", {
+        label: data.collector.name,
+        value: String(data.collector.id),
+      });
+
+      form.setValue("determinator", {
+        label: data.determinator.name,
+        value: String(data.determinator.id),
+      });
 
       if (data.taxons?.length) {
         form.setValue("taxonomy", {
@@ -259,6 +282,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
               <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
                 <div className="flex flex-col gap-4">
                   <GeneralInfoForm isReadOnly={isReadOnly} form={form} />
+                  <SpecialistInfoForm isReadOnly={isReadOnly} form={form} />
                   <CharacteristicInfoForm isReadOnly={isReadOnly} form={form} />
                 </div>
                 <LocationInfoForm isReadOnly={isReadOnly} form={form} />
