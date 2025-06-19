@@ -42,8 +42,8 @@ export const ImageCarousel: React.FC<Readonly<ImageCarouselProps>> = ({
       </CarouselContent>
 
       <div className="hidden md:block">
-        <CarouselPrevious />
-        <CarouselNext />
+        <CarouselPrevious className="left-0" />
+        <CarouselNext className="right-0" />
       </div>
     </Carousel>
   );
