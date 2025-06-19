@@ -42,4 +42,8 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-export { api };
+const publicApi = axios.create({
+  baseURL: env.NEXT_PUBLIC_API_URL,
+});
+
+export { api, publicApi };

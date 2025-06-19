@@ -2,14 +2,13 @@ import {
   type UndefinedInitialDataOptions,
   useQuery,
 } from "@tanstack/react-query";
-import { api } from "~/server/api";
+import { publicApi } from "~/server/api";
 import { type GetPostDetailsApiResponse } from "../types/post.types";
-import { formatDate } from "~/utils/date";
 
 const GET_POST_DETAILS_KEY = "useGetPostDetails";
 
 async function fetchPostDetails(name: string) {
-  const { data } = await api.get<GetPostDetailsApiResponse>(
+  const { data } = await publicApi.get<GetPostDetailsApiResponse>(
     `/posts/species/${encodeURIComponent(name)}`,
   );
 
