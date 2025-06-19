@@ -28,14 +28,14 @@ export const SpecialistInfoForm: React.FC<SpecialistInfoFormProps> = ({
   const collectorsQuery = useGetSpecialists({
     limit: collectorInput.pageLimit,
     page: collectorInput.curentPage,
-    name: collectorInput.inputValue,
+    name: collectorInput.debouncedInput,
     type: "collector",
   });
 
   const determinatorsQuery = useGetSpecialists({
     limit: determinatorInput.pageLimit,
     page: determinatorInput.curentPage,
-    name: determinatorInput.inputValue,
+    name: determinatorInput.debouncedInput,
     type: "determinator",
   });
 
@@ -74,6 +74,7 @@ export const SpecialistInfoForm: React.FC<SpecialistInfoFormProps> = ({
                     defaultValue={field.value}
                     isDisabled={isReadOnly}
                     placeholder="Pesquisar coletor"
+                    isCreatable
                   />
                 )}
               />
@@ -103,6 +104,7 @@ export const SpecialistInfoForm: React.FC<SpecialistInfoFormProps> = ({
                     defaultValue={field.value}
                     isDisabled={isReadOnly}
                     placeholder="Pesquisar determinador"
+                    isCreatable
                   />
                 )}
               />
