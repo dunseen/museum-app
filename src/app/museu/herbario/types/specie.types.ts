@@ -3,6 +3,7 @@ import { type FileTypeApiResponse } from "./file.types";
 import { type GetCharacteristicApiResponse } from "./characteristic.types";
 import { type GetTaxonApiResponse } from "./taxonomy.types";
 import { type LocalTypeApiResponse } from "./local.types";
+import { type SpecialistApiResponse } from "./specialist.types";
 
 export interface GetSpecieApiResponse {
   id: number;
@@ -17,7 +18,11 @@ export interface GetSpecieApiResponse {
 
   location: LocalTypeApiResponse;
 
-  collectedAt: Date;
+  collector: SpecialistApiResponse;
+  determinator: SpecialistApiResponse;
+
+  collectedAt: string;
+  determinatedAt: string;
 
   characteristics: GetCharacteristicApiResponse[];
 
