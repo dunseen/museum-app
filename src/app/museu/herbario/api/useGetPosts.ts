@@ -3,7 +3,7 @@ import {
   useInfiniteQuery,
 } from "@tanstack/react-query";
 import { type AxiosRequestConfig } from "axios";
-import { api } from "~/server/api";
+import { publicApi } from "~/server/api";
 import { type PaginationParams, type WithPagination } from "~/types/pagination";
 import { type GetTaxonApiResponse } from "../types/taxonomy.types";
 
@@ -76,7 +76,7 @@ export const getPostQueryConfig = (
         signal,
       };
 
-      const { data } = await api.get<PaginatedGetPostsApiResponse>(
+      const { data } = await publicApi.get<PaginatedGetPostsApiResponse>(
         "posts/species",
         requestConfig,
       );

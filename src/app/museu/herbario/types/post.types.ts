@@ -10,19 +10,18 @@ type SimpleUser = {
 
 export type PostStatusFilter = "pending" | "approved" | "rejected" | "all";
 
+export interface GetSimplifiedPostDetailsApiResponse {
+  id: string;
+  specie: GetSpecieApiResponse;
+  createdAt: string;
+}
 export interface GetPostDetailsApiResponse {
   id: string;
-
   status: string;
-
   rejectReason: Nullable<string>;
-
   author: SimpleUser;
-  specie: GetSpecieApiResponse;
-
   validator: Nullable<SimpleUser>;
-
-  createdAt: Date;
-
+  specie: GetSpecieApiResponse;
+  createdAt: string;
   updatedAt: string;
 }

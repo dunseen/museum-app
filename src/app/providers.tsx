@@ -6,7 +6,7 @@ import React, { type PropsWithChildren } from "react";
 import { Toaster } from "~/components/ui/sonner";
 import { queryClient } from "~/lib/react-query";
 
-export default function Providers({ children }: PropsWithChildren) {
+export default function Providers({ children }: Readonly<PropsWithChildren>) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}

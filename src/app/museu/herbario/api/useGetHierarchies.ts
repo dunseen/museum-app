@@ -2,7 +2,7 @@ import {
   type UndefinedInitialDataOptions,
   useQuery,
 } from "@tanstack/react-query";
-import { api } from "~/server/api";
+import { publicApi } from "~/server/api";
 
 const GET_HIERARCHIES_KEY = "useGetHierarchies";
 
@@ -12,7 +12,7 @@ export interface GetHierarchiesApiResponse {
 }
 
 async function fetchHierarchies() {
-  const { data } = await api.get<GetHierarchiesApiResponse[]>(
+  const { data } = await publicApi.get<GetHierarchiesApiResponse[]>(
     "/dashboard/hierarchies",
   );
 
