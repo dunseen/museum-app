@@ -30,6 +30,8 @@ import { toast } from "sonner";
 import { appendFiles } from "~/utils/files";
 import { LocationInfoForm } from "./components/location-info-form";
 import { CharacteristicInfoForm } from "./components/characteristic-info-form";
+import Stepper from "~/components/ui/stepper";
+import { useStepper } from "~/hooks/use-stepper";
 
 type AddSpecieDialogProps = {
   isOpen: boolean;
@@ -112,6 +114,9 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
   const postSpeciesMutation = usePostSpecies();
   const putSpeciesMutation = usePutSpecies();
   const postSpecialistsMutation = usePostSpecialists();
+
+  const steps = ["Espécie", "Especialistas", "Localização"];
+  const { step, nextStep, prevStep, reset } = useStepper(steps.length);
 
   const form = useForm<SpecieFormType>({
     resolver: zodResolver(formSpecieSchema),
@@ -228,6 +233,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
     form.resetField("collector");
     form.resetField("determinator");
     form.resetField("location");
+    reset();
     onClose();
   }
 
@@ -304,37 +310,43 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
         </DialogHeader>
         <Form {...form}>
           <form id="edit-specie-form" onSubmit={form.handleSubmit(onSubmit)}>
+            <Stepper steps={steps} currentStep={step} />
             <div className="flex flex-col gap-4">
-              <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-                <div className="flex flex-col gap-4">
-                  <GeneralInfoForm isReadOnly={isReadOnly} form={form} />
+              {step === 0 && (
+                <>
+                  <div className="flex flex-col gap-4">
+                    <GeneralInfoForm isReadOnly={isReadOnly} form={form} />
+                    <CharacteristicInfoForm isReadOnly={isReadOnly} form={form} />
+                    <FormField
+                      control={form.control}
+                      name={"images"}
+                      render={({ field }) => (
+                        <FormItem className="max-w-[750px] overflow-x-auto">
+                          <FormLabel>Imagens (*)</FormLabel>
+                          <FormControl>
+                            <ImageManager
+                              existingImages={field.value}
+                              isReadOnly={isReadOnly}
+                              onImagesChange={(newImages) =>
+                                field.onChange(newImages)
+                              }
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </>
+              )}
 
-                  <CharacteristicInfoForm isReadOnly={isReadOnly} form={form} />
-                </div>
-                <div className="flex flex-col gap-4">
-                  <SpecialistInfoForm isReadOnly={isReadOnly} form={form} />
-                  <LocationInfoForm isReadOnly={isReadOnly} form={form} />
-                </div>
-              </div>
-              <FormField
-                control={form.control}
-                name={"images"}
-                render={({ field }) => (
-                  <FormItem className="max-w-[750px] overflow-x-auto">
-                    <FormLabel>Imagens (*)</FormLabel>
-                    <FormControl>
-                      <ImageManager
-                        existingImages={field.value}
-                        isReadOnly={isReadOnly}
-                        onImagesChange={(newImages) =>
-                          field.onChange(newImages)
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {step === 1 && (
+                <SpecialistInfoForm isReadOnly={isReadOnly} form={form} />
+              )}
+
+              {step === 2 && (
+                <LocationInfoForm isReadOnly={isReadOnly} form={form} />
+              )}
             </div>
 
             {!isReadOnly && (
@@ -350,19 +362,30 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                 >
                   Cancelar
                 </Button>
-                <Button
-                  type="submit"
-                  disabled={
-                    postSpeciesMutation.isPending ||
-                    putSpeciesMutation.isPending
-                  }
-                  isLoading={
-                    postSpeciesMutation.isPending ||
-                    putSpeciesMutation.isPending
-                  }
-                >
-                  Salvar
-                </Button>
+                {step > 0 && (
+                  <Button type="button" variant="outline" onClick={prevStep}>
+                    Voltar
+                  </Button>
+                )}
+                {step < steps.length - 1 ? (
+                  <Button type="button" onClick={nextStep}>
+                    Próximo
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    disabled={
+                      postSpeciesMutation.isPending ||
+                      putSpeciesMutation.isPending
+                    }
+                    isLoading={
+                      postSpeciesMutation.isPending ||
+                      putSpeciesMutation.isPending
+                    }
+                  >
+                    Salvar
+                  </Button>
+                )}
               </DialogFooter>
             )}
           </form>
