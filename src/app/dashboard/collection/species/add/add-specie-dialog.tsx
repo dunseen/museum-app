@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Dialog,
@@ -30,7 +30,7 @@ import { toast } from "sonner";
 import { appendFiles } from "~/utils/files";
 import { LocationInfoForm } from "./components/location-info-form";
 import { CharacteristicInfoForm } from "./components/characteristic-info-form";
-import Stepper from "~/components/ui/stepper";
+import Stepper, { type StepStatus } from "~/components/ui/stepper";
 import { useStepper } from "~/hooks/use-stepper";
 
 type AddSpecieDialogProps = {
@@ -117,12 +117,49 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
 
   const steps = ["Espécie", "Especialistas", "Localização"];
   const { step, nextStep, prevStep, reset } = useStepper(steps.length);
+  const [statuses, setStatuses] = useState<StepStatus[]>(
+    steps.map(() => "default"),
+  );
+
+  const stepFields: string[][] = [
+    ["scientificName", "description", "taxonomy", "images"],
+    ["collector", "determinator", "determinatedAt"],
+    [
+      "location.state",
+      "location.city",
+      "location.address",
+      "location.lat",
+      "location.long",
+      "collectedAt",
+    ],
+  ];
+
+  async function handleNextStep() {
+    const valid = await form.trigger(stepFields[step]);
+    setStatuses((prev) => {
+      const updated = [...prev];
+      updated[step] = valid ? "complete" : "error";
+      return updated;
+    });
+    nextStep();
+  }
 
   const form = useForm<SpecieFormType>({
     resolver: zodResolver(formSpecieSchema),
   });
 
   async function onSubmit(values: SpecieFormType) {
+    const finalValid = await form.trigger(stepFields[step]);
+    setStatuses((prev) => {
+      const updated = [...prev];
+      updated[step] = finalValid ? "complete" : "error";
+      return updated;
+    });
+
+    if (!finalValid) {
+      return;
+    }
+
     try {
       const formData = new FormData();
 
@@ -234,6 +271,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
     form.resetField("determinator");
     form.resetField("location");
     reset();
+    setStatuses(steps.map(() => "default"));
     onClose();
   }
 
@@ -298,7 +336,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onCloseAddDialog}>
-      <DialogContent className="h-screen max-w-[1200px] overflow-auto lg:h-fit lg:min-w-[500px]">
+      <DialogContent className="max-h-[calc(100dvh-2rem)] max-w-[1200px] overflow-y-auto lg:min-w-[500px]">
         <DialogHeader>
           <DialogTitle>{dialogActionTitle} Espécie</DialogTitle>
           {!isReadOnly && (
@@ -310,7 +348,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
         </DialogHeader>
         <Form {...form}>
           <form id="edit-specie-form" onSubmit={form.handleSubmit(onSubmit)}>
-            <Stepper steps={steps} currentStep={step} />
+            <Stepper steps={steps} currentStep={step} statuses={statuses} />
             <div className="flex flex-col gap-4">
               {step === 0 && (
                 <>
@@ -368,7 +406,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                   </Button>
                 )}
                 {step < steps.length - 1 ? (
-                  <Button type="button" onClick={nextStep}>
+                  <Button type="button" onClick={handleNextStep}>
                     Próximo
                   </Button>
                 ) : (
