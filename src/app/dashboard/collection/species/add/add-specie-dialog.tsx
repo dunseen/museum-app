@@ -25,7 +25,7 @@ import { GeneralInfoForm } from "./components/general-info-form";
 import { SpecialistInfoForm } from "./components/specialist-info-form";
 import { Button } from "~/components/ui/button";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
-import { usePostSpecies, usePutSpecies } from "../api";
+import { usePostSpecialists, usePostSpecies, usePutSpecies } from "../api";
 import { toast } from "sonner";
 import { appendFiles } from "~/utils/files";
 import { LocationInfoForm } from "./components/location-info-form";
@@ -47,6 +47,7 @@ const selectSchema = z.object(
   {
     label: z.string(),
     value: z.string(),
+    __isNew__: z.boolean().optional(),
   },
   {
     required_error: "Campo obrigatório",
@@ -110,6 +111,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
 }) => {
   const postSpeciesMutation = usePostSpecies();
   const putSpeciesMutation = usePutSpecies();
+  const postSpecialistsMutation = usePostSpecialists();
 
   const form = useForm<SpecieFormType>({
     resolver: zodResolver(formSpecieSchema),
@@ -139,8 +141,32 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
       formData.append("scientificName", values.scientificName);
       formData.append("taxonIds", values.taxonomy.value);
       formData.append("description", values.description);
-      formData.append("collectorId", values.collector.value);
-      formData.append("determinatorId", values.determinator.value);
+
+      if (!values.collector?.__isNew__) {
+        formData.append("collectorId", values.collector.value);
+      }
+
+      if (!values.determinator?.__isNew__) {
+        formData.append("determinatorId", values.determinator.value);
+      }
+
+      if (values.collector.__isNew__) {
+        const collector = await postSpecialistsMutation.mutateAsync({
+          name: values.collector.value,
+          type: "collector",
+        });
+
+        formData.append("collectorId", collector.id);
+      }
+
+      if (values.determinator.__isNew__) {
+        const determinator = await postSpecialistsMutation.mutateAsync({
+          name: values.determinator.value,
+          type: "determinator",
+        });
+
+        formData.append("determinatorId", determinator.id);
+      }
 
       if (values.characteristics?.length) {
         formData.append(
@@ -285,8 +311,10 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
 
                   <CharacteristicInfoForm isReadOnly={isReadOnly} form={form} />
                 </div>
-                <SpecialistInfoForm isReadOnly={isReadOnly} form={form} />
-                <LocationInfoForm isReadOnly={isReadOnly} form={form} />
+                <div className="flex flex-col gap-4">
+                  <SpecialistInfoForm isReadOnly={isReadOnly} form={form} />
+                  <LocationInfoForm isReadOnly={isReadOnly} form={form} />
+                </div>
               </div>
               <FormField
                 control={form.control}
