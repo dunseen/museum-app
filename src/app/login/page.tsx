@@ -20,6 +20,7 @@ import { signIn } from "next-auth/react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useTransition } from "react";
 
 type LoginData = {
   email: string;
@@ -28,6 +29,7 @@ type LoginData = {
 export default function Page() {
   const router = useRouter();
   const { register, handleSubmit, formState } = useForm<Readonly<LoginData>>();
+  const [isPending, startTransition] = useTransition();
 
   const onSubmit: SubmitHandler<LoginData> = async (data) => {
     const result = await signIn("credentials", {
@@ -37,7 +39,9 @@ export default function Page() {
     });
 
     if (result?.ok) {
-      router.push("/dashboard");
+      startTransition(() => {
+        router.push("/dashboard");
+      });
       return;
     }
 
@@ -114,7 +118,9 @@ export default function Page() {
             </CardContent>
             <CardFooter className="flex flex-col gap-2">
               <Button
-                isLoading={formState.isSubmitting || formState.isLoading}
+                isLoading={
+                  formState.isSubmitting || formState.isLoading || isPending
+                }
                 type="submit"
                 className="w-full bg-green-600 text-white hover:bg-green-700"
               >
