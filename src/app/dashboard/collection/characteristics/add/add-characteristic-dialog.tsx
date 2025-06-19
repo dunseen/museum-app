@@ -263,7 +263,7 @@ export const AddCharacteristicDialog: React.FC<
                 name={"images"}
                 defaultValue={defaultImages}
                 render={({ field }) => (
-                  <FormItem className="max-w-[750px] overflow-x-auto">
+                  <FormItem className="max-w-full overflow-x-auto">
                     <FormLabel>Imagens (*)</FormLabel>
                     <FormControl>
                       <ImageManager

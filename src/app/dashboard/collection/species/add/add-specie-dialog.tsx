@@ -359,7 +359,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                       control={form.control}
                       name={"images"}
                       render={({ field }) => (
-                        <FormItem className="max-w-[750px] overflow-x-auto">
+                        <FormItem className="max-w-full overflow-x-auto">
                           <FormLabel>Imagens (*)</FormLabel>
                           <FormControl>
                             <ImageManager

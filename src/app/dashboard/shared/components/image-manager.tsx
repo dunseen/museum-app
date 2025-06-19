@@ -37,7 +37,7 @@ export default function ImageManager({
   });
 
   return (
-    <div className="mx-auto">
+    <div className="mx-auto w-full">
       {!isReadOnly && (
         <div className="flex items-center gap-2">
           <Button
@@ -61,11 +61,11 @@ export default function ImageManager({
           aria-label="Adicionar imagens"
         />
       </div>
-      <div className="flex gap-2 overflow-x-auto">
+      <div className="flex gap-2 overflow-x-auto w-full">
         {images
           .filter((image) => !image?.removed)
           .map((image, index) => (
-            <Card key={index} className="group relative min-w-32">
+            <Card key={index} className="relative min-w-32 flex-shrink-0">
               <CardContent className="p-2">
                 <div className="relative h-32 w-full">
                   <Image
@@ -82,7 +82,7 @@ export default function ImageManager({
                     variant="destructive"
                     size="icon"
                     type="button"
-                    className="absolute right-2 top-2 opacity-0 transition-opacity group-hover:opacity-100"
+                    className="absolute right-2 top-2"
                     onClick={() => handleRemoveImage(index)}
                     aria-label={`Remover imagem ${index + 1}`}
                   >

@@ -25,6 +25,7 @@ export function useImageManager({
       setImages(updatedImages);
       onImagesChange(updatedImages);
     }
+    event.target.value = "";
   };
 
   const handleRemoveImage = (index: number) => {
