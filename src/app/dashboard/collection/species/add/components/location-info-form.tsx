@@ -10,7 +10,6 @@ import { type useForm } from "react-hook-form";
 import { type SpecieFormType } from "../add-specie-dialog";
 import Select from "react-select";
 import { useGetCities, useGetStates } from "../../api";
-import { DatePicker } from "~/components/ui/date-picker";
 
 type LocationInfoFormProps = {
   form: ReturnType<typeof useForm<SpecieFormType>>;
@@ -165,25 +164,6 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({
                   readOnly={isReadOnly}
                   onBlur={field.onBlur}
                   disabled={field.disabled}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Collection Date */}
-        <FormField
-          control={form.control}
-          name="collectedAt"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Data da Coleta (*)</FormLabel>
-              <FormControl>
-                <DatePicker
-                  onChange={field.onChange}
-                  value={field.value}
-                  isDisabled={isReadOnly}
                 />
               </FormControl>
               <FormMessage />

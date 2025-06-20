@@ -52,38 +52,7 @@ export const SpecialistInfoForm: React.FC<SpecialistInfoFormProps> = ({
     })) ?? [];
 
   return (
-    <div className="flex flex-col gap-2">
-      <h2 className="text-lg font-semibold">Especialistas</h2>
-      <FormField
-        control={form.control}
-        name="collector"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Coletor (*)</FormLabel>
-            <FormControl>
-              <Controller
-                name={field.name}
-                control={form.control}
-                render={() => (
-                  <AsyncSelect
-                    name="collector"
-                    control={form.control}
-                    onInputChange={collectorInput.onInputChange}
-                    isLoading={collectorsQuery.isLoading}
-                    options={collectorOptions}
-                    defaultValue={field.value}
-                    isDisabled={isReadOnly}
-                    placeholder="Pesquisar coletor"
-                    isCreatable
-                  />
-                )}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
+    <div className="grid grid-cols-2 gap-4">
       <FormField
         control={form.control}
         name="determinator"
@@ -116,10 +85,58 @@ export const SpecialistInfoForm: React.FC<SpecialistInfoFormProps> = ({
 
       <FormField
         control={form.control}
+        name="collector"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Coletor (*)</FormLabel>
+            <FormControl>
+              <Controller
+                name={field.name}
+                control={form.control}
+                render={() => (
+                  <AsyncSelect
+                    name="collector"
+                    control={form.control}
+                    onInputChange={collectorInput.onInputChange}
+                    isLoading={collectorsQuery.isLoading}
+                    options={collectorOptions}
+                    defaultValue={field.value}
+                    isDisabled={isReadOnly}
+                    placeholder="Pesquisar coletor"
+                    isCreatable
+                  />
+                )}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
         name="determinatedAt"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Data de Determinação (*)</FormLabel>
+            <FormControl>
+              <DatePicker
+                onChange={field.onChange}
+                value={field.value}
+                isDisabled={isReadOnly}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="collectedAt"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Data da Coleta (*)</FormLabel>
             <FormControl>
               <DatePicker
                 onChange={field.onChange}

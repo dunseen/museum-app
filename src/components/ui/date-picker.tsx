@@ -26,14 +26,20 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   onChange,
   isDisabled,
 }) => {
+  const [isOpen, setIsOpen] = React.useState(false);
   function formatDate(date: Date) {
     return format(date, "dd LLL, y", {
       locale: ptBR,
     });
   }
 
+  function onSelect(date: Date | undefined) {
+    onChange(date);
+    setIsOpen(false);
+  }
+
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild disabled={isDisabled}>
         <Button
           variant={"outline"}
@@ -55,7 +61,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           mode="single"
           selected={value}
           locale={ptBR}
-          onSelect={onChange}
+          onSelect={onSelect}
           initialFocus
         />
       </PopoverContent>

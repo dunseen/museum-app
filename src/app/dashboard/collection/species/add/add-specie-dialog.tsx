@@ -9,18 +9,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/ui/form";
+import { Form } from "~/components/ui/form";
 
 import { z } from "zod";
 import { type Nullable } from "~/types";
-import ImageManager from "~/app/dashboard/shared/components/image-manager";
 import { GeneralInfoForm } from "./components/general-info-form";
 import { SpecialistInfoForm } from "./components/specialist-info-form";
 import { Button } from "~/components/ui/button";
@@ -32,6 +24,7 @@ import { LocationInfoForm } from "./components/location-info-form";
 import { CharacteristicInfoForm } from "./components/characteristic-info-form";
 import Stepper, { type StepStatus } from "~/components/ui/stepper";
 import { useStepper } from "~/hooks/use-stepper";
+import { ImageForm } from "./components/images-form";
 
 type AddSpecieDialogProps = {
   isOpen: boolean;
@@ -123,19 +116,21 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
 
   const stepFields: string[][] = [
     ["scientificName", "description", "taxonomy", "images"],
-    ["collector", "determinator", "determinatedAt"],
+    ["collector", "determinator", "determinatedAt", "collectedAt"],
     [
       "location.state",
       "location.city",
       "location.address",
       "location.lat",
       "location.long",
-      "collectedAt",
     ],
   ];
 
+  const currentStepFields =
+    (stepFields[step] as (keyof SpecieFormType)[]) ?? [];
+
   async function handleNextStep() {
-    const valid = await form.trigger(stepFields[step]);
+    const valid = await form.trigger(currentStepFields);
     setStatuses((prev) => {
       const updated = [...prev];
       updated[step] = valid ? "complete" : "error";
@@ -149,17 +144,6 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
   });
 
   async function onSubmit(values: SpecieFormType) {
-    const finalValid = await form.trigger(stepFields[step]);
-    setStatuses((prev) => {
-      const updated = [...prev];
-      updated[step] = finalValid ? "complete" : "error";
-      return updated;
-    });
-
-    if (!finalValid) {
-      return;
-    }
-
     try {
       const formData = new FormData();
 
@@ -335,8 +319,8 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
   }, [data, form]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onCloseAddDialog}>
-      <DialogContent className="max-h-[calc(100dvh-2rem)] max-w-[1200px] overflow-y-auto lg:min-w-[500px]">
+    <Dialog open={isOpen}>
+      <DialogContent className="max-h-[calc(100dvh-2rem)] max-w-[900px] overflow-y-auto lg:min-w-[500px]">
         <DialogHeader>
           <DialogTitle>{dialogActionTitle} Espécie</DialogTitle>
           {!isReadOnly && (
@@ -347,35 +331,20 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
           )}
         </DialogHeader>
         <Form {...form}>
-          <form id="edit-specie-form" onSubmit={form.handleSubmit(onSubmit)}>
+          <form id="edit-specie-form">
             <Stepper steps={steps} currentStep={step} statuses={statuses} />
             <div className="flex flex-col gap-4">
               {step === 0 && (
-                <>
-                  <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <GeneralInfoForm isReadOnly={isReadOnly} form={form} />
-                    <CharacteristicInfoForm isReadOnly={isReadOnly} form={form} />
-                    <FormField
-                      control={form.control}
-                      name={"images"}
-                      render={({ field }) => (
-                        <FormItem className="max-w-full overflow-x-auto">
-                          <FormLabel>Imagens (*)</FormLabel>
-                          <FormControl>
-                            <ImageManager
-                              existingImages={field.value}
-                              isReadOnly={isReadOnly}
-                              onImagesChange={(newImages) =>
-                                field.onChange(newImages)
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                    <CharacteristicInfoForm
+                      isReadOnly={isReadOnly}
+                      form={form}
                     />
                   </div>
-                </>
+                  <ImageForm form={form} isReadOnly={isReadOnly} />
+                </div>
               )}
 
               {step === 1 && (
@@ -400,6 +369,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                 >
                   Cancelar
                 </Button>
+
                 {step > 0 && (
                   <Button type="button" variant="outline" onClick={prevStep}>
                     Voltar
@@ -411,7 +381,8 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                   </Button>
                 ) : (
                   <Button
-                    type="submit"
+                    type="button"
+                    onClick={form.handleSubmit(onSubmit)}
                     disabled={
                       postSpeciesMutation.isPending ||
                       putSpeciesMutation.isPending
