@@ -113,7 +113,7 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({
                   isLat
                   defaultValue={field.value}
                   placeholder={'ex: 23°32\'00"S'}
-                  inputRef={field.ref}
+                  ref={field.ref}
                   name={field.name}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
@@ -137,7 +137,7 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({
                 <DMSInput
                   isLat={false}
                   defaultValue={field.value}
-                  inputRef={field.ref}
+                  ref={field.ref}
                   name={field.name}
                   placeholder={'ex: 046°38\'00"W'}
                   onChange={field.onChange}

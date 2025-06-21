@@ -1,5 +1,5 @@
 import React from "react";
-import InputMask from "react-input-mask";
+import { InputMask } from "@react-input/mask";
 import { Input, type InputProps } from "./input";
 
 interface DMSInputProps extends InputProps {
@@ -8,19 +8,20 @@ interface DMSInputProps extends InputProps {
 
 export const DMSInput = React.forwardRef<HTMLInputElement, DMSInputProps>(
   ({ isLat, ...props }, ref) => {
-    const mask = isLat ? "99°99'99.99\"a" : "999°99'99.99\"a";
-    const formatChars = { a: isLat ? "[NSns]" : "[EWew]" } as const;
+    const mask = isLat ? "dd°dd'dd.dda" : "ddd°dd'dd.dda";
+    const replacement = {
+      d: /\d/,
+      a: isLat ? /[NSns]/ : /[EWew]/,
+    } as const;
 
     return (
       <InputMask
         mask={mask}
-        maskChar=""
-        formatChars={formatChars}
-        inputRef={ref}
+        replacement={replacement}
+        component={Input}
+        ref={ref}
         {...props}
-      >
-        {(inputProps: InputProps) => <Input {...inputProps} />}
-      </InputMask>
+      />
     );
   },
 );
