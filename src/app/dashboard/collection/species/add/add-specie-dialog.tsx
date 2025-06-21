@@ -100,13 +100,9 @@ const formSpecieSchema = z.object({
   collector: selectSchema,
   determinator: selectSchema,
   taxonomy: selectSchema,
-  characteristics: z
-    .array(selectSchema, {
-      required_error: "Campo obrigatório",
-    })
-    .nonempty({
-      message: "Selecione pelo menos uma característica",
-    }),
+  characteristics: z.array(selectSchema, {
+    required_error: "Campo obrigatório",
+  }),
 });
 
 export type SpecieFormType = z.infer<typeof formSpecieSchema>;
