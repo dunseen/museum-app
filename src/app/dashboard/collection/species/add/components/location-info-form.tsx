@@ -6,6 +6,7 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
+import { DMSInput } from "~/components/ui/dms-input";
 import { type useForm } from "react-hook-form";
 import { type SpecieFormType } from "../add-specie-dialog";
 import Select from "react-select";
@@ -108,10 +109,11 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({
             <FormItem>
               <FormLabel>Latitude (*)</FormLabel>
               <FormControl>
-                <Input
+                <DMSInput
+                  isLat
                   defaultValue={field.value}
-                  placeholder="ex: -23.5505"
-                  ref={field.ref}
+                  placeholder={'ex: 23°32\'00"S'}
+                  inputRef={field.ref}
                   name={field.name}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
@@ -132,11 +134,12 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({
             <FormItem>
               <FormLabel>Longitude (*)</FormLabel>
               <FormControl>
-                <Input
+                <DMSInput
+                  isLat={false}
                   defaultValue={field.value}
-                  ref={field.ref}
+                  inputRef={field.ref}
                   name={field.name}
-                  placeholder="ex: -46.6333"
+                  placeholder={'ex: 046°38\'00"W'}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
                   readOnly={isReadOnly}
