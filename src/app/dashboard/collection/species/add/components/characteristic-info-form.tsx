@@ -28,7 +28,7 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
   const taxonomyQuery = useGetTaxons({
     limit: taxonInput.pageLimit,
     page: taxonInput.curentPage,
-    name: taxonInput.inputValue,
+    name: taxonInput.debouncedInput,
   });
 
   const characteristicsQuery = useGetCharacteristics({
