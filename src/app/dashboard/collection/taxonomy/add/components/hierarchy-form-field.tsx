@@ -50,6 +50,7 @@ export const HierarchyFormField: React.FC<HierarchyFormFieldProps> = ({
           <FormControl>
             <AsyncSelect
               name="hierarchy"
+              isCreatable
               control={form.control}
               onInputChange={onInputChange}
               isLoading={getHierarchies.isLoading}

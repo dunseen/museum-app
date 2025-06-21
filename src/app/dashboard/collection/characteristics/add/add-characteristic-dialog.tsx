@@ -241,6 +241,7 @@ export const AddCharacteristicDialog: React.FC<
                       <FormControl>
                         <AsyncSelect
                           name="type"
+                          isCreatable
                           control={form.control}
                           onInputChange={onInputChange}
                           isLoading={isLoadingCharacteristicTypes}
