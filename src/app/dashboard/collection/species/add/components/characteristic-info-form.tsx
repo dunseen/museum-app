@@ -28,7 +28,7 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
   const taxonomyQuery = useGetTaxons({
     limit: taxonInput.pageLimit,
     page: taxonInput.curentPage,
-    name: taxonInput.inputValue,
+    name: taxonInput.debouncedInput,
   });
 
   const characteristicsQuery = useGetCharacteristics({
@@ -39,7 +39,7 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
 
   const taxonOptions =
     taxonomyQuery.data?.data?.map((t) => ({
-      label: t.name,
+      label: `${t.name} - (${t.hierarchy.name})`,
       value: String(t.id),
     })) ?? [];
 
@@ -85,7 +85,7 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
         name={"characteristics"}
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Características (opcional)</FormLabel>
+            <FormLabel>Características (*)</FormLabel>
             <FormControl>
               <Controller
                 name={field.name}

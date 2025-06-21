@@ -21,6 +21,7 @@ import { usePostSpecialists, usePostSpecies, usePutSpecies } from "../api";
 import { toast } from "sonner";
 import { appendFiles } from "~/utils/files";
 import { LocationInfoForm } from "./components/location-info-form";
+import { decimalToDMS, DMSToDecimal } from "~/utils/lat-long";
 import { CharacteristicInfoForm } from "./components/characteristic-info-form";
 import Stepper, { type StepStatus } from "~/components/ui/stepper";
 import { useStepper } from "~/hooks/use-stepper";
@@ -73,14 +74,20 @@ const formSpecieSchema = z.object({
   location: z.object({
     lat: z
       .string({ required_error: "Campo obrigatório" })
-      .refine((val) => !isNaN(parseFloat(val)), {
-        message: "Latitude  deve ser um número válido",
-      }),
+      .refine(
+        (val) => /^\d{1,2}°\d{1,2}'\d{1,2}(?:\.\d+)?("?)[NSns]$/.test(val),
+        {
+          message: "Latitude inválida. Use 00°00'00\"[N/S]",
+        },
+      ),
     long: z
       .string({ required_error: "Campo obrigatório" })
-      .refine((val) => !isNaN(parseFloat(val)), {
-        message: "Longitude deve ser um número válido",
-      }),
+      .refine(
+        (val) => /^\d{1,3}°\d{1,2}'\d{1,2}(?:\.\d+)?("?)[EWew]$/.test(val),
+        {
+          message: "Longitude inválida. Use 000°00'00\"[W/E]",
+        },
+      ),
     address: stringSchema,
     state: selectSchema,
     city: selectSchema,
@@ -93,7 +100,9 @@ const formSpecieSchema = z.object({
   collector: selectSchema,
   determinator: selectSchema,
   taxonomy: selectSchema,
-  characteristics: z.array(selectSchema).optional(),
+  characteristics: z.array(selectSchema, {
+    required_error: "Campo obrigatório",
+  }),
 });
 
 export type SpecieFormType = z.infer<typeof formSpecieSchema>;
@@ -115,7 +124,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
   );
 
   const stepFields: string[][] = [
-    ["scientificName", "description", "taxonomy", "images"],
+    ["scientificName", "description", "taxonomy", "images", "characteristics"],
     ["collector", "determinator", "determinatedAt", "collectedAt"],
     [
       "location.state",
@@ -152,8 +161,8 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
       }
 
       const location = {
-        lat: values.location.lat,
-        long: values.location.long,
+        lat: DMSToDecimal(values.location.lat),
+        long: DMSToDecimal(values.location.long),
         address: values.location.address,
         stateId: values.location.state?.value,
         cityId: values.location.city?.value,
@@ -294,8 +303,8 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
 
       form.setValue("location", {
         address: data.location.address,
-        lat: data.location.lat,
-        long: data.location.long,
+        lat: decimalToDMS(data.location.lat, true),
+        long: decimalToDMS(data.location.long, false),
         state: {
           label: data.location.state.code,
           value: String(data.location.state.id),
