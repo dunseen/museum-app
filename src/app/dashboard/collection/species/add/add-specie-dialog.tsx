@@ -75,17 +75,17 @@ const formSpecieSchema = z.object({
     lat: z
       .string({ required_error: "Campo obrigatório" })
       .refine(
-        (val) => /^\d{1,2}°\d{1,2}'\d{1,2}(?:\.\d+)?\"[NSns]$/.test(val),
+        (val) => /^\d{1,2}°\d{1,2}'\d{1,2}(?:\.\d+)?("?)[NSns]$/.test(val),
         {
-          message: "Latitude inválida. Use 00°00'00\"N",
+          message: "Latitude inválida. Use 00°00'00\"[N/S]",
         },
       ),
     long: z
       .string({ required_error: "Campo obrigatório" })
       .refine(
-        (val) => /^\d{1,3}°\d{1,2}'\d{1,2}(?:\.\d+)?\"[EWew]$/.test(val),
+        (val) => /^\d{1,3}°\d{1,2}'\d{1,2}(?:\.\d+)?("?)[EWew]$/.test(val),
         {
-          message: "Longitude inválida. Use 000°00'00\"W",
+          message: "Longitude inválida. Use 000°00'00\"[W/E]",
         },
       ),
     address: stringSchema,
@@ -100,7 +100,13 @@ const formSpecieSchema = z.object({
   collector: selectSchema,
   determinator: selectSchema,
   taxonomy: selectSchema,
-  characteristics: z.array(selectSchema).optional(),
+  characteristics: z
+    .array(selectSchema, {
+      required_error: "Campo obrigatório",
+    })
+    .nonempty({
+      message: "Selecione pelo menos uma característica",
+    }),
 });
 
 export type SpecieFormType = z.infer<typeof formSpecieSchema>;
@@ -122,7 +128,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
   );
 
   const stepFields: string[][] = [
-    ["scientificName", "description", "taxonomy", "images"],
+    ["scientificName", "description", "taxonomy", "images", "characteristics"],
     ["collector", "determinator", "determinatedAt", "collectedAt"],
     [
       "location.state",

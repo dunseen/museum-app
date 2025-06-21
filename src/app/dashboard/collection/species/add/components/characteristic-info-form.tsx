@@ -85,7 +85,7 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
         name={"characteristics"}
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Características (opcional)</FormLabel>
+            <FormLabel>Características (*)</FormLabel>
             <FormControl>
               <Controller
                 name={field.name}
