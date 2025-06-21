@@ -39,7 +39,7 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
 
   const taxonOptions =
     taxonomyQuery.data?.data?.map((t) => ({
-      label: t.name,
+      label: `${t.name} - (${t.hierarchy.name})`,
       value: String(t.id),
     })) ?? [];
 
