@@ -6,6 +6,8 @@ import { Button } from "~/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetFooter,
+  SheetTitle,
   SheetTrigger,
 } from "~/components/ui/sheet";
 import { Label } from "~/components/ui/label";
@@ -56,6 +58,7 @@ export default function PlantSearch() {
   const onClearFilters = () => {
     handleClearAllFilters();
     setAccordionValue("");
+    setIsFiltersOpen(false);
   };
 
   const handleSearchByTaxon = (id: number, field: string, value: string) => {
@@ -83,17 +86,19 @@ export default function PlantSearch() {
     }
   };
 
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleSearch({
+      name: e.target.value,
+    });
+  };
+
   return (
     <Sheet open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
       <div className="mb-8">
         <div className="mb-4 flex flex-wrap gap-2 md:flex-nowrap">
           <Input
             placeholder="Pesquisar por nome cientifico ou popular..."
-            onChange={(e) =>
-              handleSearch({
-                name: e.target.value,
-              })
-            }
+            onChange={onSearchChange}
           />
           <div className="flex items-center gap-2">
             <SheetTrigger asChild>
@@ -113,6 +118,7 @@ export default function PlantSearch() {
       </div>
 
       <SheetContent side="left" className="sm:max-w-sm">
+        <SheetTitle />
         <Accordion
           value={accordionValue}
           onValueChange={onAccordionChange}
@@ -123,12 +129,12 @@ export default function PlantSearch() {
           <AccordionItem value="taxonomy">
             <AccordionTrigger>Taxonomia</AccordionTrigger>
             <AccordionContent>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 {hierarchies?.map((hierarchy) => (
                   <div key={hierarchy.id}>
                     <Label className="capitalize">{hierarchy.name}</Label>
                     <Input
-                      placeholder="ex., Fabaceae"
+                      placeholder="Pesquisar..."
                       onChange={(e) =>
                         handleSearchByTaxon(
                           hierarchy.id,
@@ -145,7 +151,10 @@ export default function PlantSearch() {
           <AccordionItem value="characteristics">
             <AccordionTrigger>Características</AccordionTrigger>
             <AccordionContent>
-              <ul className="grid grid-cols-2 gap-4">
+              <ul
+                id="test-id-ul"
+                className="grid max-h-[400px] grid-cols-1 gap-4 overflow-y-auto md:max-h-[456px]"
+              >
                 {data?.map((item) => {
                   const options = item.characteristics.map((c) => ({
                     value: String(c.id),
@@ -164,6 +173,8 @@ export default function PlantSearch() {
                         options={options}
                         className="mt-2"
                         classNamePrefix="react-select"
+                        placeholder="Selecione..."
+                        menuPosition="fixed"
                         value={selectedOptions}
                         onChange={(selected) =>
                           onCharacteristicGroupChange(groupIds, selected)
@@ -176,6 +187,11 @@ export default function PlantSearch() {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+        <SheetFooter className="absolute bottom-0 left-0 right-0 p-4">
+          <Button variant="outline" className="w-full" onClick={onClearFilters}>
+            Limpar Filtros
+          </Button>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
