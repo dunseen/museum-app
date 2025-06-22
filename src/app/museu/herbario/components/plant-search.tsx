@@ -3,6 +3,11 @@
 import { useState } from "react";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "~/components/ui/sheet";
 import { Label } from "~/components/ui/label";
 import {
   Accordion,
@@ -11,7 +16,7 @@ import {
   AccordionTrigger,
 } from "~/components/ui/accordion";
 import { Checkbox } from "~/components/ui/checkbox";
-import { FilterIcon, FilterXIcon, Search } from "lucide-react";
+import { FilterIcon, FilterXIcon } from "lucide-react";
 import { usePost } from "../context/post-context";
 import { useGetCharacteristicFilters, useGetHierarchies } from "../api";
 import { FiltersBadge } from "./filters-badge";
@@ -70,34 +75,35 @@ export default function PlantSearch() {
   };
 
   return (
-    <div className="mb-8">
-      <div className="mb-4 flex flex-wrap gap-2 md:flex-nowrap">
-        <Input
-          placeholder="Pesquisar por nome cientifico ou popular..."
-          onChange={(e) =>
-            handleSearch({
-              name: e.target.value,
-            })
-          }
-        />
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-          >
-            {isFiltersOpen ? (
-              <FilterXIcon className="mr-2 h-4 w-4" />
-            ) : (
-              <FilterIcon className="mr-2 h-4 w-4" />
-            )}
-            Filtros
-          </Button>
+    <Sheet open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
+      <div className="mb-8">
+        <div className="mb-4 flex flex-wrap gap-2 md:flex-nowrap">
+          <Input
+            placeholder="Pesquisar por nome cientifico ou popular..."
+            onChange={(e) =>
+              handleSearch({
+                name: e.target.value,
+              })
+            }
+          />
+          <div className="flex items-center gap-2">
+            <SheetTrigger asChild>
+              <Button variant="outline">
+                {isFiltersOpen ? (
+                  <FilterXIcon className="mr-2 h-4 w-4" />
+                ) : (
+                  <FilterIcon className="mr-2 h-4 w-4" />
+                )}
+                Filtros
+              </Button>
+            </SheetTrigger>
+          </div>
         </div>
+
+        <FiltersBadge search={search} handleClearAllFilters={onClearFilters} />
       </div>
 
-      <FiltersBadge search={search} handleClearAllFilters={onClearFilters} />
-
-      {isFiltersOpen && (
+      <SheetContent side="left" className="sm:max-w-sm">
         <Accordion
           value={accordionValue}
           onValueChange={onAccordionChange}
@@ -159,7 +165,7 @@ export default function PlantSearch() {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-      )}
-    </div>
+      </SheetContent>
+    </Sheet>
   );
 }
