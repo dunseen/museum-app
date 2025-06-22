@@ -15,7 +15,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "~/components/ui/accordion";
-import { Checkbox } from "~/components/ui/checkbox";
+import Select, { type MultiValue } from "react-select";
 import { FilterIcon, FilterXIcon } from "lucide-react";
 import { usePost } from "../context/post-context";
 import { useGetCharacteristicFilters, useGetHierarchies } from "../api";
@@ -34,10 +34,19 @@ export default function PlantSearch() {
   const { data } = useGetCharacteristicFilters();
   const { data: hierarchies } = useGetHierarchies();
 
-  const onCheckedChange = (id: number) => {
-    const parsedId = String(id);
+  const onCharacteristicGroupChange = (
+    groupIds: string[],
+    selected: MultiValue<{ value: string; label: string }>,
+  ) => {
+    const selectedIds = selected.map((o) => o.value);
+    const prevSelected =
+      search?.characteristics?.filter((id) => groupIds.includes(id)) ?? [];
 
-    handleCharacteristicFilter(parsedId);
+    const toAdd = selectedIds.filter((id) => !prevSelected.includes(id));
+    const toRemove = prevSelected.filter((id) => !selectedIds.includes(id));
+
+    toAdd.forEach((id) => handleCharacteristicFilter(id));
+    toRemove.forEach((id) => handleCharacteristicFilter(id));
   };
 
   const onAccordionChange = (value: string) => {
@@ -114,7 +123,7 @@ export default function PlantSearch() {
           <AccordionItem value="taxonomy">
             <AccordionTrigger>Taxonomia</AccordionTrigger>
             <AccordionContent>
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+              <div className="grid grid-cols-2 gap-4">
                 {hierarchies?.map((hierarchy) => (
                   <div key={hierarchy.id}>
                     <Label className="capitalize">{hierarchy.name}</Label>
@@ -136,31 +145,33 @@ export default function PlantSearch() {
           <AccordionItem value="characteristics">
             <AccordionTrigger>Características</AccordionTrigger>
             <AccordionContent>
-              <ul className="grid grid-cols-2 gap-4 md:grid-cols-3">
-                {data?.map((item) => (
-                  <li key={item.type}>
-                    <Label className="capitalize">{item.type}</Label>
-                    <ul className="mt-2 space-y-2">
-                      {item.characteristics.map((characteristic) => (
-                        <li key={characteristic.id}>
-                          <Label className="flex items-center space-x-2">
-                            <Checkbox
-                              value={characteristic.id}
-                              defaultChecked={search?.characteristics?.includes(
-                                String(characteristic.id),
-                              )}
-                              onCheckedChange={() =>
-                                onCheckedChange(characteristic.id)
-                              }
-                              id={`characteristic-${characteristic.id}`}
-                            />
-                            <span>{characteristic.name}</span>
-                          </Label>
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
+              <ul className="grid grid-cols-2 gap-4">
+                {data?.map((item) => {
+                  const options = item.characteristics.map((c) => ({
+                    value: String(c.id),
+                    label: c.name,
+                  }));
+                  const groupIds = options.map((o) => o.value);
+                  const selectedOptions = options.filter((o) =>
+                    search?.characteristics?.includes(o.value),
+                  );
+
+                  return (
+                    <li key={item.type}>
+                      <Label className="capitalize">{item.type}</Label>
+                      <Select
+                        isMulti
+                        options={options}
+                        className="mt-2"
+                        classNamePrefix="react-select"
+                        value={selectedOptions}
+                        onChange={(selected) =>
+                          onCharacteristicGroupChange(groupIds, selected)
+                        }
+                      />
+                    </li>
+                  );
+                })}
               </ul>
             </AccordionContent>
           </AccordionItem>
