@@ -1,11 +1,7 @@
-"use client";
-
+/* eslint-disable @typescript-eslint/await-thenable */
 import { CheckCircle2, XCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { useConfirmEmail } from "./api/useConfirmEmail";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -16,19 +12,41 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import Footer from "../museu/herbario/components/footer";
+import { AuthService } from "~/services/auth.service";
+import { HttpStatusCode, isAxiosError } from "axios";
 
-export default function Page() {
-  const searchParams = useSearchParams();
-  const hash = searchParams.get("hash") ?? "";
-  const confirmEmail = useConfirmEmail();
+type ConfirmEmailPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+export default async function Page({ searchParams }: ConfirmEmailPageProps) {
+  let isError = false;
+  let isExpired = false;
+  const params = await searchParams;
+  const hash = (params.hash as string) ?? "";
 
-  useEffect(() => {
-    if (hash) {
-      confirmEmail.mutate(hash);
+  try {
+    if (!hash) {
+      throw new Error("invalid hash");
     }
-    // run only once when hash changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hash]);
+
+    await AuthService.confirmEmail(hash);
+  } catch (error) {
+    if (
+      isAxiosError(error) &&
+      error.response?.status === HttpStatusCode.NotFound
+    ) {
+      isExpired = true;
+    }
+    isError = true;
+  }
+
+  const getErrorMessage = () => {
+    if (isExpired) {
+      return "O link de confirmação expirou ou foi resgatado. Por favor, solicite um novo link.";
+    }
+
+    return "Não foi possível confirmar seu email. Por favor, tente novamente mais tarde.";
+  };
 
   return (
     <main className="flex min-h-dvh flex-col justify-between">
@@ -41,6 +59,7 @@ export default function Page() {
               width={100}
               height={100}
               className="h-14 w-14 md:h-auto md:w-auto"
+              priority
             />
             <div>
               <h1 className="text-lg font-bold md:text-3xl">UFRA</h1>
@@ -56,26 +75,24 @@ export default function Page() {
         <Card className="w-full max-w-sm bg-green-50">
           <CardHeader>
             <div className="flex items-center space-x-2">
-              {confirmEmail.isError ? (
+              {isError ? (
                 <XCircle className="h-6 w-6 text-red-600" />
               ) : (
                 <CheckCircle2 className="h-6 w-6 text-green-600" />
               )}
               <CardTitle className="text-2xl text-green-800">
-                {confirmEmail.isError ? "Erro" : "Sucesso"}
+                {isError ? "Erro" : "Sucesso"}
               </CardTitle>
             </div>
             <CardDescription className="text-green-700">
-              {confirmEmail.isError
-                ? "Não foi possível confirmar seu email."
-                : "Email confirmado com sucesso."}
+              {isError ? getErrorMessage() : "Email confirmado com sucesso."}
             </CardDescription>
           </CardHeader>
           <CardContent />
           <CardFooter>
             <Link href="/login" passHref className="w-full">
               <Button className="w-full bg-green-600 text-white hover:bg-green-700">
-                Voltar ao login
+                Ir para login
               </Button>
             </Link>
           </CardFooter>
