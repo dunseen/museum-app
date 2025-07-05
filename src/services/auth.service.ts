@@ -1,5 +1,5 @@
 import { type AuthUser } from "~/interfaces/auth-user.interface";
-import { api } from "~/server/api";
+import { api, publicApi } from "~/server/api";
 
 export interface LoginApiResponse {
   token: string;
@@ -21,5 +21,17 @@ export class AuthService {
     );
 
     return data;
+  }
+
+  static async forgotPassword(email: string) {
+    await publicApi.post("/auth/forgot/password", { email });
+  }
+
+  static async resetPassword(payload: { hash: string; password: string }) {
+    await publicApi.post("/auth/reset/password", payload);
+  }
+
+  static async confirmEmail(hash: string) {
+    await publicApi.post("/auth/email/confirm", { hash });
   }
 }
