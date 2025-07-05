@@ -32,6 +32,6 @@ export class AuthService {
   }
 
   static async confirmEmail(hash: string) {
-    await publicApi.post("/auth/confirm/email", { hash });
+    await publicApi.post("/auth/email/confirm", { hash });
   }
 }
