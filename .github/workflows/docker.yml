@@ -57,11 +57,11 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ vars.VPS_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to VPS
         run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@${{ vars.VPS_HOST }} << 'EOF'
+          ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.VPS_HOST }} << 'EOF'
           echo "${{ secrets.DOCKER_HUB_PASSWORD  }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME  }}" --password-stdin
           docker pull ${{ secrets.DOCKER_HUB_USERNAME  }}/museum-app:latest
           docker stop museum-app || true
