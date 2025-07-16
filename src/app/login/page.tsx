@@ -36,6 +36,7 @@ export default function Page() {
       email: data.email,
       password: data.password,
       redirect: false,
+      callbackUrl: "/dashboard",
     });
 
     if (result?.ok) {
