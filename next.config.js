@@ -8,31 +8,9 @@ await import("./src/env.js");
 const config = {
   reactStrictMode: true,
   output: "standalone",
-
-  /**
-   * If you are using `appDir` then you must comment the below `i18n` config out.
-   *
-   * @see https://github.com/vercel/next.js/issues/41980
-   */
-  i18n: {
-    locales: ["en"],
-    defaultLocale: "en",
-  },
   transpilePackages: ["geist"],
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "upload.wikimedia.org",
-      },
-      {
-        protocol: "http",
-        hostname: "127.0.0.1",
-      },
-      {
-        protocol: "http",
-        hostname: "localhost",
-      },
       {
         protocol: "https",
         hostname: "herb-storage-api.dlima-consulting.com",
