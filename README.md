@@ -1,32 +1,31 @@
-# Create T3 App
+# 🌿 Herbário Virtual Felisberto Camargo (Museum App)
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+This project is a web platform for the management, sharing, and cataloging of plant species, based on scientific and taxonomic data. It is part of the undergraduate thesis (TCC) in Information Systems at UFRA and aims to make the herbarium's collection accessible to researchers, students, and the general public worldwide.
 
-## What's next? How do I make an app with this?
+The application allows users to browse, search, and view detailed information about plant specimens, including taxonomic hierarchy, botanical characteristics, and images. Administrators can manage the collection, control user access, and ensure the integrity and authenticity of the data.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## 📘 Description
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+The Felisberto Camargo Herbarium at the Federal Rural University of the Amazon (UFRA) is a scientific collection of preserved plants, serving as a reference for botanical, ecological, and conservation studies. This platform increases the visibility and accessibility of the herbarium's collection, enabling global access to its data and supporting research and education.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## 🌱 Features
 
-## Learn More
+- Registration and consultation of species with taxonomic hierarchy
+- Management of botanical characteristics per species
+- Authentication and access control with role-based permissions
+- Combined filtering by characteristic and taxonomy
+- Responsive and modern user interface
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## 🖥️ Tech Stack
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- **Frontend:** Next.js, React, Tailwind CSS
+- **Authentication:** NextAuth.js
+- **API:** Integrates with a NestJS + TypeORM backend
+- **Deployment:** VPS (Oracle Cloud), GitHub Actions, Cloudflare, Nginx
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## 🚀 Deployment
 
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+The application can be deployed using Docker. See below for instructions.
 
 ## Docker
 
@@ -53,8 +52,33 @@ docker run -p 3000:3000 \
   museum-app
 ```
 
-The workflow in `.github/workflows/docker.yml` runs `yarn lint` and `yarn build` on pull
-requests targeting `main` to catch issues before merge. When changes land on `main`,
-it builds and pushes a Docker image to **Docker Hub** while passing these variables
-as secrets. The container runs as a non-root user for improved security.
+The workflow in `.github/workflows/docker.yml` runs `yarn lint` and `yarn build` on pull requests targeting `master` to catch issues before merge. When changes land on `master`, it builds and pushes a Docker image to **Docker Hub** while passing these variables as secrets. The container runs as a non-root user for improved security.
 
+---
+
+## 👥 Contribuidores
+
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%">
+        <img src="https://github.com/dunseen.png" width="100px;" alt="Davys Lima"/>
+        <br />
+        <sub><b>Davys Lima</b></sub>
+        <br />
+        <a href="mailto:davysjunior08@hotmail.com">📧</a> <a href="https://github.com/dunseen">💻</a>
+      </td>
+      <td align="center" valign="top" width="14.28%">
+        <img src="https://github.com/denis-junior.png" width="100px;" alt="Denis Charles"/>
+        <br />
+        <sub><b>Denis Charles</b></sub>
+        <br />
+        <a href="mailto:denis_jr2001@hotmail.com">📧</a> <a href="https://github.com/denis-junior">💻</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+---
+
+For questions or suggestions, open an issue or contact the maintainers.
