@@ -29,7 +29,7 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 
 # create a non-root user
-RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -G nodejs -u 1001
+RUN groupadd -g 1001 nodejs && useradd -m -u 1001 -g nodejs nextjs
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
