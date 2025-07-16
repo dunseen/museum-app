@@ -73,6 +73,7 @@ jobs:
           docker stop museum-app || true
           docker rm museum-app || true
           docker run -d --name museum-app \
+            --network app_public \
             -p 3000:3000 \
             -e NEXTAUTH_SECRET="${{ secrets.NEXTAUTH_SECRET }}" \
             -e NEXTAUTH_URL="${{ secrets.NEXTAUTH_URL }}" \
