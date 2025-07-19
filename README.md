@@ -56,7 +56,7 @@ The workflow in `.github/workflows/docker.yml` runs `yarn lint` and `yarn build`
 
 ---
 
-## 👥 Contribuidores
+## 👥 Contributors
 
 <table>
   <tbody>
