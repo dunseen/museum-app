@@ -85,17 +85,7 @@ const editUserSchema = z.object({
   ),
 });
 
-const addUserSchema = editUserSchema.extend({
-  password: z
-    .string({
-      required_error: "Campo obrigatório",
-    })
-    .min(6, {
-      message: "Campo deve ter no mínimo 6 dígitos",
-    }),
-});
-
-type AddUserFormType = z.infer<typeof addUserSchema>;
+type UserFormType = z.infer<typeof editUserSchema>;
 
 export function Users() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -118,11 +108,11 @@ export function Users() {
     [users, selectedUserId],
   );
 
-  const form = useForm<AddUserFormType>({
-    resolver: zodResolver(selectedUser ? editUserSchema : addUserSchema),
+  const form = useForm<UserFormType>({
+    resolver: zodResolver(editUserSchema),
   });
 
-  function onSubmit(data: AddUserFormType) {
+  function onSubmit(data: UserFormType) {
     if (selectedUser) {
       putUsers.mutate(
         {
@@ -158,7 +148,6 @@ export function Users() {
         role: {
           id: Number(data.role.value),
         },
-        password: data.password,
       },
       {
         onSuccess() {
@@ -198,12 +187,7 @@ export function Users() {
   }
 
   function onCloseAddDialog() {
-    form.resetField("email");
-    form.resetField("firstName");
-    form.resetField("lastName");
-    form.resetField("phone");
-    form.resetField("role");
-
+    form.reset();
     setSelectedUserId(null);
     addUserDialog.onClose();
   }
@@ -404,30 +388,6 @@ export function Users() {
                     </FormItem>
                   )}
                 />
-                {!selectedUser && (
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel htmlFor={field.name}>Senha</FormLabel>
-                        <FormControl>
-                          <Input
-                            defaultValue={field.value}
-                            ref={field.ref}
-                            name={field.name}
-                            onChange={field.onChange}
-                            onBlur={field.onBlur}
-                            disabled={field.disabled}
-                            type="password"
-                            placeholder="Digite uma senha"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
                 <FormField
                   control={form.control}
                   name="phone"

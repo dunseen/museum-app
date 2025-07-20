@@ -7,7 +7,6 @@ export type PostUsersPayload = {
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
   phone: string;
   role: {
     id: number;
