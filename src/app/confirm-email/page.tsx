@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/await-thenable */
-import { CheckCircle2, XCircle } from "lucide-react";
+import { XCircle } from "lucide-react";
 import Image from "next/image";
+import SetPasswordForm from "./components/set-password-form";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
 import {
@@ -71,33 +72,31 @@ export default async function Page({ searchParams }: ConfirmEmailPageProps) {
         </div>
       </header>
 
-      <section className="flex items-center justify-center px-2 md:px-0">
-        <Card className="w-full max-w-sm bg-green-50">
-          <CardHeader>
-            <div className="flex items-center space-x-2">
-              {isError ? (
+      {isError ? (
+        <section className="flex items-center justify-center px-2 md:px-0">
+          <Card className="w-full max-w-sm bg-green-50">
+            <CardHeader>
+              <div className="flex items-center space-x-2">
                 <XCircle className="h-6 w-6 text-red-600" />
-              ) : (
-                <CheckCircle2 className="h-6 w-6 text-green-600" />
-              )}
-              <CardTitle className="text-2xl text-green-800">
-                {isError ? "Erro" : "Sucesso"}
-              </CardTitle>
-            </div>
-            <CardDescription className="text-green-700">
-              {isError ? getErrorMessage() : "Email confirmado com sucesso."}
-            </CardDescription>
-          </CardHeader>
-          <CardContent />
-          <CardFooter>
-            <Link href="/login" passHref className="w-full">
-              <Button className="w-full bg-green-600 text-white hover:bg-green-700">
-                Ir para login
-              </Button>
-            </Link>
-          </CardFooter>
-        </Card>
-      </section>
+                <CardTitle className="text-2xl text-green-800">Erro</CardTitle>
+              </div>
+              <CardDescription className="text-green-700">
+                {getErrorMessage()}
+              </CardDescription>
+            </CardHeader>
+            <CardContent />
+            <CardFooter>
+              <Link href="/login" passHref className="w-full">
+                <Button className="w-full bg-green-600 text-white hover:bg-green-700">
+                  Ir para login
+                </Button>
+              </Link>
+            </CardFooter>
+          </Card>
+        </section>
+      ) : (
+        <SetPasswordForm hash={hash} />
+      )}
 
       <Footer />
     </main>
