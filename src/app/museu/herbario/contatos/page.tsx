@@ -3,9 +3,11 @@ import React from "react";
 const Page: React.FC = () => {
   return (
     <section className="mx-auto max-w-4xl p-6 text-gray-800">
-      <h1 className="mb-6 text-3xl font-bold text-green-700">Contatos</h1>
+      <h1 className="mb-4 text-xl font-bold text-green-700 md:text-3xl">
+        Contatos
+      </h1>
 
-      <h2 className="mb-2 text-2xl font-semibold text-gray-700">
+      <h2 className="mb-2 text-lg font-semibold text-gray-700">
         Campus - Belém
       </h2>
       <p>
@@ -15,7 +17,7 @@ const Page: React.FC = () => {
         <strong>Ouvidoria:</strong> (91) 99189-9539 / ouvidoria@ufra.edu.br
       </p>
 
-      <h2 className="mb-2 mt-4 text-2xl font-semibold text-gray-700">
+      <h2 className="mb-2 mt-4 text-lg font-semibold text-gray-700">
         Pró-Reitorias
       </h2>
       <p>
@@ -45,7 +47,7 @@ const Page: React.FC = () => {
         / propladi@ufra.edu.br
       </p>
 
-      <h2 className="mb-2 mt-4 text-2xl font-semibold text-gray-700">
+      <h2 className="mb-2 mt-4 text-lg font-semibold text-gray-700">
         Outros Contatos
       </h2>
       <p>
@@ -56,7 +58,7 @@ const Page: React.FC = () => {
         <strong>Assessoria de Comunicação (ASCOM):</strong> ascom@ufra.edu.br
       </p>
 
-      <h2 className="mb-2 mt-4 text-2xl font-semibold text-gray-700">
+      <h2 className="mb-2 mt-4 text-lg font-semibold text-gray-700">
         Outros Campus
       </h2>
       <p>
