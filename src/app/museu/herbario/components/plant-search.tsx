@@ -182,7 +182,13 @@ export default function PlantSearch() {
                         menuPosition="fixed"
                         value={selectedOptions}
                         onChange={(selected) =>
-                          onCharacteristicGroupChange(groupIds, selected)
+                          onCharacteristicGroupChange(
+                            groupIds,
+                            selected as MultiValue<{
+                              value: string;
+                              label: string;
+                            }>,
+                          )
                         }
                       />
                     </li>
