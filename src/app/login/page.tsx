@@ -1,7 +1,6 @@
 "use client";
 
 import { BookOpen } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
 import { Button } from "~/components/ui/button";
@@ -21,6 +20,7 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTransition } from "react";
+import Header from "../museu/herbario/components/header";
 
 type LoginData = {
   email: string;
@@ -51,30 +51,7 @@ export default function Page() {
 
   return (
     <main className="flex min-h-dvh flex-col justify-between">
-      <header className="bg-[#006633] p-4 text-white">
-        <div className="container mx-auto flex flex-wrap items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/museu/herbario"
-              className="flex items-center space-x-2"
-            >
-              <Image
-                src="/ufra-logo.png"
-                alt="UFRA Logo"
-                width={100}
-                height={100}
-                className="h-14 w-14 md:h-auto md:w-auto"
-              />
-            </Link>
-            <div>
-              <h1 className="text-lg font-bold md:text-3xl">UFRA</h1>
-              <span className="text-sm font-medium">
-                Universidade Federal Rural da Amazônia
-              </span>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <section className="flex items-center justify-center px-2 md:px-0">
@@ -98,7 +75,8 @@ export default function Page() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="botanist@example.com"
+                  placeholder="Digite seu e-mail"
+                  autoComplete="email"
                   required
                   className="border-green-200 focus:border-green-500 focus:ring-green-500"
                   {...register("email")}
@@ -112,6 +90,8 @@ export default function Page() {
                   id="password"
                   type="password"
                   required
+                  placeholder="Digite sua senha"
+                  autoComplete="current-password"
                   className="border-green-200 focus:border-green-500 focus:ring-green-500"
                   {...register("password")}
                 />

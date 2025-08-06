@@ -15,6 +15,11 @@ const config = {
         protocol: "https",
         hostname: "herb-storage-api.dlima-consulting.com",
       },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "9000",
+      },
     ],
   },
 };

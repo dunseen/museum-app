@@ -2,6 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Menu } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetClose,
+} from "~/components/ui/sheet";
 
 const links = [
   {
@@ -25,12 +34,14 @@ const links = [
     active: false,
   },
 ];
+
 export function NavList() {
   const pathname = usePathname();
 
   return (
     <nav>
-      <ul className="flex space-x-4">
+      {/* Desktop Menu */}
+      <ul className="hidden space-x-4 md:flex">
         {links.map((link) => {
           const isActive = pathname === link.href;
           return (
@@ -45,6 +56,43 @@ export function NavList() {
           );
         })}
       </ul>
+
+      {/* Mobile Menu Sheet */}
+      <Sheet>
+        <SheetTrigger asChild>
+          <button className="md:hidden" aria-label="Toggle menu">
+            <Menu className="h-6 w-6" />
+          </button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-[300px] bg-white">
+          <SheetHeader>
+            <SheetTitle className="text-[#006633]">Menu</SheetTitle>
+          </SheetHeader>
+          <nav className="mt-6">
+            <ul className="flex flex-col space-y-4">
+              {links.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <li key={link.label}>
+                    <SheetClose asChild>
+                      <Link
+                        className={`block py-2 text-lg ${
+                          isActive
+                            ? "font-bold text-[#006633] underline"
+                            : "text-gray-700 hover:text-[#006633]"
+                        }`}
+                        href={link.href}
+                      >
+                        {link.label}
+                      </Link>
+                    </SheetClose>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        </SheetContent>
+      </Sheet>
     </nav>
   );
 }

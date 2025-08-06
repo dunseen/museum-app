@@ -1,7 +1,6 @@
 "use client";
 
 import { Lock } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -21,6 +20,7 @@ import {
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import Footer from "../museu/herbario/components/footer";
+import Header from "../museu/herbario/components/header";
 
 export default function Page() {
   const router = useRouter();
@@ -30,11 +30,11 @@ export default function Page() {
     email: z.string().email("Email inválido"),
   });
 
-  const { register, handleSubmit, formState } = useForm<
-    z.infer<typeof schema>
-  >({
-    resolver: zodResolver(schema),
-  });
+  const { register, handleSubmit, formState } = useForm<z.infer<typeof schema>>(
+    {
+      resolver: zodResolver(schema),
+    },
+  );
 
   async function onSubmit(values: z.infer<typeof schema>) {
     try {
@@ -47,25 +47,7 @@ export default function Page() {
 
   return (
     <main className="flex min-h-dvh flex-col justify-between">
-      <header className="bg-[#006633] p-4 text-white">
-        <div className="container mx-auto flex flex-wrap items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <Image
-              src="/ufra-logo.png"
-              alt="UFRA Logo"
-              width={100}
-              height={100}
-              className="h-14 w-14 md:h-auto md:w-auto"
-            />
-            <div>
-              <h1 className="text-lg font-bold md:text-3xl">UFRA</h1>
-              <span className="text-sm font-medium">
-                Universidade Federal Rural da Amazônia
-              </span>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <section className="flex items-center justify-center px-2 md:px-0">
@@ -90,7 +72,9 @@ export default function Page() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="botanist@example.com"
+                  placeholder="Digite seu e-mail"
+                  required
+                  autoComplete="email"
                   className="border-green-200 focus:border-green-500 focus:ring-green-500"
                   {...register("email")}
                 />

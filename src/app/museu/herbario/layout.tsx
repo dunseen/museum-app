@@ -4,10 +4,10 @@ import { type PropsWithChildren } from "react";
 
 export default function RootLayout({ children }: Readonly<PropsWithChildren>) {
   return (
-    <>
-      <Header />
-      {children}
+    <div className="flex min-h-full flex-col">
+      <Header showNavMenu />
+      <main className="flex-1">{children}</main>
       <Footer />
-    </>
+    </div>
   );
 }
