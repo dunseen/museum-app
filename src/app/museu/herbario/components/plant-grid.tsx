@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
-import InfiniteScroll from "react-infinite-scroll-component";
+import dynamic from "next/dynamic";
 import { useGetPosts } from "../api";
 import Image from "next/image";
 import defaultImage from "public/default-fallback-image.png";
@@ -11,6 +11,11 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { usePost } from "../context/post-context";
 import LoadingErrorWrapper from "~/components/ui/loading-error-wrapper";
 import { type GetTaxonApiResponse } from "../types/taxonomy.types";
+
+const InfiniteScroll = dynamic(() => import("react-infinite-scroll-component"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-4 w-[250px]" />,
+});
 
 export default function PlantGrid() {
   const { search } = usePost();
@@ -39,7 +44,7 @@ export default function PlantGrid() {
         dataLength={data?.length ?? 0}
       >
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {data?.map((post) => (
+          {data?.map((post, index) => (
             <Link
               href={`/museu/herbario/especie/${encodeURIComponent(post.specie.scientificName.toLowerCase())}`}
               key={post.id}
@@ -53,6 +58,7 @@ export default function PlantGrid() {
                     alt={`image-of-${post.specie.scientificName}`}
                     width={200}
                     height={200}
+                    priority={index === 0}
                     className="h-48 w-full rounded-t-lg object-cover transition-opacity group-hover:opacity-90"
                   />
                 </CardHeader>
