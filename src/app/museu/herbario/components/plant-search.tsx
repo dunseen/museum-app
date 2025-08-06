@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import {
@@ -17,11 +18,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "~/components/ui/accordion";
-import Select, { type MultiValue } from "react-select";
+import type { MultiValue } from "react-select";
 import { FilterIcon, FilterXIcon } from "lucide-react";
 import { usePost } from "../context/post-context";
 import { useGetCharacteristicFilters, useGetHierarchies } from "../api";
 import { FiltersBadge } from "./filters-badge";
+
+const Select = dynamic(() => import("react-select"), {
+  ssr: false,
+});
 
 export default function PlantSearch() {
   const [accordionValue, setAccordionValue] = useState<string>("");

@@ -1,7 +1,14 @@
 import getCachedQueryClient from "~/lib/react-query";
 import HerbariumHero from "./components/herbarium-hero";
-import PlantGrid from "./components/plant-grid";
-import PlantSearch from "./components/plant-search";
+import dynamic from "next/dynamic";
+
+const PlantSearch = dynamic(() => import("./components/plant-search"), {
+  loading: () => <div />,
+});
+
+const PlantGrid = dynamic(() => import("./components/plant-grid"), {
+  loading: () => <div />,
+});
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getCharacteristicFilters, getPostQueryConfig } from "./api";
 import { PostProvider } from "./context/post-context";
