@@ -12,10 +12,13 @@ import { usePost } from "../context/post-context";
 import LoadingErrorWrapper from "~/components/ui/loading-error-wrapper";
 import { type GetTaxonApiResponse } from "../types/taxonomy.types";
 
-const InfiniteScroll = dynamic(() => import("react-infinite-scroll-component"), {
-  ssr: false,
-  loading: () => <Skeleton className="h-4 w-[250px]" />,
-});
+const InfiniteScroll = dynamic(
+  () => import("react-infinite-scroll-component"),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-4 w-[250px]" />,
+  },
+);
 
 export default function PlantGrid() {
   const { search } = usePost();
@@ -44,7 +47,7 @@ export default function PlantGrid() {
         dataLength={data?.length ?? 0}
       >
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {data?.map((post, index) => (
+          {data?.map((post) => (
             <Link
               href={`/museu/herbario/especie/${encodeURIComponent(post.specie.scientificName.toLowerCase())}`}
               key={post.id}
@@ -58,7 +61,7 @@ export default function PlantGrid() {
                     alt={`image-of-${post.specie.scientificName}`}
                     width={200}
                     height={200}
-                    priority={index === 0}
+                    priority
                     className="h-48 w-full rounded-t-lg object-cover transition-opacity group-hover:opacity-90"
                   />
                 </CardHeader>
