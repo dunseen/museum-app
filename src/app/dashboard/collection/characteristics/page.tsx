@@ -5,7 +5,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 export default async function Page() {
   const client = getCachedQueryClient();
-  await client.prefetchQuery(getCharacteristicsConfig({ limit: 10 }));
+  await client.prefetchQuery(getCharacteristicsConfig({ limit: 100 }));
 
   const dehydratedState = dehydrate(client);
 

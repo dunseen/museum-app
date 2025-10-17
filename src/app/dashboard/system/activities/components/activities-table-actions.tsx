@@ -9,19 +9,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import { type ChangeRequestStatus } from "../../api";
 
 type ActivitiesTableActionsProps = {
   onApprove: () => void;
   onReject: () => void;
   onGeneratePDF: () => void;
-  isPublished?: boolean;
+  status: ChangeRequestStatus;
 };
 export function ActivitiesTableActions({
   onApprove,
   onReject,
   onGeneratePDF,
-  isPublished,
+  status,
 }: ActivitiesTableActionsProps) {
+  if (status === "rejected") return null;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,7 +34,7 @@ export function ActivitiesTableActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {!isPublished && (
+        {status === "pending" && (
           <>
             <DropdownMenuItem onClick={onApprove}>Aprovar</DropdownMenuItem>
 
@@ -40,7 +43,7 @@ export function ActivitiesTableActions({
           </>
         )}
 
-        {isPublished && (
+        {status === "approved" && (
           <DropdownMenuItem onClick={onGeneratePDF}>
             Gerar ficha
           </DropdownMenuItem>

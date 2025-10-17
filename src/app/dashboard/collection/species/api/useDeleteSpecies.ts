@@ -7,7 +7,9 @@ export type DeleteSpeciePayload = {
 };
 
 async function deleteSpecie(payload: DeleteSpeciePayload) {
-  const { data } = await api.delete<void>(`/dashboard/species/${payload.id}`);
+  const { data } = await api.delete<void>(
+    `/dashboard/change-requests/species/${payload.id}`,
+  );
 
   return data;
 }

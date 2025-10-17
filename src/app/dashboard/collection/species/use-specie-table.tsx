@@ -35,37 +35,6 @@ export function useSpecieTable() {
   const columns = useMemo<ColumnDef<GetSpecieApiResponse>[]>(
     () => [
       {
-        id: "actions",
-        header: "Ações",
-        cell: ({ row }) => {
-          return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Abrir menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() => setSelectedSpecie(row.original)}
-                >
-                  Editar
-                </DropdownMenuItem>
-                <Can I="delete" a="Collection">
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => setSelectedSpecieId(row.original.id)}
-                  >
-                    Deletar
-                  </DropdownMenuItem>
-                </Can>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          );
-        },
-      },
-      {
         header: "Nome científico",
         cell: ({ row }) => (
           <p
@@ -214,6 +183,37 @@ export function useSpecieTable() {
             <p title={text} className="max-w-80 truncate">
               {text}
             </p>
+          );
+        },
+      },
+      {
+        id: "actions",
+        header: "Ações",
+        cell: ({ row }) => {
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Abrir menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onClick={() => setSelectedSpecie(row.original)}
+                >
+                  Editar
+                </DropdownMenuItem>
+                <Can I="delete" a="Collection">
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => setSelectedSpecieId(row.original.id)}
+                  >
+                    Deletar
+                  </DropdownMenuItem>
+                </Can>
+              </DropdownMenuContent>
+            </DropdownMenu>
           );
         },
       },

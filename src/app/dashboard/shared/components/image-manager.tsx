@@ -6,6 +6,7 @@ import { Card, CardContent } from "~/components/ui/card";
 import { Trash2, Plus } from "lucide-react";
 import { useImageManager } from "../hooks/use-image-manager";
 import Image from "next/image";
+import { useMemo } from "react";
 
 export type ImageType = {
   id: string;
@@ -21,10 +22,15 @@ interface ImageManagerProps {
 }
 
 export default function ImageManager({
-  existingImages = [],
+  existingImages,
   onImagesChange,
   isReadOnly,
 }: ImageManagerProps) {
+  const memoizedExistingImages = useMemo(
+    () => existingImages ?? [],
+    [existingImages],
+  );
+
   const {
     fileInputRef,
     handleAddImageClick,
@@ -32,7 +38,7 @@ export default function ImageManager({
     handleRemoveImage,
     images,
   } = useImageManager({
-    existingImages,
+    existingImages: memoizedExistingImages,
     onImagesChange,
   });
 
@@ -61,7 +67,7 @@ export default function ImageManager({
           aria-label="Adicionar imagens"
         />
       </div>
-      <div className="flex gap-2 overflow-x-auto w-full">
+      <div className="flex w-full gap-2 overflow-x-auto">
         {images
           .filter((image) => !image?.removed)
           .map((image, index) => (

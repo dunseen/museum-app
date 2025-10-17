@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { type GetPostDetailsApiResponse } from "~/app/museu/herbario/types/post.types";
+import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
 import { type GetTaxonApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
 import { decimalToDMS } from "~/utils/lat-long";
 
@@ -17,14 +17,14 @@ const getFamilyFromTaxons = (taxons: GetTaxonApiResponse[]) => {
 };
 
 type PdfExportProps = {
-  post: GetPostDetailsApiResponse;
+  specie: GetSpecieApiResponse;
   qrCodeUrl: string;
   linkToEspecie: string;
 };
 export const PdfExport = React.forwardRef<
   HTMLDivElement,
   { data: PdfExportProps }
->(({ data: { post, qrCodeUrl, linkToEspecie } }, ref) => {
+>(({ data: { specie, qrCodeUrl, linkToEspecie } }, ref) => {
   return (
     <div
       ref={ref}
@@ -48,40 +48,39 @@ export const PdfExport = React.forwardRef<
 
       <div className="flex justify-end">
         <p>
-          <strong>Registro:</strong> {post.specie.id}
+          <strong>Registro:</strong> {specie.id}
         </p>
       </div>
 
       <hr className="my-2 border-gray-300" />
 
       <p className="uppercase">
-        <strong>{getFamilyFromTaxons(post.specie.taxons)}</strong>
+        <strong>{getFamilyFromTaxons(specie.taxons)}</strong>
       </p>
-      <p className="italic">{post.specie.scientificName}</p>
+      <p className="italic">{specie.scientificName}</p>
       <p>
-        <strong>Nome vulgar:</strong> {post?.specie?.commonName ?? "-"}
+        <strong>Nome vulgar:</strong> {specie?.commonName ?? "-"}
       </p>
       <p>
-        <strong>Determinador:</strong> {post.author.firstName}{" "}
-        {post.author.lastName} -{" "}
+        <strong>Determinador:</strong> {specie?.determinator?.name ?? "-"}
       </p>
       <p>
         <strong>Coordenadas:</strong>{" "}
-        {decimalToDMS(post.specie.location.lat, true)}{" "}
-        {decimalToDMS(post.specie.location.long, false)}
+        {decimalToDMS(specie.location.lat, true)}{" "}
+        {decimalToDMS(specie.location.long, false)}
       </p>
       <p>
-        <strong>Localização:</strong> {post.specie.location.address} -{" "}
-        {post.specie.location.state.code}/{post.specie.location.city.name},
+        <strong>Localização:</strong> {specie.location.address} -{" "}
+        {specie.location.state.code}/{specie.location.city.name},
       </p>
 
       <p>
-        <strong>Descrição:</strong> {post.specie.description}
+        <strong>Descrição:</strong> {specie.description}
       </p>
 
       <p>
         <strong>Data da coleta:</strong>{" "}
-        {new Date(post.specie.collectedAt).toLocaleDateString()}
+        {new Date(specie.collectedAt).toLocaleDateString()}
       </p>
 
       <div className="flex flex-col space-y-2">

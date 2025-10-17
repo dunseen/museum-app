@@ -1,2 +1,2 @@
 export * from "./useGetHomeSummary";
-export * from "../../system/api/useGetLastPosts";
+export * from "../../system/api/useGetChangeRequests";

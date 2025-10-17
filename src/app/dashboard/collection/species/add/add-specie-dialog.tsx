@@ -236,14 +236,14 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
           formData,
         });
 
-        toast.warning("Espécie atualizada e enviada para aprovação");
+        toast.warning("Atualização enviada para revisão.");
         onCloseAddDialog();
         return;
       }
 
       await postSpeciesMutation.mutateAsync(formData);
 
-      toast.warning("Espécie enviada para aprovação");
+      toast.warning("Espécie enviada para revisão.");
       onCloseAddDialog();
     } catch (error) {
       console.error(error);
@@ -269,67 +269,76 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
   }
 
   useEffect(() => {
-    if (data) {
-      form.setValue("commonName", data.commonName);
-      form.setValue("scientificName", data.scientificName);
-      form.setValue("collectedAt", new Date(data.collectedAt));
-      form.setValue("determinatedAt", new Date(data.determinatedAt));
-      form.setValue("description", data.description ?? "");
+    if (!data) return;
 
-      form.setValue(
-        "characteristics",
-        data.characteristics?.map((c) => ({
-          value: String(c.id),
-          label: c.name,
-        })) ?? [],
-      );
+    const specie = data;
 
+    form.setValue("commonName", specie.commonName);
+    form.setValue("scientificName", specie.scientificName);
+    form.setValue("collectedAt", new Date(specie.collectedAt));
+    form.setValue("determinatedAt", new Date(specie.determinatedAt));
+    form.setValue("description", specie.description ?? "");
+
+    form.setValue(
+      "characteristics",
+      specie.characteristics?.map((c) => ({
+        value: String(c.id),
+        label: c.name,
+      })) ?? [],
+    );
+
+    if (specie.collector) {
       form.setValue("collector", {
-        label: data.collector.name,
-        value: String(data.collector.id),
+        label: specie.collector.name,
+        value: String(specie.collector.id),
       });
-
-      form.setValue("determinator", {
-        label: data.determinator.name,
-        value: String(data.determinator.id),
-      });
-
-      if (data.taxons?.length) {
-        form.setValue("taxonomy", {
-          label: data?.taxons?.[0]?.name ?? "",
-          value: String(data?.taxons?.[0]?.id ?? ""),
-        });
-      }
-
-      form.setValue("location", {
-        address: data.location.address,
-        lat: decimalToDMS(data.location.lat, true),
-        long: decimalToDMS(data.location.long, false),
-        state: {
-          label: data.location.state.code,
-          value: String(data.location.state.id),
-        },
-        city: {
-          label: data.location.city.name,
-          value: String(data.location.city.id),
-        },
-      });
-
-      form.setValue(
-        "images",
-        data.files.map((file) => ({
-          id: file.id,
-          url: file.url,
-          removed: false,
-          isNew: false,
-        })),
-      );
     }
+
+    if (specie.determinator) {
+      form.setValue("determinator", {
+        label: specie.determinator.name,
+        value: String(specie.determinator.id),
+      });
+    }
+
+    if (specie.taxons?.length) {
+      form.setValue("taxonomy", {
+        label: specie.taxons[0]?.name ?? "",
+        value: String(specie.taxons[0]?.id ?? ""),
+      });
+    }
+
+    form.setValue("location", {
+      address: specie.location.address,
+      lat: decimalToDMS(specie.location.lat, true),
+      long: decimalToDMS(specie.location.long, false),
+      state: {
+        label: specie.location.state.code,
+        value: String(specie.location.state.id),
+      },
+      city: {
+        label: specie.location.city.name,
+        value: String(specie.location.city.id),
+      },
+    });
+
+    form.setValue(
+      "images",
+      specie.files.map((file) => ({
+        id: file.id,
+        url: file.url,
+        removed: false,
+        isNew: false,
+      })),
+    );
   }, [data, form]);
 
   return (
-    <Dialog open={isOpen}>
-      <DialogContent className="max-h-[calc(100dvh-2rem)] max-w-[900px] overflow-y-auto lg:min-w-[500px]">
+    <Dialog open={isOpen} onOpenChange={onCloseAddDialog}>
+      <DialogContent
+        aria-describedby={undefined}
+        className="max-h-[calc(100dvh-2rem)] max-w-[900px] overflow-y-auto lg:min-w-[500px]"
+      >
         <DialogHeader>
           <DialogTitle>{dialogActionTitle} Espécie</DialogTitle>
           {!isReadOnly && (
@@ -342,6 +351,7 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
         <Form {...form}>
           <form id="edit-specie-form">
             <Stepper steps={steps} currentStep={step} statuses={statuses} />
+
             <div className="flex flex-col gap-4">
               {step === 0 && (
                 <div className="flex flex-col gap-4">
@@ -365,8 +375,8 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
               )}
             </div>
 
-            {!isReadOnly && (
-              <DialogFooter className="gap-2 pt-8">
+            <DialogFooter className="gap-2 pt-8">
+              {!isReadOnly && (
                 <Button
                   disabled={
                     postSpeciesMutation.isPending ||
@@ -378,17 +388,19 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                 >
                   Cancelar
                 </Button>
+              )}
 
-                {step > 0 && (
-                  <Button type="button" variant="outline" onClick={prevStep}>
-                    Voltar
-                  </Button>
-                )}
-                {step < steps.length - 1 ? (
-                  <Button type="button" onClick={handleNextStep}>
-                    Próximo
-                  </Button>
-                ) : (
+              {step > 0 && (
+                <Button type="button" variant="outline" onClick={prevStep}>
+                  Voltar
+                </Button>
+              )}
+              {step < steps.length - 1 ? (
+                <Button type="button" onClick={handleNextStep}>
+                  Próximo
+                </Button>
+              ) : (
+                !isReadOnly && (
                   <Button
                     type="button"
                     onClick={form.handleSubmit(onSubmit)}
@@ -403,9 +415,9 @@ export const AddSpecieDialog: React.FC<AddSpecieDialogProps> = ({
                   >
                     Salvar
                   </Button>
-                )}
-              </DialogFooter>
-            )}
+                )
+              )}
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>

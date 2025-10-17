@@ -3,7 +3,7 @@ import System from "./components/system";
 import { defineAbilityFor } from "~/lib/casl";
 import { redirect } from "next/navigation";
 import getCachedQueryClient from "~/lib/react-query";
-import { getLastPostsConfig } from "../api";
+import { getChangeRequestsConfig } from "../api";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 export default async function Page() {
@@ -16,7 +16,7 @@ export default async function Page() {
   }
 
   const client = getCachedQueryClient();
-  await client.prefetchQuery(getLastPostsConfig({ limit: 10 }));
+  await client.prefetchQuery(getChangeRequestsConfig({ limit: 100 }));
 
   const dehydratedState = dehydrate(client);
 

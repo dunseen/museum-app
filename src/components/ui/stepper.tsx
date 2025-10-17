@@ -14,12 +14,12 @@ type StepperProps = {
 export const Stepper: React.FC<StepperProps> = ({
   steps,
   currentStep,
-  statuses = [],
+  statuses,
 }) => {
   return (
     <ol className="mb-4 flex w-full items-center justify-between gap-2">
       {steps.map((step, index) => {
-        const status = statuses[index] ?? "default";
+        const status = statuses?.[index] ?? "default";
         const isCurrent = index === currentStep;
 
         return (
@@ -30,9 +30,11 @@ export const Stepper: React.FC<StepperProps> = ({
                 isCurrent
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted text-muted-foreground",
-                status === "complete" && !isCurrent &&
+                status === "complete" &&
+                  !isCurrent &&
                   "border-green-500 bg-green-500 text-white",
-                status === "error" && !isCurrent &&
+                status === "error" &&
+                  !isCurrent &&
                   "border-destructive text-destructive",
               )}
             >

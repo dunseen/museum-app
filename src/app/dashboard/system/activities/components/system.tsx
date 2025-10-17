@@ -12,74 +12,111 @@ import { useDisclosure } from "~/hooks/use-disclosure";
 import { ConfirmationAlert } from "../../../shared/components/confirmation-alert";
 import { AddSpecieDialog } from "../../../collection/species/add/add-specie-dialog";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
-import { useGetLastPosts, usePostValidation } from "../../api";
-import { type GetPostDetailsApiResponse } from "~/app/museu/herbario/types/post.types";
+import {
+  useGetChangeRequests,
+  useApproveChangeRequest,
+  useRejectChangeRequest,
+} from "../../api";
+import { type SpecieDraftWithChangeRequest } from "../../api/useGetChangeRequests";
 import { toast } from "sonner";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
 import { useGeneratePdf } from "../../hooks/useExportPdf";
+import { useQueryClient } from "@tanstack/react-query";
+import { getSpecieDraftDetailConfig } from "../../api/useGetSpecieDraftDetail";
+import type { ChangeRequestStatus } from "../../api/useGetChangeRequests";
 
 const STATUS_PARSER = {
   pending: "Pendente",
-  published: "Publicado",
+  approved: "Aprovado",
   rejected: "Rejeitado",
-};
+} as const;
 export default function System() {
+  const [selectedCrId, setSelectedCrId] = useState<number | null>(null);
+  const [statusFilter, setStatusFilter] = useState<
+    ChangeRequestStatus | undefined
+  >(undefined);
+
   const lastPostHook = useDebouncedInput();
 
-  const lastPostsQuery = useGetLastPosts({
+  const changeRequestsQuery = useGetChangeRequests({
     limit: lastPostHook.pageLimit,
     page: lastPostHook.curentPage,
-    name: lastPostHook.debouncedInput,
+    status: statusFilter,
+    search: lastPostHook.debouncedInput,
   });
 
-  const postValidationMutation = usePostValidation();
+  const approveMutation = useApproveChangeRequest();
+  const rejectMutation = useRejectChangeRequest();
 
   const rejectDialog = useDisclosure();
   const approveDialog = useDisclosure();
   const addDialog = useDisclosure();
 
   const { generatePDF } = useGeneratePdf();
+  const queryClient = useQueryClient();
 
-  const [selectedActivity, setSelectedActivity] =
-    useState<GetPostDetailsApiResponse | null>(null);
-  const [viewSpecie, setViewSpecie] = useState<GetSpecieApiResponse | null>(
+  const [viewedSpecie, setViewedSpecie] = useState<GetSpecieApiResponse | null>(
     null,
   );
 
   const handleReject = useCallback(
-    (activity: GetPostDetailsApiResponse) => {
-      setSelectedActivity(activity);
+    (cr: SpecieDraftWithChangeRequest) => {
+      setSelectedCrId(cr.changeRequest.id);
       rejectDialog.onOpen();
     },
     [rejectDialog],
   );
   const handleApprove = useCallback(
-    (activity: GetPostDetailsApiResponse) => {
-      setSelectedActivity(activity);
+    (cr: SpecieDraftWithChangeRequest) => {
+      setSelectedCrId(cr.changeRequest.id);
       approveDialog.onOpen();
     },
     [approveDialog],
   );
 
   const viewDataActivity = useCallback(
-    (specie: GetSpecieApiResponse): void => {
-      setViewSpecie(specie);
-      addDialog.onOpen();
+    async (cr: SpecieDraftWithChangeRequest) => {
+      try {
+        const specie = await queryClient.fetchQuery(
+          getSpecieDraftDetailConfig(cr.id),
+        );
+        setViewedSpecie(specie);
+        addDialog.onOpen();
+      } catch (e) {
+        console.error(e);
+        toast.error("Erro ao carregar detalhes da espécie");
+      }
     },
-    [addDialog],
+    [addDialog, queryClient],
   );
 
-  const columns = useMemo<ColumnDef<GetPostDetailsApiResponse>[]>(
+  const onGeneratePDF = useCallback(
+    async (cr: SpecieDraftWithChangeRequest) => {
+      try {
+        const specie = await queryClient.fetchQuery(
+          getSpecieDraftDetailConfig(cr.id),
+        );
+        if (specie) {
+          await generatePDF({ specie });
+        }
+      } catch (e) {
+        console.error(e);
+        toast.error("Erro ao gerar PDF");
+      }
+    },
+    [generatePDF, queryClient],
+  );
+  const columns = useMemo<ColumnDef<SpecieDraftWithChangeRequest>[]>(
     () => [
       {
         header: "Espécie",
-        accessorKey: "specie",
+        accessorKey: "scientificName",
         cell: ({ row }) => (
           <span
             className="cursor-pointer underline"
-            onClick={() => viewDataActivity(row.original.specie)}
+            onClick={() => viewDataActivity(row.original)}
           >
-            {row.original.specie.scientificName}
+            {row.original.scientificName}
           </span>
         ),
       },
@@ -87,32 +124,34 @@ export default function System() {
         header: "Status",
         accessorKey: "status",
         cell: ({ row }) =>
-          STATUS_PARSER[row.original.status as keyof typeof STATUS_PARSER],
+          STATUS_PARSER[
+            row.original.changeRequest.status as keyof typeof STATUS_PARSER
+          ],
       },
       {
         header: "Autor",
         accessorKey: "author",
         cell: ({ row }) =>
-          `${row.original.author.firstName} ${row.original.author.lastName}`,
+          `${row.original.changeRequest.proposedBy.firstName ?? ""} ${row.original.changeRequest.proposedBy.lastName ?? ""}`,
       },
       {
         header: "Validador",
         accessorKey: "validator",
         cell: ({ row }) => {
-          if (row.original.validator) {
-            return `${row.original.validator.firstName} ${row.original.validator.lastName}`;
-          }
+          const rv = row.original.changeRequest.reviewedBy;
+          if (rv) return `${rv.firstName ?? ""} ${rv.lastName ?? ""}`;
           return "-";
         },
       },
       {
         header: "Comentário",
-        accessorKey: "rejectReason",
+        accessorKey: "reviewerNote",
+        cell: ({ row }) => row.original.changeRequest.reviewerNote ?? "-",
       },
       {
         header: "Data",
-        accessorKey: "updatedAt",
-        cell: ({ row }) => new Date(row.original.updatedAt).toLocaleString(),
+        accessorKey: "createdAt",
+        cell: ({ row }) => new Date(row.original.createdAt).toLocaleString(),
       },
       {
         header: "Ações",
@@ -121,71 +160,87 @@ export default function System() {
           <ActivitiesTableActions
             onApprove={() => handleApprove(row.original)}
             onReject={() => handleReject(row.original)}
-            onGeneratePDF={() => generatePDF({ post: row.original })}
-            isPublished={row.original.status === "published"}
+            status={row.original.changeRequest.status}
+            onGeneratePDF={() => onGeneratePDF(row.original)}
           />
         ),
       },
     ],
-    [generatePDF, handleApprove, handleReject, viewDataActivity],
+    [handleApprove, handleReject, onGeneratePDF, viewDataActivity],
   );
 
   function onReject(reason: string) {
-    postValidationMutation.mutate(
-      {
-        id: String(selectedActivity?.id),
-        rejectReason: reason,
-      },
+    if (!selectedCrId) return;
+    rejectMutation.mutate(
+      { id: selectedCrId, reviewerNote: reason },
       {
         onSuccess() {
           rejectDialog.onClose();
-          setSelectedActivity(null);
-          toast.success("Publicação rejeitada com sucesso");
+          setSelectedCrId(null);
+          toast.success("Solicitação rejeitada com sucesso");
         },
         onError() {
-          toast.error("Erro ao rejeitar publicação");
+          toast.error("Erro ao rejeitar solicitação");
         },
       },
     );
   }
 
   function onApprove() {
-    postValidationMutation.mutate(
-      {
-        id: String(selectedActivity?.id),
+    if (!selectedCrId) return;
+    approveMutation.mutate(selectedCrId, {
+      onSuccess() {
+        approveDialog.onClose();
+        setSelectedCrId(null);
+        toast.success("Solicitação aprovada com sucesso");
       },
-      {
-        onSuccess() {
-          approveDialog.onClose();
-          setSelectedActivity(null);
-          toast.success("Publicação aprovada com sucesso");
-        },
-        onError() {
-          toast.error("Erro ao aprovar publicação");
-        },
+      onError() {
+        toast.error("Erro ao aprovar solicitação");
       },
-    );
+    });
+  }
+
+  function getRowClassName(status: string): string | undefined {
+    switch (status) {
+      case "approved":
+        return "bg-emerald-50 dark:bg-emerald-950/30";
+      case "rejected":
+        return "bg-rose-50 dark:bg-rose-950/30";
+      case "pending":
+        return "bg-amber-50/50 dark:bg-amber-950/30";
+      case "withdrawn":
+        return "bg-slate-50 dark:bg-slate-900/30";
+      default:
+        return undefined;
+    }
   }
 
   const onCloseAddDialog = () => {
     addDialog.onClose();
-    setViewSpecie(null);
+    setSelectedCrId(null);
+    setViewedSpecie(null);
   };
 
   return (
     <>
       <ActivitiesHeader
         currentPage={lastPostHook.curentPage}
-        totalPages={lastPostsQuery.data?.pagination?.total ?? 0}
+        totalPages={changeRequestsQuery.data?.pagination?.total ?? 0}
         onPageChange={lastPostHook.setCurrentPage}
-        onSearch={lastPostHook.onInputChange}
+        onSearch={lastPostHook.setDebouncedInput}
+        status={statusFilter}
+        onStatusChange={(s) => setStatusFilter(s)}
       />
 
       <DataTable
         handleViewData={addDialog.onOpen}
         columns={columns}
-        isLoading={lastPostsQuery.isLoading}
-        data={lastPostsQuery.data?.data ?? []}
+        isLoading={changeRequestsQuery.isLoading}
+        data={changeRequestsQuery.data?.data ?? []}
+        getRowClassName={({ original }) => {
+          const status = original.changeRequest.status;
+          return getRowClassName(status);
+        }}
       />
 
       {rejectDialog.isOpen && (
@@ -193,7 +248,7 @@ export default function System() {
           isOpen={rejectDialog.isOpen}
           onClose={rejectDialog.onClose}
           onReject={onReject}
-          isLoading={postValidationMutation.isPending}
+          isLoading={rejectMutation.isPending}
         />
       )}
 
@@ -203,7 +258,7 @@ export default function System() {
           onCancel={approveDialog.onClose}
           onConfirm={onApprove}
           onClose={approveDialog.onClose}
-          isLoading={postValidationMutation.isPending}
+          isLoading={approveMutation.isPending}
         />
       )}
 
@@ -211,7 +266,7 @@ export default function System() {
         dialogActionTitle={"Visualizar"}
         isOpen={addDialog.isOpen}
         onClose={onCloseAddDialog}
-        data={viewSpecie}
+        data={viewedSpecie ?? undefined}
         isReadOnly
       />
     </>

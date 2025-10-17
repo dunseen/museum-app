@@ -6,13 +6,13 @@ import { createRoot } from "react-dom/client";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import QRCode from "qrcode";
-import { type GetPostDetailsApiResponse } from "~/app/museu/herbario/types/post.types";
+import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { useDisclosure } from "~/hooks/use-disclosure";
 
 export type GeneratePdfProps = {
-  post: GetPostDetailsApiResponse;
+  specie: GetSpecieApiResponse;
 };
 
 const buildSpecieUrl = (specieName: string) => {
@@ -26,7 +26,7 @@ export function useGeneratePdf() {
 
   const generatePDF = useCallback(async (data: GeneratePdfProps) => {
     try {
-      const specieUrl = buildSpecieUrl(data.post.specie.scientificName);
+      const specieUrl = buildSpecieUrl(data.specie.scientificName);
 
       const qrCodeUrl = await QRCode.toDataURL(specieUrl);
 
@@ -58,7 +58,7 @@ export function useGeneratePdf() {
 
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(
-        `ficha-${data.post.specie.scientificName}-${new Intl.DateTimeFormat(
+        `ficha-${data.specie.scientificName}-${new Intl.DateTimeFormat(
           "pt-BR",
           {
             year: "numeric",

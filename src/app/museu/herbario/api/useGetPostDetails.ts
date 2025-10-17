@@ -16,7 +16,7 @@ async function fetchPostDetails(name: string) {
 }
 
 export const getPostDetailsQueryConfig = (
-  name: string,
+  name?: string,
 ): UndefinedInitialDataOptions<
   GetPostDetailsApiResponse,
   Error,
@@ -24,12 +24,12 @@ export const getPostDetailsQueryConfig = (
   string[]
 > => {
   return {
-    queryKey: [GET_POST_DETAILS_KEY, name],
-    queryFn: () => fetchPostDetails(name),
+    queryKey: [GET_POST_DETAILS_KEY, String(name)],
+    queryFn: () => fetchPostDetails(String(name)),
     enabled: !!name,
   };
 };
 
-export function useGetPostDetails(name: string) {
+export function useGetPostDetails(name?: string) {
   return useQuery(getPostDetailsQueryConfig(name));
 }

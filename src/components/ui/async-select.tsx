@@ -45,6 +45,7 @@ export const AsyncSelect = <T extends FieldValues>({
     return (
       <Select
         defaultValue={defaultValue}
+        value={defaultValue}
         id={field.name}
         onChange={field.onChange}
         onBlur={field.onBlur}

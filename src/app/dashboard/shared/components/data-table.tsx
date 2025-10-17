@@ -2,6 +2,7 @@
 
 import {
   type ColumnDef,
+  type Row,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -21,12 +22,14 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   handleViewData?: (id: number) => void;
   isLoading?: boolean;
+  getRowClassName?: (row: Row<TData>) => string | undefined;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   isLoading,
+  getRowClassName,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -61,7 +64,7 @@ export function DataTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                // className={`${colorTableRow(row.getValue("status"))} hover:opacity-80`} //TODO - refactor this to receive just the classname
+                className={getRowClassName?.(row)}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>

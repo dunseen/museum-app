@@ -22,7 +22,7 @@ export const RecentActivities: React.FC<Readonly<RecentActivitiesProps>> = ({
       color: "border-orange-300",
       label: "Pendente",
     },
-    published: {
+    approved: {
       icon: <CheckCircle color="green" />,
       color: "border-green-500",
       label: "Aprovado",
@@ -32,7 +32,7 @@ export const RecentActivities: React.FC<Readonly<RecentActivitiesProps>> = ({
       color: "border-red-500",
       label: "Rejeitado",
     },
-  };
+  } as const;
 
   return (
     <div className="max-h-[400px] space-y-4 overflow-y-auto">

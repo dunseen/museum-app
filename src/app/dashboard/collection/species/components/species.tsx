@@ -20,7 +20,7 @@ import { toast } from "sonner";
 
 export default function Species() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit] = useState(15);
+  const [limit] = useState(100);
 
   const {
     columns,
@@ -62,13 +62,15 @@ export default function Species() {
   return (
     <>
       <header className="mb-4 flex flex-col gap-4">
-        <div className="flex flex-wrap justify-between gap-4">
-          <div className="flex min-w-72">
-            <Input
-              value={inputValue}
-              onChange={(e) => onInputChange(e.target.value)}
-              placeholder={"Busca por nome científico ou popular"}
-            />
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-1 flex-wrap gap-4">
+            <div className="flex min-w-72 flex-1">
+              <Input
+                value={inputValue}
+                onChange={(e) => onInputChange(e.target.value)}
+                placeholder={"Busca por nome científico ou popular"}
+              />
+            </div>
           </div>
           <AddSpecie
             resetSelectedSpecie={resetSelectedSpecie}
