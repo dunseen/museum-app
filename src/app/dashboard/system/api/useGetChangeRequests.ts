@@ -29,6 +29,8 @@ export type SimpleChangeRequest = {
   proposedBy: UserAuthor;
   reviewedBy?: UserAuthor | null;
   reviewerNote?: string | null;
+  proposedAt: string;
+  decidedAt?: string | null;
 };
 
 export type DraftWithChangeRequest = {

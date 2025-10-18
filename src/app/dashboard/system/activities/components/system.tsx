@@ -166,9 +166,22 @@ export default function System() {
         cell: ({ row }) => row.original.changeRequest.reviewerNote ?? "-",
       },
       {
-        header: "Data",
-        accessorKey: "createdAt",
-        cell: ({ row }) => new Date(row.original.createdAt).toLocaleString(),
+        header: "Data de Criação",
+        accessorKey: "proposedAt",
+        cell: ({ row }) =>
+          new Date(row.original.changeRequest.proposedAt).toLocaleString(
+            "pt-BR",
+          ),
+      },
+      {
+        header: "Data de Aprovação",
+        accessorKey: "decidedAt",
+        cell: ({ row }) =>
+          row.original.changeRequest.decidedAt
+            ? new Date(row.original.changeRequest.decidedAt).toLocaleString(
+                "pt-BR",
+              )
+            : "-",
       },
       {
         header: "Ações",
