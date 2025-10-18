@@ -14,14 +14,32 @@ import { type ChangeRequestStatus } from "../../api";
 type ActivitiesTableActionsProps = {
   onApprove: () => void;
   onReject: () => void;
+  onViewDetails: () => void;
   status: ChangeRequestStatus;
 };
 export function ActivitiesTableActions({
   onApprove,
   onReject,
+  onViewDetails,
   status,
 }: ActivitiesTableActionsProps) {
-  if (status === "rejected" || status === "approved") return null;
+  if (status === "rejected" || status === "approved") {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Abrir menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={onViewDetails}>
+            Ver detalhes
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
 
   return (
     <DropdownMenu>
@@ -32,6 +50,12 @@ export function ActivitiesTableActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={onViewDetails}>
+          Ver detalhes
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
         <DropdownMenuItem onClick={onApprove}>Aprovar</DropdownMenuItem>
 
         <DropdownMenuSeparator />

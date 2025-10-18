@@ -114,12 +114,7 @@ export default function System() {
         header: "Nome",
         accessorKey: "entityName",
         cell: ({ row }) => (
-          <span
-            className="cursor-pointer underline"
-            onClick={() => viewDataActivity(row.original)}
-          >
-            {row.original.entityName}
-          </span>
+          <span className="max-w-96 truncate">{row.original.entityName}</span>
         ),
       },
       {
@@ -129,7 +124,7 @@ export default function System() {
           const typeLabels: Record<string, string> = {
             [EntityType.SPECIE]: "Espécie",
             [EntityType.CHARACTERISTIC]: "Característica",
-            [EntityType.TAXON]: "Táxon",
+            [EntityType.TAXON]: "Taxonomia",
           };
           return typeLabels[row.original.entityType] ?? row.original.entityType;
         },
@@ -182,6 +177,7 @@ export default function System() {
           <ActivitiesTableActions
             onApprove={() => handleApprove(row.original)}
             onReject={() => handleReject(row.original)}
+            onViewDetails={() => viewDataActivity(row.original)}
             status={row.original.changeRequest.status}
           />
         ),
