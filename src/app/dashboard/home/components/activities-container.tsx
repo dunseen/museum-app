@@ -9,7 +9,10 @@ import {
 } from "~/components/ui/card";
 import { Can } from "../../context/ability-context";
 import Link from "next/link";
-import { RecentActivities, type LastPostsSimplified } from "./recent-activities";
+import {
+  RecentActivities,
+  type LastPostsSimplified,
+} from "./recent-activities";
 import { useGetChangeRequests } from "../api";
 
 export function ActivitiesContainer() {
@@ -23,6 +26,7 @@ export function ActivitiesContainer() {
     date: new Date(cr.createdAt),
     resource: cr.scientificName,
     status: cr.changeRequest.status,
+    action: cr.changeRequest.action,
   }));
 
   return (

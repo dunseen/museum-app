@@ -43,6 +43,7 @@ export type PaginatedChangeRequestsApiResponse =
 
 export type GetChangeRequestsParams = PaginationParams & {
   status?: ChangeRequestStatus;
+  action?: ChangeRequestAction;
   search?: string;
 };
 
@@ -54,6 +55,7 @@ async function fetchChangeRequests(params?: GetChangeRequestsParams) {
       page: params?.page ?? 1,
       limit: params?.limit ?? 10,
       status: params?.status,
+      action: params?.action,
       search: params?.search,
     },
   };

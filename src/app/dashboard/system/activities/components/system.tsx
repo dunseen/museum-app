@@ -23,17 +23,29 @@ import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.typ
 import { useGeneratePdf } from "../../hooks/useExportPdf";
 import { useQueryClient } from "@tanstack/react-query";
 import { getSpecieDraftDetailConfig } from "../../api/useGetSpecieDraftDetail";
-import type { ChangeRequestStatus } from "../../api/useGetChangeRequests";
+import type {
+  ChangeRequestAction,
+  ChangeRequestStatus,
+} from "../../api/useGetChangeRequests";
 
 const STATUS_PARSER = {
   pending: "Pendente",
   approved: "Aprovado",
   rejected: "Rejeitado",
 } as const;
+
+const ACTION_PARSER = {
+  create: "Criar",
+  update: "Atualizar",
+  delete: "Deletar",
+} as const;
 export default function System() {
   const [selectedCrId, setSelectedCrId] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<
     ChangeRequestStatus | undefined
+  >(undefined);
+  const [actionFilter, setActionFilter] = useState<
+    ChangeRequestAction | undefined
   >(undefined);
 
   const lastPostHook = useDebouncedInput();
@@ -42,6 +54,7 @@ export default function System() {
     limit: lastPostHook.pageLimit,
     page: lastPostHook.curentPage,
     status: statusFilter,
+    action: actionFilter,
     search: lastPostHook.debouncedInput,
   });
 
@@ -119,6 +132,14 @@ export default function System() {
             {row.original.scientificName}
           </span>
         ),
+      },
+      {
+        header: "Ação",
+        accessorKey: "action",
+        cell: ({ row }) =>
+          ACTION_PARSER[
+            row.original.changeRequest.action as keyof typeof ACTION_PARSER
+          ],
       },
       {
         header: "Status",
@@ -230,6 +251,8 @@ export default function System() {
         onSearch={lastPostHook.setDebouncedInput}
         status={statusFilter}
         onStatusChange={(s) => setStatusFilter(s)}
+        action={actionFilter}
+        onActionChange={(a) => setActionFilter(a)}
       />
 
       <DataTable

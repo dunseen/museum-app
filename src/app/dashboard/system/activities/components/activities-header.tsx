@@ -9,7 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import type { ChangeRequestStatus } from "../../api/useGetChangeRequests";
+import type {
+  ChangeRequestAction,
+  ChangeRequestStatus,
+} from "../../api/useGetChangeRequests";
 import { useState } from "react";
 import { useDebounce } from "react-use";
 // import Select from "react-select";
@@ -24,6 +27,8 @@ type ActivitiesHeaderProps = {
   onPageChange: (value: number) => void;
   status?: ChangeRequestStatus;
   onStatusChange?: (value: ChangeRequestStatus | undefined) => void;
+  action?: ChangeRequestAction;
+  onActionChange?: (value: ChangeRequestAction | undefined) => void;
   // onFilter: (value: string) => void;
   // onDateChange: (value: string) => void;
   // onClearFilters: () => void;
@@ -63,6 +68,8 @@ export const ActivitiesHeader: React.FC<Readonly<ActivitiesHeaderProps>> = ({
   onSearch,
   status,
   onStatusChange,
+  action,
+  onActionChange,
   totalPages,
 }) => {
   return (
@@ -77,6 +84,24 @@ export const ActivitiesHeader: React.FC<Readonly<ActivitiesHeaderProps>> = ({
           }}
         />
         <div className="flex gap-4">
+          <Select
+            value={(action ?? "all") as string}
+            onValueChange={(v) =>
+              onActionChange?.(
+                v === "all" ? undefined : (v as ChangeRequestAction),
+              )
+            }
+          >
+            <SelectTrigger className="w-[220px]">
+              <SelectValue placeholder="Filtrar por ação" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas as ações</SelectItem>
+              <SelectItem value="create">Criar</SelectItem>
+              <SelectItem value="update">Atualizar</SelectItem>
+              <SelectItem value="delete">Deletar</SelectItem>
+            </SelectContent>
+          </Select>
           <Select
             value={(status ?? "all") as string}
             onValueChange={(v) =>

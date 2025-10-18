@@ -41,11 +41,11 @@ export default function Species() {
       { id: selectedSpecieId },
       {
         onSuccess() {
-          toast.success("Espécie deletada com sucesso");
+          toast.warning("Solicitação de exclusão enviada para revisão.");
           resetSelectedSpecieId();
         },
         onError() {
-          toast.error("Erro ao deletar espécie");
+          toast.error("Erro ao enviar solicitação de exclusão para revisão.");
         },
       },
     );
