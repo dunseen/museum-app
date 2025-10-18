@@ -35,10 +35,11 @@ const STATUS_PARSER = {
 } as const;
 
 const ACTION_PARSER = {
-  create: "Criar",
-  update: "Atualizar",
-  delete: "Deletar",
+  create: "Criação",
+  update: "Atualização",
+  delete: "Remoção",
 } as const;
+
 export default function System() {
   const [selectedCrId, setSelectedCrId] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<
@@ -118,7 +119,7 @@ export default function System() {
         ),
       },
       {
-        header: "Tipo",
+        header: "Recurso",
         accessorKey: "entityType",
         cell: ({ row }) => {
           const typeLabels: Record<string, string> = {
@@ -130,7 +131,7 @@ export default function System() {
         },
       },
       {
-        header: "Ação",
+        header: "Solicitação",
         accessorKey: "action",
         cell: ({ row }) =>
           ACTION_PARSER[
