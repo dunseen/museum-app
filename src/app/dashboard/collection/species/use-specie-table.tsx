@@ -202,20 +202,20 @@ export function useSpecieTable() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <Can I="edit" a="Collection">
+                  <DropdownMenuItem
+                    onClick={() => generatePDF({ specie: row.original })}
+                  >
+                    Gerar ficha
+                  </DropdownMenuItem>
+                </Can>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => setSelectedSpecie(row.original)}
                 >
                   Editar
                 </DropdownMenuItem>
-                <Can I="edit" a="Collection">
-                  <DropdownMenuItem
-                    onClick={() => generatePDF({ specie: row.original })}
-                  >
-                    Gerar PDF
-                  </DropdownMenuItem>
-                </Can>
                 <Can I="delete" a="Collection">
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={() => setSelectedSpecieId(row.original.id)}
                   >

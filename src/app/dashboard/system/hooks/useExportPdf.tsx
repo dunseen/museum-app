@@ -26,6 +26,7 @@ export function useGeneratePdf() {
 
   const generatePDF = useCallback(async (data: GeneratePdfProps) => {
     try {
+      toast.info("Gerando ficha de identificação...");
       const specieUrl = buildSpecieUrl(data.specie.scientificName);
 
       const qrCodeUrl = await QRCode.toDataURL(specieUrl);
@@ -69,9 +70,10 @@ export function useGeneratePdf() {
       );
 
       document.body.removeChild(wrapper);
+      toast.success("Ficha de identificação gerada com sucesso!");
     } catch (error) {
       console.error(error);
-      toast.error("Erro ao gerar PDF");
+      toast.error("Erro ao gerar ficha de identificação");
     }
   }, []);
 
