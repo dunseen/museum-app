@@ -14,16 +14,14 @@ import { type ChangeRequestStatus } from "../../api";
 type ActivitiesTableActionsProps = {
   onApprove: () => void;
   onReject: () => void;
-  onGeneratePDF: () => void;
   status: ChangeRequestStatus;
 };
 export function ActivitiesTableActions({
   onApprove,
   onReject,
-  onGeneratePDF,
   status,
 }: ActivitiesTableActionsProps) {
-  if (status === "rejected") return null;
+  if (status === "rejected" || status === "approved") return null;
 
   return (
     <DropdownMenu>
@@ -34,20 +32,10 @@ export function ActivitiesTableActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {status === "pending" && (
-          <>
-            <DropdownMenuItem onClick={onApprove}>Aprovar</DropdownMenuItem>
+        <DropdownMenuItem onClick={onApprove}>Aprovar</DropdownMenuItem>
 
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={onReject}>Rejeitar</DropdownMenuItem>
-          </>
-        )}
-
-        {status === "approved" && (
-          <DropdownMenuItem onClick={onGeneratePDF}>
-            Gerar ficha
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={onReject}>Rejeitar</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -25,7 +25,6 @@ import type {
 } from "../../api/useGetChangeRequests";
 import { toast } from "sonner";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
-import { useGeneratePdf } from "../../hooks/useExportPdf";
 import { useQueryClient } from "@tanstack/react-query";
 import { EntityType } from "~/types";
 
@@ -66,7 +65,6 @@ export default function System() {
   const approveDialog = useDisclosure();
   const addDialog = useDisclosure();
 
-  const { generatePDF } = useGeneratePdf();
   const queryClient = useQueryClient();
 
   const [viewedSpecie, setViewedSpecie] = useState<GetSpecieApiResponse | null>(
@@ -110,28 +108,6 @@ export default function System() {
     [addDialog, queryClient],
   );
 
-  const onGeneratePDF = useCallback(
-    async (cr: DraftWithChangeRequest) => {
-      // Only support PDF generation for species
-      if (cr.entityType !== EntityType.SPECIE) {
-        toast.error("Geração de PDF não suportada para este tipo de entidade");
-        return;
-      }
-
-      try {
-        const specie = await queryClient.fetchQuery(
-          getChangeRequestDetailConfig(cr.id, cr.entityType),
-        );
-        if (specie) {
-          await generatePDF({ specie: specie as GetSpecieApiResponse });
-        }
-      } catch (e) {
-        console.error(e);
-        toast.error("Erro ao gerar PDF");
-      }
-    },
-    [generatePDF, queryClient],
-  );
   const columns = useMemo<ColumnDef<DraftWithChangeRequest>[]>(
     () => [
       {
@@ -207,12 +183,11 @@ export default function System() {
             onApprove={() => handleApprove(row.original)}
             onReject={() => handleReject(row.original)}
             status={row.original.changeRequest.status}
-            onGeneratePDF={() => onGeneratePDF(row.original)}
           />
         ),
       },
     ],
-    [handleApprove, handleReject, onGeneratePDF, viewDataActivity],
+    [handleApprove, handleReject, viewDataActivity],
   );
 
   function onReject(reason: string) {

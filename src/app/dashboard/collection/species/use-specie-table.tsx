@@ -17,6 +17,7 @@ import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.typ
 import { decimalToDMS } from "~/utils/lat-long";
 import { Can } from "../../context/ability-context";
 import { formatDate } from "~/utils/date";
+import { useGeneratePdf } from "../../system/hooks/useExportPdf";
 
 export function useSpecieTable() {
   const [selectedSpecie, setSelectedSpecie] =
@@ -28,6 +29,8 @@ export function useSpecieTable() {
     commonName: string;
     images: string[];
   } | null>(null);
+
+  const { generatePDF } = useGeneratePdf();
 
   const resetSelectedSpecieImages = () => setSelectedSpecieImages(null);
   const resetSelectedSpecieId = () => setSelectedSpecieId(null);
@@ -204,6 +207,13 @@ export function useSpecieTable() {
                 >
                   Editar
                 </DropdownMenuItem>
+                <Can I="edit" a="Collection">
+                  <DropdownMenuItem
+                    onClick={() => generatePDF({ specie: row.original })}
+                  >
+                    Gerar PDF
+                  </DropdownMenuItem>
+                </Can>
                 <Can I="delete" a="Collection">
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -218,7 +228,7 @@ export function useSpecieTable() {
         },
       },
     ],
-    [],
+    [generatePDF],
   );
 
   return {
