@@ -13,7 +13,7 @@ import {
   RecentActivities,
   type LastPostsSimplified,
 } from "./recent-activities";
-import { useGetChangeRequests } from "../api";
+import { useGetChangeRequests } from "../../system/api";
 
 export function ActivitiesContainer() {
   const { data } = useGetChangeRequests({ limit: 10, page: 1 });
@@ -24,7 +24,7 @@ export function ActivitiesContainer() {
     id: String(cr.changeRequest.id),
     author: `${cr.changeRequest.proposedBy.firstName ?? ""} ${cr.changeRequest.proposedBy.lastName ?? ""}`,
     date: new Date(cr.createdAt),
-    resource: cr.scientificName,
+    resource: cr.entityName,
     status: cr.changeRequest.status,
     action: cr.changeRequest.action,
   }));

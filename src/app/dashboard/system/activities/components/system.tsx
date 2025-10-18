@@ -13,20 +13,21 @@ import { ConfirmationAlert } from "../../../shared/components/confirmation-alert
 import { AddSpecieDialog } from "../../../collection/species/add/add-specie-dialog";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
 import {
+  type DraftWithChangeRequest,
   useGetChangeRequests,
+  getChangeRequestDetailConfig,
   useApproveChangeRequest,
   useRejectChangeRequest,
 } from "../../api";
-import { type SpecieDraftWithChangeRequest } from "../../api/useGetChangeRequests";
-import { toast } from "sonner";
-import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
-import { useGeneratePdf } from "../../hooks/useExportPdf";
-import { useQueryClient } from "@tanstack/react-query";
-import { getSpecieDraftDetailConfig } from "../../api/useGetSpecieDraftDetail";
 import type {
   ChangeRequestAction,
   ChangeRequestStatus,
 } from "../../api/useGetChangeRequests";
+import { toast } from "sonner";
+import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
+import { useGeneratePdf } from "../../hooks/useExportPdf";
+import { useQueryClient } from "@tanstack/react-query";
+import { EntityType } from "~/types";
 
 const STATUS_PARSER = {
   pending: "Pendente",
@@ -50,7 +51,7 @@ export default function System() {
 
   const lastPostHook = useDebouncedInput();
 
-  const changeRequestsQuery = useGetChangeRequests({
+  const draftsQuery = useGetChangeRequests({
     limit: lastPostHook.pageLimit,
     page: lastPostHook.curentPage,
     status: statusFilter,
@@ -73,14 +74,14 @@ export default function System() {
   );
 
   const handleReject = useCallback(
-    (cr: SpecieDraftWithChangeRequest) => {
+    (cr: DraftWithChangeRequest) => {
       setSelectedCrId(cr.changeRequest.id);
       rejectDialog.onOpen();
     },
     [rejectDialog],
   );
   const handleApprove = useCallback(
-    (cr: SpecieDraftWithChangeRequest) => {
+    (cr: DraftWithChangeRequest) => {
       setSelectedCrId(cr.changeRequest.id);
       approveDialog.onOpen();
     },
@@ -88,29 +89,41 @@ export default function System() {
   );
 
   const viewDataActivity = useCallback(
-    async (cr: SpecieDraftWithChangeRequest) => {
+    async (cr: DraftWithChangeRequest) => {
+      // Only support viewing specie drafts for now
+      if (cr.entityType !== EntityType.SPECIE) {
+        toast.error("Visualização não suportada para este tipo de entidade");
+        return;
+      }
+
       try {
         const specie = await queryClient.fetchQuery(
-          getSpecieDraftDetailConfig(cr.id),
+          getChangeRequestDetailConfig(cr.id, cr.entityType),
         );
-        setViewedSpecie(specie);
+        setViewedSpecie(specie as GetSpecieApiResponse);
         addDialog.onOpen();
       } catch (e) {
         console.error(e);
-        toast.error("Erro ao carregar detalhes da espécie");
+        toast.error("Erro ao carregar detalhes da entidade");
       }
     },
     [addDialog, queryClient],
   );
 
   const onGeneratePDF = useCallback(
-    async (cr: SpecieDraftWithChangeRequest) => {
+    async (cr: DraftWithChangeRequest) => {
+      // Only support PDF generation for species
+      if (cr.entityType !== EntityType.SPECIE) {
+        toast.error("Geração de PDF não suportada para este tipo de entidade");
+        return;
+      }
+
       try {
         const specie = await queryClient.fetchQuery(
-          getSpecieDraftDetailConfig(cr.id),
+          getChangeRequestDetailConfig(cr.id, cr.entityType),
         );
         if (specie) {
-          await generatePDF({ specie });
+          await generatePDF({ specie: specie as GetSpecieApiResponse });
         }
       } catch (e) {
         console.error(e);
@@ -119,19 +132,31 @@ export default function System() {
     },
     [generatePDF, queryClient],
   );
-  const columns = useMemo<ColumnDef<SpecieDraftWithChangeRequest>[]>(
+  const columns = useMemo<ColumnDef<DraftWithChangeRequest>[]>(
     () => [
       {
-        header: "Espécie",
-        accessorKey: "scientificName",
+        header: "Nome",
+        accessorKey: "entityName",
         cell: ({ row }) => (
           <span
             className="cursor-pointer underline"
             onClick={() => viewDataActivity(row.original)}
           >
-            {row.original.scientificName}
+            {row.original.entityName}
           </span>
         ),
+      },
+      {
+        header: "Tipo",
+        accessorKey: "entityType",
+        cell: ({ row }) => {
+          const typeLabels: Record<string, string> = {
+            [EntityType.SPECIE]: "Espécie",
+            [EntityType.CHARACTERISTIC]: "Característica",
+            [EntityType.TAXON]: "Táxon",
+          };
+          return typeLabels[row.original.entityType] ?? row.original.entityType;
+        },
       },
       {
         header: "Ação",
@@ -246,7 +271,7 @@ export default function System() {
     <>
       <ActivitiesHeader
         currentPage={lastPostHook.curentPage}
-        totalPages={changeRequestsQuery.data?.pagination?.total ?? 0}
+        totalPages={draftsQuery.data?.pagination?.total ?? 0}
         onPageChange={lastPostHook.setCurrentPage}
         onSearch={lastPostHook.setDebouncedInput}
         status={statusFilter}
@@ -258,8 +283,8 @@ export default function System() {
       <DataTable
         handleViewData={addDialog.onOpen}
         columns={columns}
-        isLoading={changeRequestsQuery.isLoading}
-        data={changeRequestsQuery.data?.data ?? []}
+        isLoading={draftsQuery.isLoading}
+        data={draftsQuery.data?.data ?? []}
         getRowClassName={({ original }) => {
           const status = original.changeRequest.status;
           return getRowClassName(status);

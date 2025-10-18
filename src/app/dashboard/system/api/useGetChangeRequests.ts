@@ -31,37 +31,39 @@ export type SimpleChangeRequest = {
   reviewerNote?: string | null;
 };
 
-export type SpecieDraftWithChangeRequest = {
+export type DraftWithChangeRequest = {
   id: number;
-  scientificName: string;
+  entityType: string;
+  entityName: string;
   createdAt: string;
   changeRequest: SimpleChangeRequest;
 };
 
-export type PaginatedChangeRequestsApiResponse =
-  WithPagination<SpecieDraftWithChangeRequest>;
+export type PaginatedDraftsApiResponse = WithPagination<DraftWithChangeRequest>;
 
-export type GetChangeRequestsParams = PaginationParams & {
+export type GetDraftsParams = PaginationParams & {
   status?: ChangeRequestStatus;
   action?: ChangeRequestAction;
+  entityType?: string;
   search?: string;
 };
 
 export const GET_CHANGE_REQUESTS_QUERY_KEY = "useGetChangeRequests";
 
-async function fetchChangeRequests(params?: GetChangeRequestsParams) {
+async function fetchChangeRequests(params?: GetDraftsParams) {
   const requestConfig: AxiosRequestConfig = {
     params: {
       page: params?.page ?? 1,
       limit: params?.limit ?? 10,
       status: params?.status,
       action: params?.action,
+      entityType: params?.entityType,
       search: params?.search,
     },
   };
 
-  const { data } = await api.get<PaginatedChangeRequestsApiResponse>(
-    "dashboard/change-requests/species/drafts",
+  const { data } = await api.get<PaginatedDraftsApiResponse>(
+    "dashboard/change-requests",
     requestConfig,
   );
 
@@ -69,21 +71,20 @@ async function fetchChangeRequests(params?: GetChangeRequestsParams) {
 }
 
 export const getChangeRequestsConfig = (
-  params?: GetChangeRequestsParams,
+  params?: GetDraftsParams,
 ): UndefinedInitialDataOptions<
-  PaginatedChangeRequestsApiResponse,
+  PaginatedDraftsApiResponse,
   unknown,
-  PaginatedChangeRequestsApiResponse,
+  PaginatedDraftsApiResponse,
   unknown[]
 > => {
   return {
     initialData: undefined,
-    // Include params to properly refetch on filter/pagination changes
     queryKey: [GET_CHANGE_REQUESTS_QUERY_KEY, params],
     queryFn: () => fetchChangeRequests(params),
   };
 };
 
-export function useGetChangeRequests(params?: GetChangeRequestsParams) {
+export function useGetChangeRequests(params?: GetDraftsParams) {
   return useQuery(getChangeRequestsConfig(params));
 }

@@ -4,15 +4,11 @@ import { getHomeSummary } from "./home/api";
 import getCachedQueryClient from "~/lib/react-query";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { SummaryCountList } from "./home/components/summary-count-list";
-import { getChangeRequestsConfig } from "./system/api";
 
 export default async function Page() {
   const client = getCachedQueryClient();
 
-  await Promise.all([
-    client.prefetchQuery(getHomeSummary()),
-    client.prefetchQuery(getChangeRequestsConfig({ limit: 10 })),
-  ]);
+  await Promise.all([client.prefetchQuery(getHomeSummary())]);
 
   const dehydratedState = dehydrate(client);
 

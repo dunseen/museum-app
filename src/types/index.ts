@@ -5,3 +5,11 @@ export enum RoleEnum {
   EDITOR = "EDITOR",
   OPERATOR = "OPERATOR",
 }
+
+export const EntityType = {
+  SPECIE: "specie",
+  CHARACTERISTIC: "characteristic",
+  TAXON: "taxon",
+} as const;
+
+export type EntityTypeValue = (typeof EntityType)[keyof typeof EntityType];
