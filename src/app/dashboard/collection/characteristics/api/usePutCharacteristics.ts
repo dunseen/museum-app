@@ -1,13 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "~/server/api";
 import { GET_CHARACTERISTICS_QUERY_KEY } from "./useGetCharacteristics";
-
-type PutCharacteristicsApiResponse = {
-  id: number;
-  name: string;
-  description: string;
-  type: string;
-};
+import { type CharacteristicOperationResult } from "../types";
 
 type PutCharacteristicsApiPayload = {
   id: number;
@@ -18,8 +12,8 @@ async function putCharacteristics({
   formData,
   id,
 }: PutCharacteristicsApiPayload) {
-  const { data } = await api.put<PutCharacteristicsApiResponse>(
-    `dashboard/characteristics/${id}`,
+  const { data } = await api.put<CharacteristicOperationResult>(
+    `dashboard/change-requests/characteristics/${id}`,
     formData,
     {
       headers: {

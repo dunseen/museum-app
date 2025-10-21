@@ -36,6 +36,7 @@ import { AsyncSelect } from "~/components/ui/async-select";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
 import { appendFiles } from "~/utils/files";
 import { usePutCharacteristics } from "../api/usePutCharacteristics";
+import { OperationStatus } from "../types";
 
 type AddCharacteristicDialogProps = {
   isOpen: boolean;
@@ -145,12 +146,20 @@ export const AddCharacteristicDialog: React.FC<
       }
 
       if (data) {
-        await putCharacteristicsMutation.mutateAsync({
+        const result = await putCharacteristicsMutation.mutateAsync({
           id: data.id,
           formData,
         });
 
-        toast.success("Característica editada com sucesso");
+        if (result.status === OperationStatus.COMPLETED) {
+          toast.success("Característica atualizada com sucesso");
+        } else {
+          const count = result.affectedSpeciesCount ?? 0;
+          const speciesText = count === 1 ? "espécie" : "espécies";
+          toast.info(
+            `Solicitação enviada para aprovação. Esta característica está sendo usada por ${count} ${speciesText}.`,
+          );
+        }
         onCloseAddDialog();
         return;
       }
@@ -160,7 +169,7 @@ export const AddCharacteristicDialog: React.FC<
       onCloseAddDialog();
     } catch (error) {
       console.error(error);
-      toast.error("Erro ao adicionar característica");
+      toast.error("Erro ao processar solicitação");
     }
   }
 

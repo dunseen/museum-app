@@ -17,6 +17,7 @@ import { useDeleteCharacteristic, useGetCharacteristics } from "../api";
 import { TablePagination } from "~/app/dashboard/shared/components/table-pagination";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
 import { toast } from "sonner";
+import { OperationStatus } from "../types";
 
 export default function Characteristics() {
   const [curentPage, setCurrentPage] = useState(1);
@@ -40,12 +41,20 @@ export default function Characteristics() {
     deleteCharacteristic.mutate(
       { id: selectedCharacteristicId },
       {
-        onSuccess() {
-          toast.success("Característica deletada com sucesso");
+        onSuccess(data) {
+          if (data.status === OperationStatus.COMPLETED) {
+            toast.success("Característica deletada com sucesso");
+          } else {
+            const count = data.affectedSpeciesCount ?? 0;
+            const speciesText = count === 1 ? "espécie" : "espécies";
+            toast.info(
+              `Solicitação enviada para aprovação. Esta característica está sendo usada por ${count} ${speciesText}.`,
+            );
+          }
           resetSelectedCharacteristicId();
         },
         onError() {
-          toast.error("Erro ao deletar característica");
+          toast.error("Erro ao processar solicitação de exclusão");
         },
       },
     );
