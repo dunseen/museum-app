@@ -1,5 +1,7 @@
 "use client";
 
+import { useMemo, useState } from "react";
+import { useDebounce } from "react-use";
 import { TablePagination } from "~/app/dashboard/shared/components/table-pagination";
 import { Input } from "~/components/ui/input";
 import {
@@ -9,16 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import type {
-  ChangeRequestAction,
-  ChangeRequestStatus,
+import { Label } from "~/components/ui/label";
+import {
+  type ChangeRequestAction,
+  type ChangeRequestStatus,
 } from "../../api/useGetChangeRequests";
-import { useState } from "react";
-import { useDebounce } from "react-use";
-// import Select from "react-select";
-// import { DatePickerWithRange } from "~/components/ui/date-range-picker";
-// import { Button } from "~/components/ui/button";
-// import { FilterX } from "lucide-react";
+import { cn } from "~/lib/utils";
 
 type ActivitiesHeaderProps = {
   onSearch: (value: string) => void;
@@ -29,10 +27,6 @@ type ActivitiesHeaderProps = {
   onStatusChange?: (value: ChangeRequestStatus | undefined) => void;
   action?: ChangeRequestAction;
   onActionChange?: (value: ChangeRequestAction | undefined) => void;
-  // onFilter: (value: string) => void;
-  // onDateChange: (value: string) => void;
-  // onClearFilters: () => void;
-  // onStatusChange: (value: string) => void;
 };
 
 type DebouncedInputTextProps = {
@@ -72,57 +66,96 @@ export const ActivitiesHeader: React.FC<Readonly<ActivitiesHeaderProps>> = ({
   onActionChange,
   totalPages,
 }) => {
+  const selectItems = useMemo(
+    () => ({
+      action: [
+        { value: "all", label: "Todas as ações" },
+        { value: "create", label: "Criação" },
+        { value: "update", label: "Atualização" },
+        { value: "delete", label: "Remoção" },
+      ],
+      status: [
+        { value: "all", label: "Todos os status" },
+        { value: "pending", label: "Pendentes" },
+        { value: "approved", label: "Aprovados" },
+        { value: "rejected", label: "Rejeitados" },
+        { value: "withdrawn", label: "Retirados" },
+      ],
+    }),
+    [],
+  );
+
   return (
     <header className="z-10 mb-4 flex flex-col gap-4">
-      <div className="flex justify-between">
-        <DebouncedInputText
-          className="max-w-[350px]"
-          placeholder="Busca por autor, validador ou nome científico"
-          onChange={(value) => {
-            onSearch(value);
-            onPageChange(1);
-          }}
+      <div className="flex flex-wrap items-end gap-4">
+        <FilterField
+          label="Buscar"
+          className="flex-1 min-w-[220px]"
+          input={
+            <DebouncedInputText
+              className="w-full"
+              placeholder="Busque por autor, validador ou nome científico"
+              onChange={(value) => {
+                onSearch(value);
+                onPageChange(1);
+              }}
+            />
+          }
         />
-        <div className="flex gap-4">
-          <Select
-            value={(action ?? "all") as string}
-            onValueChange={(v) =>
-              onActionChange?.(
-                v === "all" ? undefined : (v as ChangeRequestAction),
-              )
-            }
-          >
-            <SelectTrigger className="w-[220px]">
-              <SelectValue placeholder="Filtrar por ação" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todas as ações</SelectItem>
-              <SelectItem value="create">Criar</SelectItem>
-              <SelectItem value="update">Atualizar</SelectItem>
-              <SelectItem value="delete">Deletar</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select
-            value={(status ?? "all") as string}
-            onValueChange={(v) =>
-              onStatusChange?.(
-                v === "all" ? undefined : (v as ChangeRequestStatus),
-              )
-            }
-          >
-            <SelectTrigger className="w-[220px]">
-              <SelectValue placeholder="Filtrar por status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos os status</SelectItem>
-              <SelectItem value="pending">Pendentes</SelectItem>
-              <SelectItem value="approved">Aprovados</SelectItem>
-              <SelectItem value="rejected">Rejeitados</SelectItem>
-              <SelectItem value="withdrawn">Retirados</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+
+        <FilterField
+          label="Solicitação"
+          className="w-full max-w-xs"
+          input={
+            <Select
+              value={action ?? "all"}
+              onValueChange={(value) =>
+                onActionChange?.(
+                  value === "all" ? undefined : (value as ChangeRequestAction),
+                )
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {selectItems.action.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          }
+        />
+
+        <FilterField
+          label="Status"
+          className="w-full max-w-xs"
+          input={
+            <Select
+              value={status ?? "all"}
+              onValueChange={(value) =>
+                onStatusChange?.(
+                  value === "all" ? undefined : (value as ChangeRequestStatus),
+                )
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {selectItems.status.map((item) => (
+                  <SelectItem key={item.value} value={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          }
+        />
       </div>
+
       <TablePagination
         currentPage={currentPage}
         onPageChange={onPageChange}
@@ -131,3 +164,20 @@ export const ActivitiesHeader: React.FC<Readonly<ActivitiesHeaderProps>> = ({
     </header>
   );
 };
+
+type FilterFieldProps = {
+  label: string;
+  input: React.ReactNode;
+  className?: string;
+};
+
+function FilterField({ label, input, className }: FilterFieldProps) {
+  return (
+    <div className={cn("flex flex-col gap-2", className)}>
+      <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+        {label}
+      </Label>
+      {input}
+    </div>
+  );
+}
