@@ -24,6 +24,7 @@ import type {
 } from "../../api/useGetChangeRequests";
 import { toast } from "sonner";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
+import { type GetCharacteristicDraftDetailApiResponse } from "../../types/change-request-detail.types";
 import { useQueryClient } from "@tanstack/react-query";
 import { EntityType } from "~/types";
 import { ChangeRequestDetailDialog } from "./change-request-detail-dialog";
@@ -39,6 +40,13 @@ const ACTION_PARSER = {
   update: "Atualização",
   delete: "Remoção",
 } as const;
+
+type ViewedDetail =
+  | { entityType: typeof EntityType.SPECIE; data: GetSpecieApiResponse }
+  | {
+      entityType: typeof EntityType.CHARACTERISTIC;
+      data: GetCharacteristicDraftDetailApiResponse;
+    };
 
 export default function System() {
   const [selectedCrId, setSelectedCrId] = useState<number | null>(null);
@@ -68,9 +76,7 @@ export default function System() {
 
   const queryClient = useQueryClient();
 
-  const [viewedSpecie, setViewedSpecie] = useState<GetSpecieApiResponse | null>(
-    null,
-  );
+  const [viewedDetail, setViewedDetail] = useState<ViewedDetail | null>(null);
   const [selectedChangeRequest, setSelectedChangeRequest] =
     useState<DraftWithChangeRequest | null>(null);
 
@@ -91,17 +97,31 @@ export default function System() {
 
   const viewDataActivity = useCallback(
     async (cr: DraftWithChangeRequest) => {
-      // Only support viewing specie drafts for now
-      if (cr.entityType !== EntityType.SPECIE) {
+      if (
+        cr.entityType !== EntityType.SPECIE &&
+        cr.entityType !== EntityType.CHARACTERISTIC
+      ) {
         toast.error("Visualização não suportada para este tipo de entidade");
         return;
       }
 
       try {
-        const specie = await queryClient.fetchQuery(
+        const detail = await queryClient.fetchQuery(
           getChangeRequestDetailConfig(cr.id, cr.entityType),
         );
-        setViewedSpecie(specie as GetSpecieApiResponse);
+
+        if (cr.entityType === EntityType.SPECIE) {
+          setViewedDetail({
+            entityType: EntityType.SPECIE,
+            data: detail as GetSpecieApiResponse,
+          });
+        } else {
+          setViewedDetail({
+            entityType: EntityType.CHARACTERISTIC,
+            data: detail as GetCharacteristicDraftDetailApiResponse,
+          });
+        }
+
         setSelectedChangeRequest(cr);
         addDialog.onOpen();
       } catch (e) {
@@ -252,7 +272,7 @@ export default function System() {
   const onCloseAddDialog = () => {
     addDialog.onClose();
     setSelectedCrId(null);
-    setViewedSpecie(null);
+    setViewedDetail(null);
     setSelectedChangeRequest(null);
   };
 
@@ -299,11 +319,12 @@ export default function System() {
         />
       )}
 
-      {viewedSpecie && selectedChangeRequest && (
+      {viewedDetail && selectedChangeRequest && (
         <ChangeRequestDetailDialog
           isOpen={addDialog.isOpen}
           onClose={onCloseAddDialog}
-          data={viewedSpecie}
+          entityType={viewedDetail.entityType}
+          data={viewedDetail.data}
           action={selectedChangeRequest.changeRequest.action}
           status={selectedChangeRequest.changeRequest.status}
           proposedBy={selectedChangeRequest.changeRequest.proposedBy}
