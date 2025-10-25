@@ -28,18 +28,41 @@ import { type GetCharacteristicDraftDetailApiResponse } from "../../types/change
 import { useQueryClient } from "@tanstack/react-query";
 import { EntityType } from "~/types";
 import { ChangeRequestDetailDialog } from "./change-request-detail-dialog";
+import { Badge } from "~/components/ui/badge";
+import { cn } from "~/lib/utils";
 
-const STATUS_PARSER = {
+const STATUS_PARSER: Record<ChangeRequestStatus, string> = {
   pending: "Pendente",
   approved: "Aprovado",
   rejected: "Rejeitado",
-} as const;
+  withdrawn: "Retirado",
+};
 
-const ACTION_PARSER = {
+const STATUS_BADGE_STYLES: Record<ChangeRequestStatus, string> = {
+  pending:
+    "bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200",
+  approved:
+    "bg-emerald-100 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-200",
+  rejected:
+    "bg-rose-100 text-rose-900 dark:bg-rose-900/40 dark:text-rose-200",
+  withdrawn:
+    "bg-slate-100 text-slate-900 dark:bg-slate-900/40 dark:text-slate-200",
+};
+
+const ACTION_PARSER: Record<ChangeRequestAction, string> = {
   create: "Criação",
   update: "Atualização",
   delete: "Remoção",
-} as const;
+};
+
+const ACTION_BADGE_STYLES: Record<ChangeRequestAction, string> = {
+  create:
+    "bg-emerald-100 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-200",
+  update:
+    "bg-sky-100 text-sky-900 dark:bg-sky-900/40 dark:text-sky-200",
+  delete:
+    "bg-rose-100 text-rose-900 dark:bg-rose-900/40 dark:text-rose-200",
+};
 
 type ViewedDetail =
   | { entityType: typeof EntityType.SPECIE; data: GetSpecieApiResponse }
@@ -156,18 +179,42 @@ export default function System() {
       {
         header: "Solicitação",
         accessorKey: "action",
-        cell: ({ row }) =>
-          ACTION_PARSER[
-            row.original.changeRequest.action as keyof typeof ACTION_PARSER
-          ],
+        cell: ({ row }) => {
+          const action = row.original.changeRequest.action;
+          const label = ACTION_PARSER[action] ?? action;
+          const style = ACTION_BADGE_STYLES[action] ?? "";
+          return (
+            <Badge
+              variant="outline"
+              className={cn(
+                "border-transparent px-2 py-0.5 text-xs font-medium",
+                style,
+              )}
+            >
+              {label}
+            </Badge>
+          );
+        },
       },
       {
         header: "Status",
         accessorKey: "status",
-        cell: ({ row }) =>
-          STATUS_PARSER[
-            row.original.changeRequest.status as keyof typeof STATUS_PARSER
-          ],
+        cell: ({ row }) => {
+          const status = row.original.changeRequest.status;
+          const label = STATUS_PARSER[status] ?? status;
+          const style = STATUS_BADGE_STYLES[status] ?? "";
+          return (
+            <Badge
+              variant="outline"
+              className={cn(
+                "border-transparent px-2 py-0.5 text-xs font-medium",
+                style,
+              )}
+            >
+              {label}
+            </Badge>
+          );
+        },
       },
       {
         header: "Autor",
@@ -254,21 +301,6 @@ export default function System() {
     });
   }
 
-  function getRowClassName(status: string): string | undefined {
-    switch (status) {
-      case "approved":
-        return "bg-emerald-50 dark:bg-emerald-950/30";
-      case "rejected":
-        return "bg-rose-50 dark:bg-rose-950/30";
-      case "pending":
-        return "bg-amber-50/50 dark:bg-amber-950/30";
-      case "withdrawn":
-        return "bg-slate-50 dark:bg-slate-900/30";
-      default:
-        return undefined;
-    }
-  }
-
   const onCloseAddDialog = () => {
     addDialog.onClose();
     setSelectedCrId(null);
@@ -294,10 +326,6 @@ export default function System() {
         columns={columns}
         isLoading={draftsQuery.isLoading}
         data={draftsQuery.data?.data ?? []}
-        getRowClassName={({ original }) => {
-          const status = original.changeRequest.status;
-          return getRowClassName(status);
-        }}
       />
 
       {rejectDialog.isOpen && (
