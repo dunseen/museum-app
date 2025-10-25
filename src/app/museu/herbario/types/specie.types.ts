@@ -5,11 +5,7 @@ import { type GetTaxonApiResponse } from "./taxonomy.types";
 import { type LocalTypeApiResponse } from "./local.types";
 import { type SpecialistApiResponse } from "./specialist.types";
 
-export type SpecieStatus =
-  | "pending"
-  | "approved"
-  | "rejected"
-  | "withdrawn";
+export type SpecieStatus = "pending" | "approved" | "rejected" | "withdrawn";
 
 export interface GetSpecieApiResponse {
   id: number;
@@ -37,4 +33,6 @@ export interface GetSpecieApiResponse {
   status: SpecieStatus;
 
   statusReason: string | null;
+
+  diff?: Record<string, unknown> | null;
 }

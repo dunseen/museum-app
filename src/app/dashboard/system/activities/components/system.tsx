@@ -10,7 +10,6 @@ import { ActivitiesTableActions } from "../components/activities-table-actions";
 import RejectActivityDialog from "../components/reject-activity-dialog";
 import { useDisclosure } from "~/hooks/use-disclosure";
 import { ConfirmationAlert } from "../../../shared/components/confirmation-alert";
-import { AddSpecieDialog } from "../../../collection/species/add/add-specie-dialog";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
 import {
   type DraftWithChangeRequest,
@@ -27,6 +26,7 @@ import { toast } from "sonner";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
 import { useQueryClient } from "@tanstack/react-query";
 import { EntityType } from "~/types";
+import { ChangeRequestDetailDialog } from "./change-request-detail-dialog";
 
 const STATUS_PARSER = {
   pending: "Pendente",
@@ -71,6 +71,8 @@ export default function System() {
   const [viewedSpecie, setViewedSpecie] = useState<GetSpecieApiResponse | null>(
     null,
   );
+  const [selectedChangeRequest, setSelectedChangeRequest] =
+    useState<DraftWithChangeRequest | null>(null);
 
   const handleReject = useCallback(
     (cr: DraftWithChangeRequest) => {
@@ -100,6 +102,7 @@ export default function System() {
           getChangeRequestDetailConfig(cr.id, cr.entityType),
         );
         setViewedSpecie(specie as GetSpecieApiResponse);
+        setSelectedChangeRequest(cr);
         addDialog.onOpen();
       } catch (e) {
         console.error(e);
@@ -250,6 +253,7 @@ export default function System() {
     addDialog.onClose();
     setSelectedCrId(null);
     setViewedSpecie(null);
+    setSelectedChangeRequest(null);
   };
 
   return (
@@ -295,13 +299,20 @@ export default function System() {
         />
       )}
 
-      <AddSpecieDialog
-        dialogActionTitle={"Visualizar"}
-        isOpen={addDialog.isOpen}
-        onClose={onCloseAddDialog}
-        data={viewedSpecie ?? undefined}
-        isReadOnly
-      />
+      {viewedSpecie && selectedChangeRequest && (
+        <ChangeRequestDetailDialog
+          isOpen={addDialog.isOpen}
+          onClose={onCloseAddDialog}
+          data={viewedSpecie}
+          action={selectedChangeRequest.changeRequest.action}
+          status={selectedChangeRequest.changeRequest.status}
+          proposedBy={selectedChangeRequest.changeRequest.proposedBy}
+          proposedAt={selectedChangeRequest.changeRequest.proposedAt}
+          reviewedBy={selectedChangeRequest.changeRequest.reviewedBy}
+          decidedAt={selectedChangeRequest.changeRequest.decidedAt}
+          reviewerNote={selectedChangeRequest.changeRequest.reviewerNote}
+        />
+      )}
     </>
   );
 }
