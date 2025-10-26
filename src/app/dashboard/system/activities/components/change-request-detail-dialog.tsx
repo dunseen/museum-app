@@ -13,11 +13,13 @@ import { EntityType } from "~/types";
 import {
   type PersonName,
   type GetCharacteristicDraftDetailApiResponse,
+  type GetTaxonDraftDetailApiResponse,
 } from "../../types/change-request-detail.types";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
 import { formatFullName } from "./change-request-detail/utils";
 import { SpecieChangeRequestContent } from "./change-request-detail/specie-change-request-content";
 import { CharacteristicChangeRequestContent } from "./change-request-detail/characteristic-change-request-content";
+import { TaxonChangeRequestContent } from "./change-request-detail/taxon-change-request-content";
 import { ReviewDetails } from "./change-request-detail/review-details";
 
 type BaseProps = {
@@ -32,11 +34,17 @@ type BaseProps = {
   reviewerNote?: string | null;
 };
 
-type EntityType = typeof EntityType.SPECIE | typeof EntityType.CHARACTERISTIC;
+type SupportedEntityType =
+  | typeof EntityType.SPECIE
+  | typeof EntityType.CHARACTERISTIC
+  | typeof EntityType.TAXON;
 
 export type ChangeRequestDetailDialogProps = BaseProps & {
-  entityType: EntityType;
-  data: GetSpecieApiResponse | GetCharacteristicDraftDetailApiResponse;
+  entityType: SupportedEntityType;
+  data:
+    | GetSpecieApiResponse
+    | GetCharacteristicDraftDetailApiResponse
+    | GetTaxonDraftDetailApiResponse;
 };
 
 const ACTION_LABELS = {
@@ -88,6 +96,13 @@ export function ChangeRequestDetailDialog(
       return (
         <CharacteristicChangeRequestContent
           data={props.data as GetCharacteristicDraftDetailApiResponse}
+          action={action}
+        />
+      );
+    } else if (props.entityType === EntityType.TAXON) {
+      return (
+        <TaxonChangeRequestContent
+          data={props.data as GetTaxonDraftDetailApiResponse}
           action={action}
         />
       );

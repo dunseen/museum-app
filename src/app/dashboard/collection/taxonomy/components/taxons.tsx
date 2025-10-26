@@ -10,6 +10,7 @@ import { useDeleteTaxons, useGetTaxons } from "../api";
 import { TablePagination } from "~/app/dashboard/shared/components/table-pagination";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
 import { toast } from "sonner";
+import { TaxonOperationStatus } from "../types";
 
 export default function Taxons() {
   const [curentPage, setCurrentPage] = useState(1);
@@ -31,8 +32,16 @@ export default function Taxons() {
     deleteTaxon.mutate(
       { id: selectedTaxonomyId },
       {
-        onSuccess() {
-          toast.success("Taxonomia deletada com sucesso");
+        onSuccess(data) {
+          if (data.status === TaxonOperationStatus.COMPLETED) {
+            toast.success("Taxonomia deletada com sucesso");
+          } else {
+            const count = data.affectedSpeciesCount ?? 0;
+            const speciesText = count === 1 ? "espécie" : "espécies";
+            toast.info(
+              `Solicitação enviada para aprovação. Esta taxonomia está sendo usada por ${count} ${speciesText}.`,
+            );
+          }
           resetSelectedTaxonomyId();
         },
         onError() {

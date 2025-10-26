@@ -24,7 +24,10 @@ import type {
 } from "../../api/useGetChangeRequests";
 import { toast } from "sonner";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
-import { type GetCharacteristicDraftDetailApiResponse } from "../../types/change-request-detail.types";
+import {
+  type GetCharacteristicDraftDetailApiResponse,
+  type GetTaxonDraftDetailApiResponse,
+} from "../../types/change-request-detail.types";
 import { useQueryClient } from "@tanstack/react-query";
 import { EntityType } from "~/types";
 import { ChangeRequestDetailDialog } from "./change-request-detail-dialog";
@@ -69,6 +72,10 @@ type ViewedDetail =
   | {
       entityType: typeof EntityType.CHARACTERISTIC;
       data: GetCharacteristicDraftDetailApiResponse;
+    }
+  | {
+      entityType: typeof EntityType.TAXON;
+      data: GetTaxonDraftDetailApiResponse;
     };
 
 export default function System() {
@@ -122,7 +129,8 @@ export default function System() {
     async (cr: DraftWithChangeRequest) => {
       if (
         cr.entityType !== EntityType.SPECIE &&
-        cr.entityType !== EntityType.CHARACTERISTIC
+        cr.entityType !== EntityType.CHARACTERISTIC &&
+        cr.entityType !== EntityType.TAXON
       ) {
         toast.error("Visualização não suportada para este tipo de entidade");
         return;
@@ -138,10 +146,15 @@ export default function System() {
             entityType: EntityType.SPECIE,
             data: detail as GetSpecieApiResponse,
           });
-        } else {
+        } else if (cr.entityType === EntityType.CHARACTERISTIC) {
           setViewedDetail({
             entityType: EntityType.CHARACTERISTIC,
             data: detail as GetCharacteristicDraftDetailApiResponse,
+          });
+        } else {
+          setViewedDetail({
+            entityType: EntityType.TAXON,
+            data: detail as GetTaxonDraftDetailApiResponse,
           });
         }
 

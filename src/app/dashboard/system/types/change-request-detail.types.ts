@@ -1,4 +1,5 @@
 import type { FileTypeApiResponse } from "~/app/museu/herbario/types/file.types";
+import type { GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
 
 export type ChangeRequestDiffEntry = { from?: unknown; to?: unknown };
 
@@ -25,5 +26,11 @@ export interface GetCharacteristicDraftDetailApiResponse {
     updatedAt: string;
   };
   files: FileTypeApiResponse[];
+  diff?: ChangeRequestDiff | null;
+}
+
+export interface GetTaxonDraftDetailApiResponse
+  extends Omit<GetTaxonsApiResponse, "parent"> {
+  parent: GetTaxonsApiResponse["parent"];
   diff?: ChangeRequestDiff | null;
 }
