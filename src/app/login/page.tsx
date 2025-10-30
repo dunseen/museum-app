@@ -17,7 +17,7 @@ import { Label } from "~/components/ui/label";
 import Footer from "../museu/herbario/components/footer";
 import { signIn } from "next-auth/react";
 import { type SubmitHandler, useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import Header from "../museu/herbario/components/header";
@@ -30,6 +30,7 @@ export default function Page() {
   const router = useRouter();
   const { register, handleSubmit, formState } = useForm<Readonly<LoginData>>();
   const [isPending, startTransition] = useTransition();
+  const query = useSearchParams();
 
   const onSubmit: SubmitHandler<LoginData> = async (data) => {
     const result = await signIn("credentials", {
@@ -41,7 +42,7 @@ export default function Page() {
 
     if (result?.ok) {
       startTransition(() => {
-        router.push("/dashboard");
+        router.push(query.get("callbackUrl") ?? "/dashboard");
       });
       return;
     }
