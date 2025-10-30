@@ -34,4 +34,22 @@ export class AuthService {
   static async confirmEmail(hash: string) {
     await publicApi.post("/auth/email/confirm", { hash });
   }
+
+  static async logout() {
+    await api.post("/auth/logout");
+  }
+
+  static async refreshToken(refreshToken: string) {
+    const { data } = await publicApi.post<LoginApiResponse>(
+      "/auth/refresh",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${refreshToken}`,
+        },
+      },
+    );
+
+    return data;
+  }
 }
