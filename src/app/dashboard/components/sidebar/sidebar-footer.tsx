@@ -34,7 +34,10 @@ export function DashboardSideBarFooter({ user }: DashboardSideBarFooterProps) {
   const initials = firstName.charAt(0) + lastName.charAt?.(0);
 
   const handleLogout = async () => {
-    await Promise.all([signOut({ redirect: false }), AuthService.logout()]);
+    await Promise.all([
+      signOut({ callbackUrl: "/login" }),
+      AuthService.logout(),
+    ]);
   };
 
   return (
