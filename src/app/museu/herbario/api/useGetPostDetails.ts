@@ -7,7 +7,7 @@ import { type GetPostDetailsApiResponse } from "../types/post.types";
 
 const GET_POST_DETAILS_KEY = "useGetPostDetails";
 
-async function fetchPostDetails(name: string) {
+export async function fetchPostDetails(name: string) {
   const { data } = await publicApi.get<GetPostDetailsApiResponse>(
     `/posts/species/${encodeURIComponent(name)}`,
   );

@@ -1,18 +1,38 @@
-import getCachedQueryClient from "~/lib/react-query";
-import HerbariumHero from "./components/herbarium-hero";
-import dynamic from "next/dynamic";
-
-const PlantSearch = dynamic(() => import("./components/plant-search"), {
-  loading: () => <div />,
-});
-
-const PlantGrid = dynamic(() => import("./components/plant-grid"), {
-  loading: () => <div />,
-});
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import type { Metadata } from "next";
+
+import HerbariumHero from "./components/herbarium-hero";
+import getCachedQueryClient from "~/lib/react-query";
 import { getCharacteristicFilters, getPostQueryConfig } from "./api";
 import { PostProvider } from "./context/post-context";
 import { getHierarchiesConfig } from "~/app/dashboard/collection/taxonomy/api";
+import { env } from "~/env";
+import PlantSearch from "./components/plant-search";
+import PlantGrid from "./components/plant-grid";
+import { LdJsonScript } from "~/components/scripts/ld-json.script";
+import { plantGridLdJson } from "./metadata/plat-grid.metadata";
+
+export const metadata: Metadata = {
+  title: "Herbário Virtual FC",
+  description:
+    "Descubra espécies botânicas catalogadas pelo Herbário Virtual FC da UFRA e mergulhe em informações científicas para pesquisa e educação.",
+  alternates: {
+    canonical: "/museu/herbario",
+  },
+  openGraph: {
+    type: "website",
+    url: new URL("/museu/herbario", env.NEXT_PUBLIC_APP_URL),
+    title: "Herbário Virtual FC",
+    description:
+      "Descubra espécies botânicas catalogadas pelo Herbário Virtual FC da UFRA e mergulhe em informações científicas para pesquisa e educação.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Herbário Virtual FC",
+    description:
+      "Explore o acervo botânico da UFRA e encontre espécies catalogadas pelo Herbário Virtual FC.",
+  },
+};
 
 export default async function Page() {
   const client = getCachedQueryClient();
@@ -26,6 +46,7 @@ export default async function Page() {
 
   return (
     <main className="min-h-screen bg-gray-50">
+      <LdJsonScript data={plantGridLdJson} />
       <HerbariumHero />
       <div className="container mx-auto px-4 py-8">
         <HydrationBoundary state={dehydratedState}>
