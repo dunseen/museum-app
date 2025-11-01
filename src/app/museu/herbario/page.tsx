@@ -59,7 +59,11 @@ export default async function Page() {
       "Portal científico do Herbário Virtual FC com foco em pesquisa, educação e divulgação botânica.",
     potentialAction: {
       "@type": "SearchAction",
-      target: `${new URL("/museu/herbario", env.NEXT_PUBLIC_APP_URL).toString()}?termo={search_term_string}`,
+      target: (() => {
+        const url = new URL("/museu/herbario", env.NEXT_PUBLIC_APP_URL);
+        url.searchParams.set("termo", "{search_term_string}");
+        return url.toString();
+      })(),
       "query-input": "required name=search_term_string",
     },
   } as const;
