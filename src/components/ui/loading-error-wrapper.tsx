@@ -1,9 +1,10 @@
 import React from "react";
-import { Skeleton } from "~/components/ui/skeleton";
+import { GridLoading } from "~/app/museu/herbario/components/grid-loading";
 
 interface LoadingErrorWrapperProps {
   loading?: boolean;
   error?: boolean;
+  length?: number;
   children: React.ReactNode;
 }
 
@@ -11,20 +12,24 @@ const LoadingErrorWrapper: React.FC<LoadingErrorWrapperProps> = ({
   loading,
   error,
   children,
+  length,
 }) => {
-  if (loading) {
-    return (
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <Skeleton key={index} className="h-64 w-full bg-gray-200" />
-        ))}
-      </div>
-    );
-  }
+  if (loading) return <GridLoading />;
 
   if (error) {
     return (
-      <div className="text-red-500">Ocorreu um erro ao carregar os dados.</div>
+      <p className="w-full text-center text-red-500">
+        Não foi possível carregar os dados. Por favor, tente novamente mais
+        tarde.
+      </p>
+    );
+  }
+
+  if (!length) {
+    return (
+      <p className="w-full text-center text-gray-500">
+        Nenhum dado disponível para exibir.
+      </p>
     );
   }
 
