@@ -53,6 +53,12 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
 
   useDebounce(
     () => {
+      if (
+        Object.keys(search).length === 0 ||
+        search.characteristics?.length === 0
+      )
+        return;
+
       setSearchDebounced(search);
     },
     500,
