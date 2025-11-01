@@ -61,7 +61,7 @@ export const getPostQueryConfig = (
       const requestConfig: AxiosRequestConfig = {
         params: {
           page: pageParam,
-          limit: params?.limit ?? 10,
+          limit: params?.limit ?? 100,
           name: sanitizeParams(params?.name),
           characteristicIds: params?.characteristics?.length
             ? params?.characteristics.join(",")
