@@ -86,7 +86,7 @@ export async function generateMetadata({
       ].filter(Boolean) as string[],
     };
   } catch (error) {
-    const fallbackCanonical = `/museu/herbario/especie/${rawName}`;
+    const fallbackCanonical = `/museu/herbario/especie/${encodeURIComponent(decodedName)}`;
     const fallbackTitle = `Espécie - ${decodedName}`;
 
     return {
