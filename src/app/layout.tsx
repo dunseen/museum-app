@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     title: "Herbário Virtual FC | UFRA",
     description:
       "Explore o acervo científico do Herbário Virtual FC da Universidade Federal Rural da Amazônia.",
-    url: new URL("/museu/herbario", env.NEXT_PUBLIC_APP_URL).toString(),
+    url: new URL("/museu/herbario", env.NEXT_PUBLIC_APP_URL),
   },
   twitter: {
     card: "summary_large_image",

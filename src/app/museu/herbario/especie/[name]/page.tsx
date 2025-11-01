@@ -5,30 +5,28 @@ import { PostDetails } from "./components/post-details";
 import getCachedQueryClient from "~/lib/react-query";
 import {
   fetchPostDetails,
+  fetchPosts,
   getPostDetailsQueryConfig,
-  type PaginatedGetPostsApiResponse,
 } from "../../api";
-import { env } from "~/env";
-import { publicApi } from "~/server/api";
-import { type GetPostDetailsApiResponse } from "../../types/post.types";
+import {
+  generateSpecieDetailsLdJson,
+  generateSpecieDetailsMetadata,
+} from "../../metadata/specie-details.metadata";
+import { LdJsonScript } from "~/components/scripts/ld-json.script";
 
 type PlantPageParams = {
   params: Promise<{ name: string }>;
 };
 
-export const revalidate = 60 * 60;
-
 export async function generateStaticParams() {
   try {
-    const { data } = await publicApi.get<PaginatedGetPostsApiResponse>(
-      "posts/species",
-      { params: { page: 1, limit: 50 } },
-    );
+    const posts = await fetchPosts({ page: 1, limit: 50 });
 
-    return data.data.map((post) => ({
+    return posts.data.map((post) => ({
       name: post.specie.scientificName.toLowerCase(),
     }));
   } catch (error) {
+    console.error("Error on generate static params", error);
     return [];
   }
 }
@@ -41,53 +39,13 @@ export async function generateMetadata({
 
   try {
     const details = await fetchPostDetails(decodedName);
-    const specie = details.specie;
-    const title = specie.commonName
-      ? `${specie.commonName} (${specie.scientificName})`
-      : specie.scientificName;
-    const description =
-      specie.description ??
-      "Conheça em detalhes esta espécie catalogada pelo Herbário Virtual FC.";
-    const image = specie.files?.[0]?.url;
-    const canonicalPath = `/museu/herbario/especie/${encodeURIComponent(
-      decodedName,
-    )}`;
 
-    return {
-      title,
-      description,
-      alternates: {
-        canonical: canonicalPath,
-      },
-      openGraph: {
-        type: "article",
-        url: new URL(canonicalPath, env.NEXT_PUBLIC_APP_URL).toString(),
-        title,
-        description,
-        images: image
-          ? [
-              {
-                url: image,
-                alt: `Imagem da espécie ${specie.scientificName}`,
-              },
-            ]
-          : undefined,
-      },
-      twitter: {
-        card: image ? "summary_large_image" : "summary",
-        title,
-        description,
-        images: image ? [image] : undefined,
-      },
-      keywords: [
-        specie.scientificName,
-        specie.commonName,
-        ...specie.taxons.map((taxon) => taxon.name),
-      ].filter(Boolean) as string[],
-    };
+    return generateSpecieDetailsMetadata(decodedName, details);
   } catch (error) {
     const fallbackCanonical = `/museu/herbario/especie/${encodeURIComponent(decodedName)}`;
     const fallbackTitle = `Espécie - ${decodedName}`;
+
+    console.error("Error on generating metadata:", error);
 
     return {
       title: fallbackTitle,
@@ -100,53 +58,21 @@ export async function generateMetadata({
   }
 }
 
-export default async function PlantPage({
-  params,
-}: PlantPageParams) {
+export default async function PlantPage({ params }: PlantPageParams) {
   const { name: rawName } = await params;
   const decodedName = decodeURIComponent(rawName);
   const client = getCachedQueryClient();
   const queryConfig = getPostDetailsQueryConfig(decodedName);
-  await client.prefetchQuery(queryConfig);
+
+  const postDetails = await client.fetchQuery(queryConfig);
 
   const dehydratedState = dehydrate(client);
-  const postDetails = client.getQueryData<GetPostDetailsApiResponse>(
-    queryConfig.queryKey,
-  );
 
-  const canonicalUrl = new URL(
-    `/museu/herbario/especie/${encodeURIComponent(decodedName)}`,
-    env.NEXT_PUBLIC_APP_URL,
-  ).toString();
-
-  const structuredData = postDetails
-    ? {
-        "@context": "https://schema.org",
-        "@type": "Taxon",
-        name:
-          postDetails.specie.commonName ?? postDetails.specie.scientificName,
-        alternateName: postDetails.specie.scientificName,
-        url: canonicalUrl,
-        description:
-          postDetails.specie.description ??
-          "Espécie catalogada pelo Herbário Virtual FC da UFRA.",
-        image: postDetails.specie.files?.map((file) => file.url),
-        parentTaxon: postDetails.specie.taxons.map((taxon) => ({
-          "@type": "Taxon",
-          name: taxon.name,
-          taxonRank: taxon.hierarchy.name,
-        })),
-      }
-    : null;
+  const ldJsonData = generateSpecieDetailsLdJson(decodedName, postDetails);
 
   return (
     <>
-      {structuredData ? (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
-      ) : null}
+      <LdJsonScript data={ldJsonData} />
       <HydrationBoundary state={dehydratedState}>
         <PostDetails name={decodedName} />
       </HydrationBoundary>
