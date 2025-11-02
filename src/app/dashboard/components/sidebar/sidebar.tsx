@@ -1,7 +1,6 @@
 "use client";
 
 import { BookOpen, ChevronRight, FileText, Home, Users } from "lucide-react";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type PropsWithChildren } from "react";
@@ -38,6 +37,7 @@ import { DashboardSideBarHeader } from "./sidebar-header";
 import { DashboardSideBarFooter } from "./sidebar-footer";
 import { useAbility } from "../../context/ability-context";
 import { Action, type Entities } from "~/lib/casl";
+import { type Session } from "next-auth";
 
 const data = {
   navMain: [
@@ -99,8 +99,10 @@ const data = {
   ],
 };
 
-export function DashboardSidebar({ children }: PropsWithChildren) {
-  const { data: session } = useSession();
+type DashboardSidebarProps = PropsWithChildren<{
+  session: Session | null;
+}>;
+export function DashboardSidebar({ children, session }: DashboardSidebarProps) {
   const ability = useAbility();
 
   const pathname = usePathname();

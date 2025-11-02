@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Open_Sans } from "next/font/google";
 
 import Providers from "./providers";
@@ -8,6 +8,13 @@ import { type PropsWithChildren } from "react";
 import { env } from "~/env";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#006633" },
+    { media: "(prefers-color-scheme: dark)", color: "#006633" },
+  ],
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -45,6 +52,12 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+  },
+  applicationName: "Herbário Virtual FC",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Herbário Virtual FC",
   },
 };
 
