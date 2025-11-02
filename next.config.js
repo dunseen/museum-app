@@ -9,6 +9,14 @@ const config = {
   reactStrictMode: true,
   output: "standalone",
   transpilePackages: ["geist"],
+  async rewrites() {
+    return [
+      {
+        source: "/",
+        destination: "/museu/herbario",
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

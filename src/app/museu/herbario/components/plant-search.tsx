@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import dynamic from "next/dynamic";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import {
@@ -18,15 +17,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "~/components/ui/accordion";
-import type { MultiValue } from "react-select";
+import Select, { type MultiValue } from "react-select";
 import { FilterIcon, FilterXIcon } from "lucide-react";
 import { usePost } from "../context/post-context";
 import { useGetCharacteristicFilters, useGetHierarchies } from "../api";
 import { FiltersBadge } from "./filters-badge";
-
-const Select = dynamic(() => import("react-select"), {
-  ssr: false,
-});
 
 export default function PlantSearch() {
   const [accordionValue, setAccordionValue] = useState<string>("");
@@ -52,8 +47,7 @@ export default function PlantSearch() {
     const toAdd = selectedIds.filter((id) => !prevSelected.includes(id));
     const toRemove = prevSelected.filter((id) => !selectedIds.includes(id));
 
-    toAdd.forEach((id) => handleCharacteristicFilter(id));
-    toRemove.forEach((id) => handleCharacteristicFilter(id));
+    handleCharacteristicFilter(toAdd, toRemove);
   };
 
   const onAccordionChange = (value: string) => {

@@ -13,7 +13,7 @@ import { type PostSearchParams } from "../api";
 interface PostContextProps {
   search: PostSearchParams;
   handleSearch: (params: PostSearchParams) => void;
-  handleCharacteristicFilter: (id: string) => void;
+  handleCharacteristicFilter: (toAdd: string[], toRemove: string[]) => void;
   handleClearAllFilters: () => void;
 }
 
@@ -38,14 +38,19 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
     }));
   }, []);
 
-  const handleCharacteristicFilter = useCallback((id: string) => {
-    setSearch((prev) => ({
-      ...prev,
-      characteristics: prev?.characteristics?.includes(id)
-        ? prev.characteristics.filter((c) => c !== id)
-        : [...(prev?.characteristics ?? []), id],
-    }));
-  }, []);
+  const handleCharacteristicFilter = useCallback(
+    (toAdd: string[], toRemove: string[]) => {
+      setSearch((prev) => ({
+        ...prev,
+        characteristics: [
+          ...(prev?.characteristics?.filter((id) => !toRemove.includes(id)) ??
+            []),
+          ...toAdd,
+        ],
+      }));
+    },
+    [],
+  );
 
   const handleClearAllFilters = useCallback(() => {
     setSearch({});
@@ -53,11 +58,11 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
 
   useDebounce(
     () => {
-      if (
-        Object.keys(search).length === 0 ||
-        search.characteristics?.length === 0
-      )
-        return;
+      const hasFilters = Object.keys(search).some(
+        (key) => search?.[key as keyof PostSearchParams] !== undefined,
+      );
+
+      if (!hasFilters && search.characteristics?.length === 0) return;
 
       setSearchDebounced(search);
     },
