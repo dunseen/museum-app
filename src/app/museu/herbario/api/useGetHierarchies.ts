@@ -12,9 +12,8 @@ export interface GetHierarchiesApiResponse {
 }
 
 async function fetchHierarchies() {
-  const { data } = await publicApi.get<GetHierarchiesApiResponse[]>(
-    "/dashboard/hierarchies",
-  );
+  const { data } =
+    await publicApi.get<GetHierarchiesApiResponse[]>("/hierarchies");
 
   return data;
 }
