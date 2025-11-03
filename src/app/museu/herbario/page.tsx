@@ -48,7 +48,7 @@ export default async function Page() {
     <main className="min-h-screen bg-gray-50">
       <LdJsonScript data={plantGridLdJson} />
       <HerbariumHero />
-      <div className="container mx-auto px-4 py-8">
+      <div className="px-2 py-8 md:px-4">
         <HydrationBoundary state={dehydratedState}>
           <PostProvider>
             <PlantSearch />
