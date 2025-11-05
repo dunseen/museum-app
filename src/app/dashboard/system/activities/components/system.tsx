@@ -10,109 +10,262 @@ import { ActivitiesTableActions } from "../components/activities-table-actions";
 import RejectActivityDialog from "../components/reject-activity-dialog";
 import { useDisclosure } from "~/hooks/use-disclosure";
 import { ConfirmationAlert } from "../../../shared/components/confirmation-alert";
-import { AddSpecieDialog } from "../../../collection/species/add/add-specie-dialog";
 import { useDebouncedInput } from "~/hooks/use-debounced-input";
-import { useGetLastPosts, usePostValidation } from "../../api";
-import { type GetPostDetailsApiResponse } from "~/app/museu/herbario/types/post.types";
+import {
+  type DraftWithChangeRequest,
+  useGetChangeRequests,
+  getChangeRequestDetailConfig,
+  useApproveChangeRequest,
+  useRejectChangeRequest,
+} from "../../api";
+import type {
+  ChangeRequestAction,
+  ChangeRequestStatus,
+} from "../../api/useGetChangeRequests";
 import { toast } from "sonner";
 import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
-import { useGeneratePdf } from "../../hooks/useExportPdf";
+import {
+  type GetCharacteristicDraftDetailApiResponse,
+  type GetTaxonDraftDetailApiResponse,
+} from "../../types/change-request-detail.types";
+import { useQueryClient } from "@tanstack/react-query";
+import { EntityType } from "~/types";
+import { ChangeRequestDetailDialog } from "./change-request-detail-dialog";
+import { Badge } from "~/components/ui/badge";
+import { cn } from "~/lib/utils";
 
-const STATUS_PARSER = {
+const STATUS_PARSER: Record<ChangeRequestStatus, string> = {
   pending: "Pendente",
-  published: "Publicado",
+  approved: "Aprovado",
   rejected: "Rejeitado",
+  withdrawn: "Retirado",
 };
+
+const STATUS_BADGE_STYLES: Record<ChangeRequestStatus, string> = {
+  pending:
+    "bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200",
+  approved:
+    "bg-emerald-100 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-200",
+  rejected:
+    "bg-rose-100 text-rose-900 dark:bg-rose-900/40 dark:text-rose-200",
+  withdrawn:
+    "bg-slate-100 text-slate-900 dark:bg-slate-900/40 dark:text-slate-200",
+};
+
+const ACTION_PARSER: Record<ChangeRequestAction, string> = {
+  create: "Criação",
+  update: "Atualização",
+  delete: "Remoção",
+};
+
+const ACTION_BADGE_STYLES: Record<ChangeRequestAction, string> = {
+  create:
+    "bg-emerald-100 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-200",
+  update:
+    "bg-sky-100 text-sky-900 dark:bg-sky-900/40 dark:text-sky-200",
+  delete:
+    "bg-rose-100 text-rose-900 dark:bg-rose-900/40 dark:text-rose-200",
+};
+
+type ViewedDetail =
+  | { entityType: typeof EntityType.SPECIE; data: GetSpecieApiResponse }
+  | {
+      entityType: typeof EntityType.CHARACTERISTIC;
+      data: GetCharacteristicDraftDetailApiResponse;
+    }
+  | {
+      entityType: typeof EntityType.TAXON;
+      data: GetTaxonDraftDetailApiResponse;
+    };
+
 export default function System() {
+  const [selectedCrId, setSelectedCrId] = useState<number | null>(null);
+  const [statusFilter, setStatusFilter] = useState<
+    ChangeRequestStatus | undefined
+  >(undefined);
+  const [actionFilter, setActionFilter] = useState<
+    ChangeRequestAction | undefined
+  >(undefined);
+
   const lastPostHook = useDebouncedInput();
 
-  const lastPostsQuery = useGetLastPosts({
+  const draftsQuery = useGetChangeRequests({
     limit: lastPostHook.pageLimit,
     page: lastPostHook.curentPage,
-    name: lastPostHook.debouncedInput,
+    status: statusFilter,
+    action: actionFilter,
+    search: lastPostHook.debouncedInput,
   });
 
-  const postValidationMutation = usePostValidation();
+  const approveMutation = useApproveChangeRequest();
+  const rejectMutation = useRejectChangeRequest();
 
   const rejectDialog = useDisclosure();
   const approveDialog = useDisclosure();
   const addDialog = useDisclosure();
 
-  const { generatePDF } = useGeneratePdf();
+  const queryClient = useQueryClient();
 
-  const [selectedActivity, setSelectedActivity] =
-    useState<GetPostDetailsApiResponse | null>(null);
-  const [viewSpecie, setViewSpecie] = useState<GetSpecieApiResponse | null>(
-    null,
-  );
+  const [viewedDetail, setViewedDetail] = useState<ViewedDetail | null>(null);
+  const [selectedChangeRequest, setSelectedChangeRequest] =
+    useState<DraftWithChangeRequest | null>(null);
 
   const handleReject = useCallback(
-    (activity: GetPostDetailsApiResponse) => {
-      setSelectedActivity(activity);
+    (cr: DraftWithChangeRequest) => {
+      setSelectedCrId(cr.changeRequest.id);
       rejectDialog.onOpen();
     },
     [rejectDialog],
   );
   const handleApprove = useCallback(
-    (activity: GetPostDetailsApiResponse) => {
-      setSelectedActivity(activity);
+    (cr: DraftWithChangeRequest) => {
+      setSelectedCrId(cr.changeRequest.id);
       approveDialog.onOpen();
     },
     [approveDialog],
   );
 
   const viewDataActivity = useCallback(
-    (specie: GetSpecieApiResponse): void => {
-      setViewSpecie(specie);
-      addDialog.onOpen();
+    async (cr: DraftWithChangeRequest) => {
+      if (
+        cr.entityType !== EntityType.SPECIE &&
+        cr.entityType !== EntityType.CHARACTERISTIC &&
+        cr.entityType !== EntityType.TAXON
+      ) {
+        toast.error("Visualização não suportada para este tipo de entidade");
+        return;
+      }
+
+      try {
+        const detail = await queryClient.fetchQuery(
+          getChangeRequestDetailConfig(cr.id, cr.entityType),
+        );
+
+        if (cr.entityType === EntityType.SPECIE) {
+          setViewedDetail({
+            entityType: EntityType.SPECIE,
+            data: detail as GetSpecieApiResponse,
+          });
+        } else if (cr.entityType === EntityType.CHARACTERISTIC) {
+          setViewedDetail({
+            entityType: EntityType.CHARACTERISTIC,
+            data: detail as GetCharacteristicDraftDetailApiResponse,
+          });
+        } else {
+          setViewedDetail({
+            entityType: EntityType.TAXON,
+            data: detail as GetTaxonDraftDetailApiResponse,
+          });
+        }
+
+        setSelectedChangeRequest(cr);
+        addDialog.onOpen();
+      } catch (e) {
+        console.error(e);
+        toast.error("Erro ao carregar detalhes da entidade");
+      }
     },
-    [addDialog],
+    [addDialog, queryClient],
   );
 
-  const columns = useMemo<ColumnDef<GetPostDetailsApiResponse>[]>(
+  const columns = useMemo<ColumnDef<DraftWithChangeRequest>[]>(
     () => [
       {
-        header: "Espécie",
-        accessorKey: "specie",
+        header: "Nome",
+        accessorKey: "entityName",
         cell: ({ row }) => (
-          <span
-            className="cursor-pointer underline"
-            onClick={() => viewDataActivity(row.original.specie)}
-          >
-            {row.original.specie.scientificName}
-          </span>
+          <span className="max-w-96 truncate">{row.original.entityName}</span>
         ),
+      },
+      {
+        header: "Recurso",
+        accessorKey: "entityType",
+        cell: ({ row }) => {
+          const typeLabels: Record<string, string> = {
+            [EntityType.SPECIE]: "Espécie",
+            [EntityType.CHARACTERISTIC]: "Característica",
+            [EntityType.TAXON]: "Taxonomia",
+          };
+          return typeLabels[row.original.entityType] ?? row.original.entityType;
+        },
+      },
+      {
+        header: "Solicitação",
+        accessorKey: "action",
+        cell: ({ row }) => {
+          const action = row.original.changeRequest.action;
+          const label = ACTION_PARSER[action] ?? action;
+          const style = ACTION_BADGE_STYLES[action] ?? "";
+          return (
+            <Badge
+              variant="outline"
+              className={cn(
+                "border-transparent px-2 py-0.5 text-xs font-medium",
+                style,
+              )}
+            >
+              {label}
+            </Badge>
+          );
+        },
       },
       {
         header: "Status",
         accessorKey: "status",
-        cell: ({ row }) =>
-          STATUS_PARSER[row.original.status as keyof typeof STATUS_PARSER],
+        cell: ({ row }) => {
+          const status = row.original.changeRequest.status;
+          const label = STATUS_PARSER[status] ?? status;
+          const style = STATUS_BADGE_STYLES[status] ?? "";
+          return (
+            <Badge
+              variant="outline"
+              className={cn(
+                "border-transparent px-2 py-0.5 text-xs font-medium",
+                style,
+              )}
+            >
+              {label}
+            </Badge>
+          );
+        },
       },
       {
         header: "Autor",
         accessorKey: "author",
         cell: ({ row }) =>
-          `${row.original.author.firstName} ${row.original.author.lastName}`,
+          `${row.original.changeRequest.proposedBy.firstName ?? ""} ${row.original.changeRequest.proposedBy.lastName ?? ""}`,
       },
       {
         header: "Validador",
         accessorKey: "validator",
         cell: ({ row }) => {
-          if (row.original.validator) {
-            return `${row.original.validator.firstName} ${row.original.validator.lastName}`;
-          }
+          const rv = row.original.changeRequest.reviewedBy;
+          if (rv) return `${rv.firstName ?? ""} ${rv.lastName ?? ""}`;
           return "-";
         },
       },
       {
         header: "Comentário",
-        accessorKey: "rejectReason",
+        accessorKey: "reviewerNote",
+        cell: ({ row }) => row.original.changeRequest.reviewerNote ?? "-",
       },
       {
-        header: "Data",
-        accessorKey: "updatedAt",
-        cell: ({ row }) => new Date(row.original.updatedAt).toLocaleString(),
+        header: "Data de Criação",
+        accessorKey: "proposedAt",
+        cell: ({ row }) =>
+          new Date(row.original.changeRequest.proposedAt).toLocaleString(
+            "pt-BR",
+          ),
+      },
+      {
+        header: "Data de Aprovação",
+        accessorKey: "decidedAt",
+        cell: ({ row }) =>
+          row.original.changeRequest.decidedAt
+            ? new Date(row.original.changeRequest.decidedAt).toLocaleString(
+                "pt-BR",
+              )
+            : "-",
       },
       {
         header: "Ações",
@@ -121,71 +274,71 @@ export default function System() {
           <ActivitiesTableActions
             onApprove={() => handleApprove(row.original)}
             onReject={() => handleReject(row.original)}
-            onGeneratePDF={() => generatePDF({ post: row.original })}
-            isPublished={row.original.status === "published"}
+            onViewDetails={() => viewDataActivity(row.original)}
+            status={row.original.changeRequest.status}
           />
         ),
       },
     ],
-    [generatePDF, handleApprove, handleReject, viewDataActivity],
+    [handleApprove, handleReject, viewDataActivity],
   );
 
   function onReject(reason: string) {
-    postValidationMutation.mutate(
-      {
-        id: String(selectedActivity?.id),
-        rejectReason: reason,
-      },
+    if (!selectedCrId) return;
+    rejectMutation.mutate(
+      { id: selectedCrId, reviewerNote: reason },
       {
         onSuccess() {
           rejectDialog.onClose();
-          setSelectedActivity(null);
-          toast.success("Publicação rejeitada com sucesso");
+          setSelectedCrId(null);
+          toast.success("Solicitação rejeitada com sucesso");
         },
         onError() {
-          toast.error("Erro ao rejeitar publicação");
+          toast.error("Erro ao rejeitar solicitação");
         },
       },
     );
   }
 
   function onApprove() {
-    postValidationMutation.mutate(
-      {
-        id: String(selectedActivity?.id),
+    if (!selectedCrId) return;
+    approveMutation.mutate(selectedCrId, {
+      onSuccess() {
+        approveDialog.onClose();
+        setSelectedCrId(null);
+        toast.success("Solicitação aprovada com sucesso");
       },
-      {
-        onSuccess() {
-          approveDialog.onClose();
-          setSelectedActivity(null);
-          toast.success("Publicação aprovada com sucesso");
-        },
-        onError() {
-          toast.error("Erro ao aprovar publicação");
-        },
+      onError() {
+        toast.error("Erro ao aprovar solicitação");
       },
-    );
+    });
   }
 
   const onCloseAddDialog = () => {
     addDialog.onClose();
-    setViewSpecie(null);
+    setSelectedCrId(null);
+    setViewedDetail(null);
+    setSelectedChangeRequest(null);
   };
 
   return (
     <>
       <ActivitiesHeader
         currentPage={lastPostHook.curentPage}
-        totalPages={lastPostsQuery.data?.pagination?.total ?? 0}
+        totalPages={draftsQuery.data?.pagination?.total ?? 0}
         onPageChange={lastPostHook.setCurrentPage}
-        onSearch={lastPostHook.onInputChange}
+        onSearch={lastPostHook.setDebouncedInput}
+        status={statusFilter}
+        onStatusChange={(s) => setStatusFilter(s)}
+        action={actionFilter}
+        onActionChange={(a) => setActionFilter(a)}
       />
 
       <DataTable
         handleViewData={addDialog.onOpen}
         columns={columns}
-        isLoading={lastPostsQuery.isLoading}
-        data={lastPostsQuery.data?.data ?? []}
+        isLoading={draftsQuery.isLoading}
+        data={draftsQuery.data?.data ?? []}
       />
 
       {rejectDialog.isOpen && (
@@ -193,7 +346,7 @@ export default function System() {
           isOpen={rejectDialog.isOpen}
           onClose={rejectDialog.onClose}
           onReject={onReject}
-          isLoading={postValidationMutation.isPending}
+          isLoading={rejectMutation.isPending}
         />
       )}
 
@@ -203,17 +356,25 @@ export default function System() {
           onCancel={approveDialog.onClose}
           onConfirm={onApprove}
           onClose={approveDialog.onClose}
-          isLoading={postValidationMutation.isPending}
+          isLoading={approveMutation.isPending}
         />
       )}
 
-      <AddSpecieDialog
-        dialogActionTitle={"Visualizar"}
-        isOpen={addDialog.isOpen}
-        onClose={onCloseAddDialog}
-        data={viewSpecie}
-        isReadOnly
-      />
+      {viewedDetail && selectedChangeRequest && (
+        <ChangeRequestDetailDialog
+          isOpen={addDialog.isOpen}
+          onClose={onCloseAddDialog}
+          entityType={viewedDetail.entityType}
+          data={viewedDetail.data}
+          action={selectedChangeRequest.changeRequest.action}
+          status={selectedChangeRequest.changeRequest.status}
+          proposedBy={selectedChangeRequest.changeRequest.proposedBy}
+          proposedAt={selectedChangeRequest.changeRequest.proposedAt}
+          reviewedBy={selectedChangeRequest.changeRequest.reviewedBy}
+          decidedAt={selectedChangeRequest.changeRequest.decidedAt}
+          reviewerNote={selectedChangeRequest.changeRequest.reviewerNote}
+        />
+      )}
     </>
   );
 }

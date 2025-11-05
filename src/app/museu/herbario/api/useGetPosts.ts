@@ -45,6 +45,26 @@ function sanitizeParams(value: string | number | undefined) {
 
   return value;
 }
+
+export async function fetchPosts(
+  params?: GetPostParams,
+  config?: AxiosRequestConfig,
+) {
+  const requestConfig: AxiosRequestConfig = {
+    params: {
+      ...params,
+    },
+    ...config,
+  };
+
+  const { data } = await publicApi.get<PaginatedGetPostsApiResponse>(
+    "posts/species",
+    requestConfig,
+  );
+
+  return data;
+}
+
 export const getPostQueryConfig = (
   params?: GetPostParams,
   queryKey = GET_POST_QUERY_KEY,
@@ -61,7 +81,7 @@ export const getPostQueryConfig = (
       const requestConfig: AxiosRequestConfig = {
         params: {
           page: pageParam,
-          limit: params?.limit ?? 10,
+          limit: params?.limit ?? 100,
           name: sanitizeParams(params?.name),
           characteristicIds: params?.characteristics?.length
             ? params?.characteristics.join(",")
@@ -76,10 +96,7 @@ export const getPostQueryConfig = (
         signal,
       };
 
-      const { data } = await publicApi.get<PaginatedGetPostsApiResponse>(
-        "posts/species",
-        requestConfig,
-      );
+      const data = await fetchPosts(params, requestConfig);
 
       return data;
     },

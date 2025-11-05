@@ -18,6 +18,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
+import { AuthService } from "~/services/auth.service";
 import { parseRole } from "~/utils/role";
 
 type DashboardSideBarFooterProps = {
@@ -33,7 +34,10 @@ export function DashboardSideBarFooter({ user }: DashboardSideBarFooterProps) {
   const initials = firstName.charAt(0) + lastName.charAt?.(0);
 
   const handleLogout = async () => {
-    await signOut({ redirect: false });
+    await Promise.all([
+      signOut({ callbackUrl: "/login" }),
+      AuthService.logout(),
+    ]);
   };
 
   return (

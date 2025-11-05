@@ -15,6 +15,7 @@ export function useDebouncedInput(time = 500) {
     inputValue,
     onInputChange,
     debouncedInput,
+    setDebouncedInput,
     setCurrentPage,
     curentPage,
     pageLimit,

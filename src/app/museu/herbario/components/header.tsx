@@ -5,10 +5,10 @@ import { NavList } from "./nav-list";
 type HeaderProps = {
   showNavMenu?: boolean;
 };
-export default function Header({ showNavMenu  }: Readonly<HeaderProps>) {
+export default function Header({ showNavMenu }: Readonly<HeaderProps>) {
   return (
-    <header className="bg-[#006633] p-2 text-white md:p-4">
-      <div className="container mx-auto flex flex-wrap items-center justify-between gap-6">
+    <header className="bg-[#006633] p-2 text-white md:p-4 md:px-4">
+      <div className="flex flex-wrap items-center justify-between gap-6">
         <Link href="/museu/herbario" className="flex items-center space-x-2">
           <Image
             src="/ufra-logo.png"

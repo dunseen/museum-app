@@ -23,7 +23,7 @@ async function fetchHierarchies(params?: GetHierarchyParams) {
   };
 
   const { data } = await api.get<GetTaxonsApiResponse[]>(
-    "dashboard/hierarchies",
+    "hierarchies",
     requestConfig,
   );
 

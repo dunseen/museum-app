@@ -9,6 +9,14 @@ const config = {
   reactStrictMode: true,
   output: "standalone",
   transpilePackages: ["geist"],
+  async rewrites() {
+    return [
+      {
+        source: "/",
+        destination: "/museu/herbario",
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
@@ -18,6 +26,11 @@ const config = {
       {
         protocol: "http",
         hostname: "127.0.0.1",
+        port: "9000",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
         port: "9000",
       },
     ],

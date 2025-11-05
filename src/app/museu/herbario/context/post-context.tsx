@@ -6,6 +6,7 @@ import React, {
   useMemo,
   type ReactNode,
   useCallback,
+  useRef,
 } from "react";
 import { useDebounce } from "react-use";
 import { type PostSearchParams } from "../api";
@@ -13,7 +14,7 @@ import { type PostSearchParams } from "../api";
 interface PostContextProps {
   search: PostSearchParams;
   handleSearch: (params: PostSearchParams) => void;
-  handleCharacteristicFilter: (id: string) => void;
+  handleCharacteristicFilter: (characteristics: string[]) => void;
   handleClearAllFilters: () => void;
 }
 
@@ -38,21 +39,28 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
     }));
   }, []);
 
-  const handleCharacteristicFilter = useCallback((id: string) => {
-    setSearch((prev) => ({
-      ...prev,
-      characteristics: prev?.characteristics?.includes(id)
-        ? prev.characteristics.filter((c) => c !== id)
-        : [...(prev?.characteristics ?? []), id],
-    }));
-  }, []);
+  const handleCharacteristicFilter = useCallback(
+    (characteristics: string[]) => {
+      setSearchDebounced((prev) => ({
+        ...prev,
+        characteristics,
+      }));
+    },
+    [],
+  );
 
   const handleClearAllFilters = useCallback(() => {
-    setSearch({});
+    setSearchDebounced({});
   }, []);
 
   useDebounce(
     () => {
+      const hasFilters = Object.keys(search).some(
+        (key) => search?.[key as keyof PostSearchParams],
+      );
+
+      if (!hasFilters) return;
+
       setSearchDebounced(search);
     },
     500,

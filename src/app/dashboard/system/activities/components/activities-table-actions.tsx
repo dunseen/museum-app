@@ -9,19 +9,38 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import { type ChangeRequestStatus } from "../../api";
 
 type ActivitiesTableActionsProps = {
   onApprove: () => void;
   onReject: () => void;
-  onGeneratePDF: () => void;
-  isPublished?: boolean;
+  onViewDetails: () => void;
+  status: ChangeRequestStatus;
 };
 export function ActivitiesTableActions({
   onApprove,
   onReject,
-  onGeneratePDF,
-  isPublished,
+  onViewDetails,
+  status,
 }: ActivitiesTableActionsProps) {
+  if (status === "rejected" || status === "approved") {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Abrir menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={onViewDetails}>
+            Ver detalhes
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,20 +50,16 @@ export function ActivitiesTableActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {!isPublished && (
-          <>
-            <DropdownMenuItem onClick={onApprove}>Aprovar</DropdownMenuItem>
+        <DropdownMenuItem onClick={onViewDetails}>
+          Ver detalhes
+        </DropdownMenuItem>
 
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={onReject}>Rejeitar</DropdownMenuItem>
-          </>
-        )}
+        <DropdownMenuSeparator />
 
-        {isPublished && (
-          <DropdownMenuItem onClick={onGeneratePDF}>
-            Gerar ficha
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem onClick={onApprove}>Aprovar</DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={onReject}>Rejeitar</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

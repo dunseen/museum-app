@@ -61,7 +61,8 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
               <Controller
                 name={field.name}
                 control={form.control}
-                render={() => (
+                defaultValue={field.value}
+                render={({ field }) => (
                   <AsyncSelect
                     name="taxonomy"
                     control={form.control}

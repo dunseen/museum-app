@@ -17,6 +17,7 @@ import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.typ
 import { decimalToDMS } from "~/utils/lat-long";
 import { Can } from "../../context/ability-context";
 import { formatDate } from "~/utils/date";
+import { useGeneratePdf } from "../../system/hooks/useExportPdf";
 
 export function useSpecieTable() {
   const [selectedSpecie, setSelectedSpecie] =
@@ -29,42 +30,13 @@ export function useSpecieTable() {
     images: string[];
   } | null>(null);
 
+  const { generatePDF } = useGeneratePdf();
+
   const resetSelectedSpecieImages = () => setSelectedSpecieImages(null);
   const resetSelectedSpecieId = () => setSelectedSpecieId(null);
 
   const columns = useMemo<ColumnDef<GetSpecieApiResponse>[]>(
     () => [
-      {
-        id: "actions",
-        header: "Ações",
-        cell: ({ row }) => {
-          return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Abrir menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() => setSelectedSpecie(row.original)}
-                >
-                  Editar
-                </DropdownMenuItem>
-                <Can I="delete" a="Collection">
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => setSelectedSpecieId(row.original.id)}
-                  >
-                    Deletar
-                  </DropdownMenuItem>
-                </Can>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          );
-        },
-      },
       {
         header: "Nome científico",
         cell: ({ row }) => (
@@ -217,8 +189,46 @@ export function useSpecieTable() {
           );
         },
       },
+      {
+        id: "actions",
+        header: "Ações",
+        cell: ({ row }) => {
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Abrir menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <Can I="edit" a="Collection">
+                  <DropdownMenuItem
+                    onClick={() => generatePDF({ specie: row.original })}
+                  >
+                    Gerar ficha
+                  </DropdownMenuItem>
+                </Can>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => setSelectedSpecie(row.original)}
+                >
+                  Editar
+                </DropdownMenuItem>
+                <Can I="delete" a="Collection">
+                  <DropdownMenuItem
+                    onClick={() => setSelectedSpecieId(row.original.id)}
+                  >
+                    Deletar
+                  </DropdownMenuItem>
+                </Can>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
+      },
     ],
-    [],
+    [generatePDF],
   );
 
   return {

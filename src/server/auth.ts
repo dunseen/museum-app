@@ -102,7 +102,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -114,6 +114,12 @@ export const authOptions: NextAuthOptions = {
         token.token = user.token;
         token.refreshToken = user.refreshToken;
         token.tokenExpires = user.tokenExpires;
+      }
+
+      if (trigger === "update") {
+        token.token = session?.token;
+        token.refreshToken = session?.refreshToken;
+        token.tokenExpires = session?.tokenExpires;
       }
 
       return token;

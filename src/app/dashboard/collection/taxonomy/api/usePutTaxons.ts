@@ -1,13 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "~/server/api";
 import { GET_TAXONS_QUERY_KEY } from "./useGetTaxons";
-
-type PutTaxonsApiResponse = {
-  id: number;
-  name: string;
-  description: string;
-  type: string;
-};
+import { type TaxonOperationResult } from "../types";
 
 export type PutTaxonsPayload = {
   id: number;
@@ -19,8 +13,8 @@ export type PutTaxonsPayload = {
 
 async function putTaxons(payload: PutTaxonsPayload) {
   const { id, ...rest } = payload;
-  const { data } = await api.put<PutTaxonsApiResponse>(
-    `/dashboard/taxons/${id}`,
+  const { data } = await api.put<TaxonOperationResult>(
+    `/dashboard/change-requests/taxons/${id}`,
     rest,
   );
 

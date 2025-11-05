@@ -6,6 +6,7 @@ export type LastPostsSimplified = {
   id: string;
   author: string;
   status: string;
+  action: "create" | "update" | "delete";
   resource: string;
   date: Date;
 };
@@ -22,7 +23,7 @@ export const RecentActivities: React.FC<Readonly<RecentActivitiesProps>> = ({
       color: "border-orange-300",
       label: "Pendente",
     },
-    published: {
+    approved: {
       icon: <CheckCircle color="green" />,
       color: "border-green-500",
       label: "Aprovado",
@@ -32,7 +33,13 @@ export const RecentActivities: React.FC<Readonly<RecentActivitiesProps>> = ({
       color: "border-red-500",
       label: "Rejeitado",
     },
-  };
+  } as const;
+
+  const actionLabels = {
+    create: "Criar",
+    update: "Atualizar",
+    delete: "Deletar",
+  } as const;
 
   return (
     <div className="max-h-[400px] space-y-4 overflow-y-auto">
@@ -44,9 +51,12 @@ export const RecentActivities: React.FC<Readonly<RecentActivitiesProps>> = ({
           <div>{config[act.status as keyof typeof config].icon}</div>
           <div className="ml-4 space-y-1">
             <p className="text-sm font-medium leading-none">{act.author}</p>
-            <Badge variant={"outline"}>
-              {config[act.status as keyof typeof config].label}
-            </Badge>
+            <div className="flex gap-2">
+              <Badge variant={"outline"}>{actionLabels[act.action]}</Badge>
+              <Badge variant={"outline"}>
+                {config[act.status as keyof typeof config].label}
+              </Badge>
+            </div>
           </div>
           <div className="ml-auto">
             <p className="text-md font-bold">{act.resource}</p>

@@ -29,6 +29,10 @@ import { toast } from "sonner";
 import { HierarchyFormField } from "./components/hierarchy-form-field";
 import { TaxonomyFormField } from "./components/taxonomy-form-field";
 import { CharacteristicFormField } from "./components/characteristic-form-field";
+import {
+  TaxonOperationStatus,
+  type TaxonOperationResult,
+} from "../types";
 
 type AddTaxonomyDialogProps = {
   isOpen: boolean;
@@ -101,7 +105,7 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
     },
   });
 
-  function onSubmit(values: TaxonomyFormType) {
+  async function onSubmit(values: TaxonomyFormType) {
     const payload: PostTaxonsPayload = {
       hierarchyId: Number(values.hierarchy.value),
       name: values.name,
@@ -111,22 +115,28 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
     };
 
     if (data) {
-      putTaxonomy.mutate(
-        {
-          id: data.id,
-          ...payload,
-        },
-        {
-          onSuccess: () => {
-            onCloseAddDialog();
-            toast.success("Taxonomia atualizada com sucesso");
-          },
-          onError: () => {
-            toast.error("Erro ao atualizar taxonomia");
-          },
-        },
-      );
+      try {
+        const result: TaxonOperationResult =
+          await putTaxonomy.mutateAsync({
+            id: data.id,
+            ...payload,
+          });
 
+        if (result.status === TaxonOperationStatus.COMPLETED) {
+          toast.success("Taxonomia atualizada com sucesso");
+        } else {
+          const count = result.affectedSpeciesCount ?? 0;
+          const speciesText = count === 1 ? "espécie" : "espécies";
+          toast.info(
+            `Solicitação enviada para aprovação. Esta taxonomia está sendo usada por ${count} ${speciesText}.`,
+          );
+        }
+
+        onCloseAddDialog();
+      } catch (error) {
+        console.error(error);
+        toast.error("Erro ao atualizar taxonomia");
+      }
       return;
     }
 

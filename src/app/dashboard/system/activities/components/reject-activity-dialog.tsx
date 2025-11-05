@@ -28,14 +28,14 @@ export default function RejectActivityDialog({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
-        <DialogTitle>Rejeitar atividade</DialogTitle>
-        <Label htmlFor="reason">Motivo da rejeição</Label>
+        <DialogTitle>Rejeitar solicitação</DialogTitle>
+        <Label htmlFor="reason">Motivo:</Label>
         <Textarea
           id={"reason"}
-          title="Motivo da rejeição"
+          title="Motivo"
           value={reason}
           onChange={(e) => setReason(e.target.value)}
-          placeholder="Descreva o motivo da rejeição"
+          placeholder="Descreva o motivo"
         />
         <DialogFooter>
           <Button disabled={isLoading} variant="secondary" onClick={onClose}>

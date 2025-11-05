@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type ImageType } from "../components/image-manager";
 
 type ImageManagerProps = {
@@ -9,7 +9,7 @@ export function useImageManager({
   existingImages,
   onImagesChange,
 }: ImageManagerProps) {
-  const [images, setImages] = useState<ImageType[]>(existingImages);
+  const [images, setImages] = useState<ImageType[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,6 +42,12 @@ export function useImageManager({
   const handleAddImageClick = () => {
     fileInputRef.current?.click();
   };
+
+  useEffect(() => {
+    if (!images.length) {
+      setImages(existingImages);
+    }
+  }, [existingImages, images]);
 
   return {
     images,
