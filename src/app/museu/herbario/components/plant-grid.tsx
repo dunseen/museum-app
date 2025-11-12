@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { useGetPosts } from "../api";
 import Image from "next/image";
-import defaultImage from "public/default-fallback-image.png";
 import { usePost } from "../context/post-context";
 import LoadingErrorWrapper from "~/components/ui/loading-error-wrapper";
 import { type GetTaxonApiResponse } from "../types/taxonomy.types";
@@ -61,7 +60,9 @@ export default function PlantGrid() {
               <CardHeader className="p-0">
                 <Image
                   title={post.specie.scientificName}
-                  src={post.specie.files?.[0]?.url ?? defaultImage}
+                  src={
+                    post.specie.files?.[0]?.url ?? "/default-fallback-image.png"
+                  }
                   alt={`image-of-${post.specie.scientificName}`}
                   width={200}
                   height={200}
