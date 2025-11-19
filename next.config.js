@@ -20,7 +20,7 @@ const config = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "img-src 'self' data: blob: https://herb-storage-api.dlima-consulting.com http://127.0.0.1:9000 http://localhost:9000",
+              "img-src 'self' data: blob: https://herb-storage-api.dlima-consulting.com https://*.tile.openstreetmap.org  http://127.0.0.1:9000 http://localhost:9000",
               "font-src 'self' https://fonts.gstatic.com",
               "connect-src 'self' https://herb-storage-api.dlima-consulting.com http://127.0.0.1:9000 http://localhost:9000 http://localhost:3333 http://127.0.0.1:3333",
               "media-src 'self'",
