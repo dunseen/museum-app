@@ -1,4 +1,5 @@
 import React from "react";
+import { MapHandler } from "./components/mapHandler";
 
 const Page: React.FC = () => {
   return (
@@ -38,6 +39,8 @@ const Page: React.FC = () => {
         reforçando a importância da preservação dos recursos naturais para as
         gerações futuras.
       </p>
+
+      <MapHandler />
     </section>
   );
 };
