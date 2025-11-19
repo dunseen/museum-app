@@ -156,7 +156,7 @@ export function FiltersContent({ onCloseFilters }: FiltersContentProps) {
 
   return (
     <SheetContent
-      side={isMobile ? "bottom" : "left"}
+      side={isMobile ? "bottom" : "right"}
       className="h-full max-w-full md:max-w-sm"
     >
       <SheetTitle>Filtros</SheetTitle>
