@@ -24,11 +24,6 @@ const links = [
     active: false,
   },
   {
-    href: "/museu/herbario/contatos",
-    label: "Contato",
-    active: false,
-  },
-  {
     href: "/login",
     label: "Gerenciar",
     active: false,
