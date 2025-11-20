@@ -4,6 +4,55 @@
  */
 await import("./src/env.js");
 
+// Content Security Policy configuration
+const CSP_SOURCES = {
+  default: ["'self'"],
+  script: [
+    "'self'",
+    "'unsafe-eval'",
+    "'unsafe-inline'",
+    "https://static.cloudflareinsights.com",
+  ],
+  style: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+  img: [
+    "'self'",
+    "data:",
+    "blob:",
+    "https://herb-storage-api.dlima-consulting.com",
+    "https://*.tile.openstreetmap.org",
+    "http://127.0.0.1:9000",
+    "http://localhost:9000",
+  ],
+  font: ["'self'", "https://fonts.gstatic.com"],
+  connect: [
+    "'self'",
+    "https://herb-api.dlima-consulting.com",
+    "https://herb-storage-api.dlima-consulting.com",
+    "https://cloudflareinsights.com",
+    "http://127.0.0.1:9000",
+    "http://localhost:9000",
+    "http://localhost:3333",
+    "http://127.0.0.1:3333",
+  ],
+  media: ["'self'"],
+  object: ["'none'"],
+};
+
+const contentSecurityPolicy = [
+  `default-src ${CSP_SOURCES.default.join(" ")}`,
+  `script-src ${CSP_SOURCES.script.join(" ")}`,
+  `style-src ${CSP_SOURCES.style.join(" ")}`,
+  `img-src ${CSP_SOURCES.img.join(" ")}`,
+  `font-src ${CSP_SOURCES.font.join(" ")}`,
+  `connect-src ${CSP_SOURCES.connect.join(" ")}`,
+  `media-src ${CSP_SOURCES.media.join(" ")}`,
+  `object-src ${CSP_SOURCES.object.join(" ")}`,
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
+
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
@@ -16,20 +65,7 @@ const config = {
         headers: [
           {
             key: "Content-Security-Policy",
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "img-src 'self' data: blob: https://herb-storage-api.dlima-consulting.com https://*.tile.openstreetmap.org  http://127.0.0.1:9000 http://localhost:9000",
-              "font-src 'self' https://fonts.gstatic.com",
-              "connect-src 'self' https://herb-storage-api.dlima-consulting.com http://127.0.0.1:9000 http://localhost:9000 http://localhost:3333 http://127.0.0.1:3333",
-              "media-src 'self'",
-              "object-src 'none'",
-              "base-uri 'self'",
-              "form-action 'self'",
-              "frame-ancestors 'none'",
-              "upgrade-insecure-requests",
-            ].join("; "),
+            value: contentSecurityPolicy,
           },
           {
             key: "X-Frame-Options",
