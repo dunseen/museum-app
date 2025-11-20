@@ -4,15 +4,17 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React, { type PropsWithChildren } from "react";
 import { Toaster } from "~/components/ui/sonner";
-// import { useInitServiceWorker } from "~/hooks/use-init-service-worker";
+import { useInitServiceWorker } from "~/hooks/use-init-service-worker";
 import { queryClient } from "~/lib/react-query";
+import { IosInstallPrompt } from "~/components/ios-install-prompt";
 
 export default function Providers({ children }: Readonly<PropsWithChildren>) {
-  // useInitServiceWorker();
+  useInitServiceWorker();
 
   return (
     <QueryClientProvider client={queryClient}>
       {children}
+      <IosInstallPrompt />
       <Toaster position="top-right" richColors theme="light" />
       <ReactQueryDevtools />
     </QueryClientProvider>

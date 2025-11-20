@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Você está offline</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+        color: #053b18;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 14px 38px rgba(0, 0, 0, 0.12);
+        padding: 24px;
+        max-width: 460px;
+        width: 100%;
+        text-align: center;
+      }
+      .emoji {
+        font-size: 52px;
+        margin-bottom: 12px;
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-size: 28px;
+      }
+      p {
+        margin: 0 0 16px;
+        line-height: 1.6;
+        color: #2c442f;
+      }
+      .tips {
+        text-align: left;
+        background: #f5faf5;
+        border: 1px solid #dfeee0;
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin-top: 12px;
+      }
+      .tip-item {
+        margin: 8px 0;
+      }
+      .badge {
+        display: inline-block;
+        background: #0f6a3d;
+        color: #fff;
+        padding: 6px 10px;
+        border-radius: 12px;
+        font-size: 13px;
+        margin-top: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card" role="alert" aria-live="polite">
+      <div class="emoji" aria-hidden="true">🌿</div>
+      <h1>Você está offline</h1>
+      <p>
+        Não conseguimos conectar ao Herbário Virtual agora. Assim que sua internet
+        voltar, recarregue a página para continuar explorando o acervo.
+      </p>
+      <div class="tips">
+        <div class="tip-item">• Verifique sua conexão Wi‑Fi ou dados móveis.</div>
+        <div class="tip-item">• Se o problema persistir, feche e abra o app novamente.</div>
+        <div class="tip-item">• Conteúdo salvo será carregado automaticamente quando possível.</div>
+      </div>
+      <div class="badge">Modo offline</div>
+    </div>
+  </body>
+</html>
