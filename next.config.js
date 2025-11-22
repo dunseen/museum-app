@@ -26,6 +26,7 @@ const CSP_SOURCES = {
   font: ["'self'", "https://fonts.gstatic.com"],
   connect: [
     "'self'",
+    "https://*.tile.openstreetmap.org",
     "https://herb-api.dlima-consulting.com",
     "https://herb-storage-api.dlima-consulting.com",
     "https://cloudflareinsights.com",
