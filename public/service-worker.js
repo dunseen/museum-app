@@ -38,11 +38,21 @@ function isHtmlNavigation(request) {
 
 function isStaticAsset(url) {
   const STATIC_EXTENSIONS = [".js", ".css", ".woff2", ".woff", ".ttf", ".otf"];
-  return STATIC_EXTENSIONS.some((extension) => url.pathname.endsWith(extension));
+  return STATIC_EXTENSIONS.some((extension) =>
+    url.pathname.endsWith(extension),
+  );
 }
 
 function isImageAsset(url) {
-  const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".avif"];
+  const IMAGE_EXTENSIONS = [
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".svg",
+    ".webp",
+    ".avif",
+  ];
   return IMAGE_EXTENSIONS.some((extension) => url.pathname.endsWith(extension));
 }
 
@@ -119,7 +129,7 @@ async function networkFirstNavigation(request) {
   try {
     const response = await fetch(request);
     const cache = await caches.open(RUNTIME_CACHE_NAME);
-    cache.put(request, response.clone());
+    await cache.put(request, response.clone());
     return response;
   } catch (error) {
     console.error("Navigation network-first failed", error);
@@ -135,17 +145,16 @@ async function staleWhileRevalidate(request) {
   const cache = await caches.open(RUNTIME_CACHE_NAME);
   const cachedResponse = await cache.match(request);
 
-  const networkPromise = fetch(request)
-    .then((response) => {
-      if (response && response.ok) {
-        cache.put(request, response.clone());
-      }
-      return response;
-    })
-    .catch((error) => {
-      console.error("SWR fetch failed", error);
-      return undefined;
-    });
+  try {
+    const networkResponse = await fetch(request);
+    if (networkResponse?.ok) {
+      await cache.put(request, networkResponse.clone());
+      return cachedResponse ?? networkResponse;
+    }
+  } catch (error) {
+    console.error("SWR fetch failed", error);
+    return undefined;
+  }
 
   return cachedResponse ?? networkPromise ?? caches.match(OFFLINE_URL);
 }
@@ -157,8 +166,8 @@ async function cacheFirstImage(request) {
 
   try {
     const response = await fetch(request);
-    if (response && response.ok) {
-      cache.put(request, response.clone());
+    if (response?.ok) {
+      await cache.put(request, response.clone());
       return response;
     }
   } catch (error) {
@@ -173,12 +182,12 @@ async function networkFirstApi(request) {
   try {
     const networkResponse = await fetch(request);
 
-    if (networkResponse && networkResponse.ok) {
+    if (networkResponse?.ok) {
       const clonedResponse = networkResponse.clone();
       const responseData = await clonedResponse.json();
       await addDataToIDB(request.url, responseData);
       const cache = await caches.open(API_CACHE_NAME);
-      cache.put(request, networkResponse.clone());
+      await cache.put(request, networkResponse.clone());
       return networkResponse;
     }
 
@@ -252,6 +261,4 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(staleWhileRevalidate(request));
     return;
   }
-
-  // Let the request pass through for other cases
 });

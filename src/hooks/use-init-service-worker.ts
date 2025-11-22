@@ -30,13 +30,19 @@ export function useInitServiceWorker() {
           if (!installing) return;
 
           installing.addEventListener("statechange", () => {
-            if (installing.state === "installed" && navigator.serviceWorker.controller) {
+            if (
+              installing.state === "installed" &&
+              navigator.serviceWorker.controller
+            ) {
               installing.postMessage({ type: "SKIP_WAITING" });
             }
           });
         };
 
-        console.log("Service Worker registered with scope:", registration.scope);
+        console.log(
+          "Service Worker registered with scope:",
+          registration.scope,
+        );
       } catch (error) {
         console.error("Service Worker registration failed:", error);
       }
