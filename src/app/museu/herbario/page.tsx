@@ -11,6 +11,7 @@ import PlantSearch from "./components/plant-search";
 import PlantGrid from "./components/plant-grid";
 import { LdJsonScript } from "~/components/scripts/ld-json.script";
 import { plantGridLdJson } from "./metadata/plat-grid.metadata";
+import { BotanicalLayout } from "~/components/layouts";
 
 export const metadata: Metadata = {
   title: "Herbário Virtual FC",
@@ -45,17 +46,19 @@ export default async function Page() {
   const dehydratedState = dehydrate(client);
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <LdJsonScript data={plantGridLdJson} />
-      <HerbariumHero />
-      <div className="px-2 py-8 md:px-4">
-        <HydrationBoundary state={dehydratedState}>
-          <PostProvider>
-            <PlantSearch />
-            <PlantGrid />
-          </PostProvider>
-        </HydrationBoundary>
-      </div>
-    </main>
+    <BotanicalLayout>
+      <main>
+        <LdJsonScript data={plantGridLdJson} />
+        <HerbariumHero />
+        <div className="px-2 py-8 md:px-4">
+          <HydrationBoundary state={dehydratedState}>
+            <PostProvider>
+              <PlantSearch />
+              <PlantGrid />
+            </PostProvider>
+          </HydrationBoundary>
+        </div>
+      </main>
+    </BotanicalLayout>
   );
 }
