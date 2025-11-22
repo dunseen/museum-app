@@ -12,7 +12,8 @@ function isIosSafari() {
   const isIOS = /iphone|ipad|ipod/i.test(userAgent);
   const isStandalone =
     window.matchMedia("(display-mode: standalone)").matches ||
-    (window.navigator as typeof navigator & { standalone?: boolean }).standalone;
+    (window.navigator as typeof navigator & { standalone?: boolean })
+      .standalone;
 
   return isIOS && !isStandalone;
 }
@@ -46,11 +47,17 @@ export function IosInstallPrompt() {
           <Share className="h-5 w-5" aria-hidden />
         </div>
         <div className="flex-1 text-sm text-slate-800">
-          <p className="font-semibold text-slate-900">Instale no seu iPhone ou iPad</p>
+          <p className="font-semibold text-slate-900">
+            Instale no seu iPhone ou iPad
+          </p>
           <p className="mt-1 leading-relaxed text-slate-700">
-            Toque em <span className="font-semibold">Compartilhar</span> e depois em
-            <span className="font-semibold"> "Adicionar à Tela de Início"</span> para usar o
-            Herbário Virtual em modo aplicativo.
+            Toque em <span className="font-semibold">Compartilhar</span> e
+            depois em
+            <span className="font-semibold">
+              {" "}
+              &quot;Adicionar à Tela de Início&quot;
+            </span>{" "}
+            para usar o Herbário Virtual em modo aplicativo.
           </p>
         </div>
         <button
