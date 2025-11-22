@@ -4,7 +4,7 @@
 // @ts-nocheck
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 
-const CACHE_VERSION = "v2";
+const CACHE_VERSION = "v3";
 const STATIC_CACHE_NAME = `museum-static-${CACHE_VERSION}`;
 const RUNTIME_CACHE_NAME = `museum-runtime-${CACHE_VERSION}`;
 const API_CACHE_NAME = `museum-api-${CACHE_VERSION}`;
@@ -54,6 +54,15 @@ function isImageAsset(url) {
     ".avif",
   ];
   return IMAGE_EXTENSIONS.some((extension) => url.pathname.endsWith(extension));
+}
+
+function isMapTileRequest(url) {
+  // Bypass OpenStreetMap and other map tile providers
+  return (
+    url.hostname.includes("tile.openstreetmap.org") ||
+    url.hostname.includes("tile.osm.org") ||
+    url.hostname.includes("tiles.openstreetmap.org")
+  );
 }
 
 async function cacheCoreAssets() {
@@ -236,6 +245,11 @@ self.addEventListener("fetch", (event) => {
   }
 
   const requestUrl = new URL(request.url);
+
+  // Bypass map tiles - always fetch from network
+  if (isMapTileRequest(requestUrl)) {
+    return; // Let browser handle it normally, no service worker intervention
+  }
 
   if (apiOrigin && requestUrl.origin === apiOrigin) {
     event.respondWith(networkFirstApi(request));
