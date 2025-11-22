@@ -3,55 +3,90 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-const CACHE_NAME = "museum-app-cache-v1";
-const DB_NAME = "museum-app-db";
-const DB_VERSION = 1;
-const DB_STORE_NAME = "offline-requests";
 
-async function cacheCoreAssets() {
-  const cache = await caches.open(CACHE_NAME);
-  await cache.addAll(["/"]);
+const CACHE_VERSION = "v2";
+const STATIC_CACHE_NAME = `museum-static-${CACHE_VERSION}`;
+const RUNTIME_CACHE_NAME = `museum-runtime-${CACHE_VERSION}`;
+const API_CACHE_NAME = `museum-api-${CACHE_VERSION}`;
+const OFFLINE_URL = "/offline.html";
+const FALLBACK_IMAGE = "/default-fallback-image.png";
+
+const registrationUrl = new URL(self.location.href);
+const apiUrl = registrationUrl.searchParams.get("API_URL");
+const appUrl = registrationUrl.searchParams.get("APP_URL");
+
+const apiOrigin = apiUrl ? new URL(apiUrl).origin : null;
+const appOrigin = appUrl ? new URL(appUrl).origin : self.location.origin;
+
+const PRECACHE_ASSETS = [
+  "/",
+  "/museu/herbario",
+  OFFLINE_URL,
+  "/favicon.ico",
+  "/icons/icon-192x192.png",
+  "/icons/icon-512x512.png",
+  "/museu_herbario.png",
+  FALLBACK_IMAGE,
+];
+
+function isHtmlNavigation(request) {
+  return (
+    request.mode === "navigate" ||
+    (request.headers.get("accept") ?? "").includes("text/html")
+  );
 }
 
-async function dynamicCaching(request) {
-  const cache = await caches.open(CACHE_NAME);
+function isStaticAsset(url) {
+  const STATIC_EXTENSIONS = [".js", ".css", ".woff2", ".woff", ".ttf", ".otf"];
+  return STATIC_EXTENSIONS.some((extension) =>
+    url.pathname.endsWith(extension),
+  );
+}
 
-  try {
-    const response = await fetch(request);
-    const responseClone = response.clone();
-    await cache.put(request, responseClone);
-    return response;
-  } catch (error) {
-    console.error("Dynamic caching failed:", error);
-    return caches.match(request);
-  }
+function isImageAsset(url) {
+  const IMAGE_EXTENSIONS = [
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".svg",
+    ".webp",
+    ".avif",
+  ];
+  return IMAGE_EXTENSIONS.some((extension) => url.pathname.endsWith(extension));
+}
+
+async function cacheCoreAssets() {
+  const cache = await caches.open(STATIC_CACHE_NAME);
+  await cache.addAll(PRECACHE_ASSETS);
 }
 
 async function clearOldCaches() {
+  const validCaches = [STATIC_CACHE_NAME, RUNTIME_CACHE_NAME, API_CACHE_NAME];
   const cacheNames = await caches.keys();
   return Promise.all(
     cacheNames
-      .filter((name) => name !== CACHE_NAME)
+      .filter((name) => !validCaches.includes(name))
       .map((name) => caches.delete(name)),
   );
 }
 
 function openDatabase() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    const request = indexedDB.open("museum-app-db", 1);
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-      db.createObjectStore(DB_STORE_NAME, { keyPath: "url" });
+      db.createObjectStore("offline-requests", { keyPath: "url" });
     };
   });
 }
 
 async function addDataToIDB(url, jsonData) {
   const db = await openDatabase();
-  const transaction = db.transaction(DB_STORE_NAME, "readwrite");
-  const store = transaction.objectStore(DB_STORE_NAME);
+  const transaction = db.transaction("offline-requests", "readwrite");
+  const store = transaction.objectStore("offline-requests");
 
   const data = {
     url,
@@ -69,8 +104,8 @@ async function addDataToIDB(url, jsonData) {
 async function getDataFromIDB(url) {
   try {
     const db = await openDatabase();
-    const transaction = db.transaction(DB_STORE_NAME, "readonly");
-    const store = transaction.objectStore(DB_STORE_NAME);
+    const transaction = db.transaction("offline-requests", "readonly");
+    const store = transaction.objectStore("offline-requests");
 
     const request = store.get(url);
 
@@ -90,48 +125,86 @@ async function getDataFromIDB(url) {
   }
 }
 
-async function cacheFirstStrategy(request) {
+async function networkFirstNavigation(request) {
   try {
-    const cache = await caches.open(CACHE_NAME);
-    const cachedResponse = await cache.match(request);
-
+    const response = await fetch(request);
+    const cache = await caches.open(RUNTIME_CACHE_NAME);
+    await cache.put(request, response.clone());
+    return response;
+  } catch (error) {
+    console.error("Navigation network-first failed", error);
+    const cachedResponse = await caches.match(request);
     if (cachedResponse) return cachedResponse;
 
-    const networkResponse = await fetch(request);
-
-    const reponseClone = networkResponse.clone();
-    await cache.put(request, reponseClone);
-
-    return networkResponse;
-  } catch (error) {
-    console.error("Cache first strategy failed", error);
-    return caches.match("/offline.html");
+    const offlineFallback = await caches.match(OFFLINE_URL);
+    return offlineFallback ?? new Response("Offline", { status: 503 });
   }
 }
 
-async function networkFirstStrategy(request) {
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(RUNTIME_CACHE_NAME);
+  const cachedResponse = await cache.match(request);
+
+  try {
+    const networkResponse = await fetch(request);
+    if (networkResponse?.ok) {
+      await cache.put(request, networkResponse.clone());
+      return cachedResponse ?? networkResponse;
+    }
+  } catch (error) {
+    console.error("SWR fetch failed", error);
+    return undefined;
+  }
+
+  return cachedResponse ?? networkPromise ?? caches.match(OFFLINE_URL);
+}
+
+async function cacheFirstImage(request) {
+  const cache = await caches.open(RUNTIME_CACHE_NAME);
+  const cachedResponse = await cache.match(request);
+  if (cachedResponse) return cachedResponse;
+
+  try {
+    const response = await fetch(request);
+    if (response?.ok) {
+      await cache.put(request, response.clone());
+      return response;
+    }
+  } catch (error) {
+    console.error("Image cache-first failed", error);
+  }
+
+  const fallback = await caches.match(FALLBACK_IMAGE);
+  return fallback ?? new Response(null, { status: 404 });
+}
+
+async function networkFirstApi(request) {
   try {
     const networkResponse = await fetch(request);
 
-    if (networkResponse.ok) {
-      const responseClone = networkResponse.clone();
-      const responseData = await responseClone.json();
+    if (networkResponse?.ok) {
+      const clonedResponse = networkResponse.clone();
+      const responseData = await clonedResponse.json();
       await addDataToIDB(request.url, responseData);
+      const cache = await caches.open(API_CACHE_NAME);
+      await cache.put(request, networkResponse.clone());
       return networkResponse;
     }
 
-    throw new Error("Network response was not ok");
+    throw new Error("API network response was not ok");
   } catch (error) {
-    console.error("Network first strategy failed:", error);
-    const cachedResponse = await getDataFromIDB(request.url);
+    console.error("Network first API strategy failed:", error);
 
-    if (cachedResponse) {
-      console.log("Using cached response:", cachedResponse);
-      return new Response(JSON.stringify(cachedResponse), {
+    const cachedDbResponse = await getDataFromIDB(request.url);
+    if (cachedDbResponse) {
+      return new Response(JSON.stringify(cachedDbResponse), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
     }
+
+    const cachedResponse = await caches.match(request);
+    if (cachedResponse) return cachedResponse;
 
     return new Response("[]", { status: 200 });
   }
@@ -149,20 +222,43 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener("fetch", (event) => {
-  const urlSearchParams = new URLSearchParams(location.search);
-  const apiUrl = urlSearchParams.get("API_URL");
-
-  console.log("Fetching:", event.request.url);
-
   const { request } = event;
-  const url = new URL(request.url);
 
-  if (url.origin === apiUrl) {
-    event.respondWith(networkFirstStrategy(request));
-  } else if (event.request.mode === "navigate") {
-    event.respondWith(cacheFirstStrategy(request));
-  } else {
-    event.respondWith(dynamicCaching(request));
+  if (request.method !== "GET") {
+    return;
+  }
+
+  const requestUrl = new URL(request.url);
+
+  if (apiOrigin && requestUrl.origin === apiOrigin) {
+    event.respondWith(networkFirstApi(request));
+    return;
+  }
+
+  if (isHtmlNavigation(request)) {
+    event.respondWith(networkFirstNavigation(request));
+    return;
+  }
+
+  if (isStaticAsset(requestUrl)) {
+    event.respondWith(staleWhileRevalidate(request));
+    return;
+  }
+
+  if (isImageAsset(requestUrl)) {
+    event.respondWith(cacheFirstImage(request));
+    return;
+  }
+
+  if (requestUrl.origin === appOrigin) {
+    event.respondWith(staleWhileRevalidate(request));
+    return;
   }
 });

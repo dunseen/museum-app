@@ -6,7 +6,6 @@ import React, {
   useMemo,
   type ReactNode,
   useCallback,
-  useRef,
 } from "react";
 import { useDebounce } from "react-use";
 import { type PostSearchParams } from "../api";
