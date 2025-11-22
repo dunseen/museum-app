@@ -86,5 +86,11 @@
   "ct3aMetadata": {
     "initVersion": "7.37.0"
   },
+  "resolutions": {
+    "@babel/runtime": "7.26.10",
+    "glob": "10.5.0",
+    "js-yaml": "4.1.1",
+    "nanoid": "3.3.8"
+  },
   "packageManager": "yarn@1.22.19"
 }
