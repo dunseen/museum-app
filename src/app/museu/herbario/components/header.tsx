@@ -8,7 +8,7 @@ type HeaderProps = {
 };
 export default function Header({ showNavMenu }: Readonly<HeaderProps>) {
   return (
-    <header className="sticky top-0 z-[500] border-b border-green-100 bg-white/95 shadow-sm backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b border-green-100 bg-white/95 shadow-sm backdrop-blur-sm">
       <div className="container mx-auto px-4 py-3 md:py-4">
         <div className="flex items-center justify-between gap-6">
           <Link
