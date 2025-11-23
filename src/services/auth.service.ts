@@ -15,7 +15,7 @@ export type LoginPayload = {
 
 export class AuthService {
   static async login(payload: LoginPayload) {
-    const { data } = await api.post<LoginApiResponse>(
+    const { data } = await publicApi.post<LoginApiResponse>(
       "/auth/email/login",
       payload,
     );

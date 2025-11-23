@@ -31,6 +31,7 @@ export function LocationMap({
       <MapContainer
         center={position}
         zoom={zoom}
+        className="z-40"
         style={{
           width: "100%",
           height: "100%",

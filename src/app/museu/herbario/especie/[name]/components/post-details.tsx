@@ -9,10 +9,17 @@ import { PostDetailsHeader } from "./PostDetailsHeader";
 import { PostDetailsTechnicalData } from "./PostDetailsTechnicalData";
 import { PostDetailsCharacteristics } from "./PostDetailsCharacteristics";
 import { PostDetailsImageDialog } from "./PostDetailsImageDialog";
-import { PostDetailsLocationMap } from "./PostDetailsLocationMap";
 import { BotanicalLayout } from "~/components/layouts";
 import { type FileTypeApiResponse } from "../../../types/file.types";
+import dynamic from "next/dynamic";
 
+const PostDetailsLocationMap = dynamic(
+  () =>
+    import("./PostDetailsLocationMap").then(
+      (mod) => mod.PostDetailsLocationMap,
+    ),
+  { ssr: false },
+);
 type PostDetailsProps = {
   name?: string;
 };

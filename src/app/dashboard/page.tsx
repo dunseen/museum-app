@@ -5,6 +5,7 @@ import getCachedQueryClient from "~/lib/react-query";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { SummaryCountList } from "./home/components/summary-count-list";
 
+export const dynamic = "force-dynamic";
 export default async function Page() {
   const client = getCachedQueryClient();
 

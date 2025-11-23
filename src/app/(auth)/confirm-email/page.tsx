@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/await-thenable */
 import { XCircle } from "lucide-react";
-import Image from "next/image";
 import SetPasswordForm from "./components/set-password-form";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
@@ -12,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import Footer from "../museu/herbario/components/footer";
 import { AuthService } from "~/services/auth.service";
 import { HttpStatusCode, isAxiosError } from "axios";
 
@@ -50,28 +48,7 @@ export default async function Page({ searchParams }: ConfirmEmailPageProps) {
   };
 
   return (
-    <main className="flex min-h-dvh flex-col justify-between">
-      <header className="bg-[#006633] p-4 text-white">
-        <div className="container mx-auto flex flex-wrap items-center gap-6">
-          <div className="flex items-center gap-4">
-            <Image
-              src="/ufra-logo.png"
-              alt="UFRA Logo"
-              width={100}
-              height={100}
-              className="h-14 w-14 md:h-auto md:w-auto"
-              priority
-            />
-            <div>
-              <h1 className="text-lg font-bold md:text-3xl">UFRA</h1>
-              <span className="text-sm font-medium">
-                Universidade Federal Rural da Amazônia
-              </span>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <>
       {isError ? (
         <section className="flex items-center justify-center px-2 md:px-0">
           <Card className="w-full max-w-sm bg-green-50">
@@ -97,8 +74,6 @@ export default async function Page({ searchParams }: ConfirmEmailPageProps) {
       ) : (
         <SetPasswordForm hash={hash} />
       )}
-
-      <Footer />
-    </main>
+    </>
   );
 }

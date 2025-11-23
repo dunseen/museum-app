@@ -35,6 +35,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
   const client = getCachedQueryClient();
   await Promise.all([
