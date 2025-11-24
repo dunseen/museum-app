@@ -39,7 +39,8 @@ export function FrontendObservability() {
     });
   } catch (error) {
     console.warn("Error initializing Faro:", error);
-  } finally {
     return null;
   }
+
+  return null;
 }
