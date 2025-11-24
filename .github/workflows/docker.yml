@@ -78,6 +78,7 @@ jobs:
           NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
           NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
           NEXT_PUBLIC_ENV: "production"
+          NEXT_PUBLIC_FARO_COLLECTOR_URL: ${{ vars.NEXT_PUBLIC_FARO_COLLECTOR_URL || '' }}
         run: yarn build
 
   # Job 4: Build and push Docker image (only on push to master)
@@ -119,6 +120,8 @@ jobs:
           build-args: |
             NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_APP_URL=${{ vars.NEXT_PUBLIC_APP_URL }}
+            NEXT_PUBLIC_ENV="production"
+            NEXT_PUBLIC_FARO_COLLECTOR_URL=${{ vars.NEXT_PUBLIC_FARO_COLLECTOR_URL || '' }}
           platforms: linux/arm64
           cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/museum-app:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/museum-app:buildcache,mode=max
@@ -168,6 +171,7 @@ jobs:
             -e NEXT_PUBLIC_API_URL="${{ vars.NEXT_PUBLIC_API_URL }}" \
             -e NEXT_PUBLIC_APP_URL="${{ vars.NEXT_PUBLIC_APP_URL }}" \
             -e NEXT_PUBLIC_ENV="production" \
+            -e NEXT_PUBLIC_FARO_COLLECTOR_URL="${{ vars.NEXT_PUBLIC_FARO_COLLECTOR_URL || '' }}" \
             ${{ secrets.DOCKER_HUB_USERNAME }}/museum-app:latest
 
           # Clean up old images
