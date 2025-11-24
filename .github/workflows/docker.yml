@@ -77,6 +77,7 @@ jobs:
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL || 'http://localhost:3000' }}
           NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
           NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
+          NEXT_PUBLIC_ENV: "production"
         run: yarn build
 
   # Job 4: Build and push Docker image (only on push to master)
@@ -166,6 +167,7 @@ jobs:
             -e NEXTAUTH_URL="${{ secrets.NEXTAUTH_URL }}" \
             -e NEXT_PUBLIC_API_URL="${{ vars.NEXT_PUBLIC_API_URL }}" \
             -e NEXT_PUBLIC_APP_URL="${{ vars.NEXT_PUBLIC_APP_URL }}" \
+            -e NEXT_PUBLIC_ENV="production" \
             ${{ secrets.DOCKER_HUB_USERNAME }}/museum-app:latest
 
           # Clean up old images

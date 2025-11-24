@@ -32,6 +32,10 @@ export const env = createEnv({
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_API_URL: z.string(),
     NEXT_PUBLIC_APP_URL: z.string(),
+    NEXT_PUBLIC_FARO_COLLECTOR_URL: z.string().optional(),
+    NEXT_PUBLIC_ENV: z
+      .enum(["development", "test", "production"])
+      .default("development"),
   },
 
   /**
@@ -44,6 +48,8 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_FARO_COLLECTOR_URL: process.env.NEXT_PUBLIC_FARO_COLLECTOR_URL,
+    NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
