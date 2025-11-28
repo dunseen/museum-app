@@ -13,9 +13,8 @@ export function FrontendObservability() {
     return null;
   }
 
-  // Skip initialization if Faro URL is not configured
   if (!env.NEXT_PUBLIC_FARO_COLLECTOR_URL) {
-    console.info(
+    console.warn(
       "Faro collector URL not configured, skipping observability initialization",
     );
     return null;
