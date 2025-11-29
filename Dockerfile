@@ -1,11 +1,11 @@
 # Install dependencies only when needed
-FROM node:20.16.0-slim AS deps
+FROM node:20.19.6-slim AS deps
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile && yarn cache clean
 
 # Rebuild the source code only when needed
-FROM node:20.16.0-slim AS builder
+FROM node:20.19.6-slim AS builder
 WORKDIR /app
 ENV SKIP_ENV_VALIDATION=1
 COPY --from=deps /app/node_modules ./node_modules
@@ -22,7 +22,7 @@ ENV NEXT_PUBLIC_ENV=$NEXT_PUBLIC_ENV
 RUN yarn build
 
 # Production image using standalone output
-FROM node:20.16.0-slim AS runner
+FROM node:20.19.6-slim AS runner
 WORKDIR /app
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_APP_URL
