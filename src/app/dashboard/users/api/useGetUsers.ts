@@ -21,8 +21,8 @@ async function fetchUsers(params?: GetUsersParams) {
       page: params?.page ?? 1,
       limit: params?.limit ?? 10,
       filters: {
-        name: params?.name ? params.name : undefined,
-        email: params?.name ? params.name : undefined,
+        name: params?.name ?? undefined,
+        email: params?.name ?? undefined,
       },
     },
   };

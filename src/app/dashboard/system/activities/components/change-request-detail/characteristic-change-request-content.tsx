@@ -38,8 +38,8 @@ export function CharacteristicChangeRequestContent({
           formatValue={(value) => {
             if (!value) return "-";
             if (typeof value === "string") return value;
-            if (hasNameProperty(value)) return String(value.name ?? "-");
-            return String(value);
+            if (hasNameProperty(value)) return value.name ?? "-";
+            return "-";
           }}
         />
       </div>

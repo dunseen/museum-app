@@ -22,7 +22,7 @@ async function fetchTaxons(params?: GetTaxonsParams) {
     params: {
       page: params?.page ?? 1,
       limit: params?.limit ?? 10,
-      name: params?.name ? params.name : undefined,
+      name: params?.name ?? undefined,
       hierarchyId: params?.hierarchyId
         ? Number(params?.hierarchyId)
         : undefined,

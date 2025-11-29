@@ -33,7 +33,7 @@ const getCharacteristicsConfig = (
         params: {
           page: pageParam,
           limit: params?.limit ?? 10,
-          name: params?.name ? params.name : undefined,
+          name: params?.name ?? undefined,
         },
         signal,
       };

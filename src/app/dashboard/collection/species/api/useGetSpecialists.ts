@@ -22,7 +22,7 @@ async function fetchSpecialists(params?: GetSpecialistsParams) {
     params: {
       page: params?.page ?? 1,
       limit: params?.limit ?? 10,
-      name: params?.name ? params.name : undefined,
+      name: params?.name ?? undefined,
       type: params?.type,
     },
   };

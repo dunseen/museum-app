@@ -14,35 +14,39 @@ type TaxonChangeRequestContentProps = {
 function formatHierarchy(value: unknown): string {
   if (!value) return "-";
   if (typeof value === "string") return value;
-  if (typeof value === "object" && value !== null) {
+  if (typeof value === "object" && value !== null && "name" in value) {
     const hierarchy = value as { name?: string };
     return hierarchy.name ?? "-";
   }
-  return String(value);
+  return "-";
 }
 
 function formatParent(value: unknown): string {
   if (!value) return "-";
   if (typeof value === "string") return value;
-  if (typeof value === "object" && value !== null) {
+  if (typeof value === "object" && value !== null && "name" in value) {
     const parent = value as { name?: string };
     return parent.name ?? "-";
   }
-  return String(value);
+  return "-";
 }
 
 function formatCharacteristics(value: unknown): string {
   if (!value) return "-";
   if (Array.isArray(value)) {
     return value
-      .map((item) =>
-        typeof item === "object" && item !== null && "name" in item
-          ? String((item as { name?: string }).name ?? "-")
-          : String(item),
-      )
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (typeof item === "number") return String(item);
+        if (typeof item === "object" && item !== null && "name" in item) {
+          return (item as { name?: string }).name ?? "-";
+        }
+        return "-";
+      })
       .join(", ");
   }
-  return String(value);
+  if (typeof value === "string") return value;
+  return "-";
 }
 
 export function TaxonChangeRequestContent({

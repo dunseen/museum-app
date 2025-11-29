@@ -10,6 +10,21 @@ type FieldDiffProps = {
 };
 
 /**
+ * Default formatter for unknown values
+ */
+function defaultFormatter(value: unknown): string {
+  if (value == null) return "-";
+  if (typeof value === "string") return value;
+  if (typeof value === "number") return String(value);
+  if (typeof value === "boolean") return value ? "Sim" : "Não";
+  if (typeof value === "object") {
+    // Handle objects with toString method or JSON stringify
+    return "-";
+  }
+  return "-";
+}
+
+/**
  * Component to display a field diff with compact inline old value above new value
  */
 export function FieldDiff({
@@ -17,7 +32,7 @@ export function FieldDiff({
   oldValue,
   newValue,
   className,
-  formatValue = (val) => (val == null ? "-" : String(val)),
+  formatValue = defaultFormatter,
 }: FieldDiffProps) {
   const hasChange = oldValue !== newValue;
 

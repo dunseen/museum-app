@@ -17,9 +17,7 @@ export function PostDetailsCharacteristics({
   const groupedCharacteristics = characteristics.reduce(
     (acc, characteristic) => {
       const typeName = characteristic.type.name;
-      if (!acc[typeName]) {
-        acc[typeName] = [];
-      }
+      acc[typeName] ??= [];
       acc[typeName].push(characteristic);
       return acc;
     },

@@ -21,7 +21,7 @@ async function fetchSpecies(params?: GetSpeciesParams) {
     params: {
       page: params?.page ?? 1,
       limit: params?.limit ?? 10,
-      name: params?.name ? params.name : undefined,
+      name: params?.name ?? undefined,
     },
   };
 
