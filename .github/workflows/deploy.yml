@@ -6,6 +6,14 @@ on:
   pull_request:
     branches: [master]
 
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  IMAGE_TAG: ${{ github.sha }}
+  REGISTRY_IMAGE: ${{ secrets.DOCKER_HUB_USERNAME }}/museum-app
+
 # Cancel in-progress runs for the same workflow and branch
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -73,8 +81,8 @@ jobs:
       - name: Build Next.js application
         env:
           SKIP_ENV_VALIDATION: 1
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'dummy-secret-for-build' }}
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL || 'http://localhost:3000' }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET}}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL}}
           NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
           NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
           NEXT_PUBLIC_ENV: production
@@ -104,8 +112,9 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKER_HUB_USERNAME }}/museum-app
+          images: ${{ env.REGISTRY_IMAGE }}
           tags: |
+            type=raw,value=${{ env.IMAGE_TAG }}
             type=ref,event=branch
             type=sha,prefix={{branch}}-
             type=raw,value=latest,enable={{is_default_branch}}
@@ -123,8 +132,8 @@ jobs:
             NEXT_PUBLIC_ENV=production
             NEXT_PUBLIC_FARO_COLLECTOR_URL=${{ vars.NEXT_PUBLIC_FARO_COLLECTOR_URL || '' }}
           platforms: linux/arm64
-          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/museum-app:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/museum-app:buildcache,mode=max
+          cache-from: type=registry,ref=${{ env.REGISTRY_IMAGE }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY_IMAGE }}:buildcache,mode=max
 
   # Job 6: Deploy to VPS (only on push to master)
   deploy:
@@ -138,49 +147,42 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Set up SSH Connection
+      - name: Add host to known_hosts
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy to VPS
+      - name: Write deployment env file
         run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.VPS_HOST }} << 'EOF'
-          set -e
-
-          # Login to Docker Hub
-          echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-
-          # Pull latest image
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/museum-app:latest
-
-          # Stop and remove old container
-          docker stop museum-app || true
-          docker rm museum-app || true
-
-          # Run new container
-          docker run -d --name museum-app \
-            --network app_public \
-            --restart unless-stopped \
-            -p 3000:3000 \
-            -e NEXTAUTH_SECRET="${{ secrets.NEXTAUTH_SECRET }}" \
-            -e NEXTAUTH_URL="${{ secrets.NEXTAUTH_URL }}" \
-            -e NEXT_PUBLIC_API_URL="${{ vars.NEXT_PUBLIC_API_URL }}" \
-            -e NEXT_PUBLIC_APP_URL="${{ vars.NEXT_PUBLIC_APP_URL }}" \
-            -e NEXT_PUBLIC_ENV=production \
-            -e NEXT_PUBLIC_FARO_COLLECTOR_URL="${{ vars.NEXT_PUBLIC_FARO_COLLECTOR_URL || '' }}" \
-            ${{ secrets.DOCKER_HUB_USERNAME }}/museum-app:latest
-
-          # Clean up old images
-          docker image prune -af --filter "until=24h"
-
-          echo "Deployment successful!"
+          cat <<'EOF' > .deploy.env
+          REGISTRY_IMAGE=${{ env.REGISTRY_IMAGE }}
+          IMAGE_TAG=${{ env.IMAGE_TAG }}
+          NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET}}
+          NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL}}
+          NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_APP_URL=${{ vars.NEXT_PUBLIC_APP_URL }}
+          NEXT_PUBLIC_ENV=production
+          NEXT_PUBLIC_FARO_COLLECTOR_URL=${{ vars.NEXT_PUBLIC_FARO_COLLECTOR_URL || '' }}
           EOF
 
-      - name: Health check
-        run: |
-          sleep 10
-          curl -f ${{ vars.NEXT_PUBLIC_APP_URL }} || exit 1
+      - name: Deploy frontend stack (cssnr/stack-deploy-action)
+        uses: cssnr/stack-deploy-action@v1
+        with:
+          name: museum
+          file: docker-stack.frontend.yml
+          mode: swarm
+          host: ${{ secrets.VPS_HOST }}
+          port: 22
+          user: ubuntu
+          ssh_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          env_file: .deploy.env
+          prune: false
+          registry_auth: true
+          registry_host: index.docker.io
+          registry_user: ${{ secrets.DOCKER_HUB_USERNAME }}
+          registry_pass: ${{ secrets.DOCKER_HUB_PASSWORD }}
