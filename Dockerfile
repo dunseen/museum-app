@@ -31,8 +31,10 @@ ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 ENV NEXT_PUBLIC_ENV=$NEXT_PUBLIC_ENV
 ENV NODE_ENV=production
 
-# create a non-root user
-RUN groupadd -g 1001 nodejs && useradd -m -u 1001 -g nodejs nextjs
+# create a non-root user (Alpine uses addgroup/adduser)
+# ensure we use Alpine-compatible commands to create the group and user
+RUN addgroup -g 1001 nodejs \
+	&& adduser -D -u 1001 -G nodejs -h /home/nextjs -s /bin/sh nextjs
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
