@@ -1,5 +1,5 @@
 import axios, { HttpStatusCode, type AxiosRequestConfig } from "axios";
-import { env } from "~/env";
+import { env } from "~/config/env.client";
 import { getCsrfToken, getSession } from "next-auth/react";
 import { isTokenExpired } from "~/utils/token";
 import type { Session } from "next-auth";

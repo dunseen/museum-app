@@ -7,7 +7,6 @@ RUN yarn install --frozen-lockfile && yarn cache clean
 # Rebuild the source code only when needed
 FROM node:20.16.0-slim AS builder
 WORKDIR /app
-ENV SKIP_ENV_VALIDATION=1
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
@@ -18,8 +17,6 @@ ARG NEXT_PUBLIC_ENV
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 ENV NEXT_PUBLIC_ENV=$NEXT_PUBLIC_ENV
-ARG SKIP_ENV_VALIDATION=true
-ENV SKIP_ENV_VALIDATION=true
 
 RUN yarn build
 
@@ -32,8 +29,6 @@ ARG NEXT_PUBLIC_ENV
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 ENV NEXT_PUBLIC_ENV=$NEXT_PUBLIC_ENV
-ARG SKIP_ENV_VALIDATION=true
-ENV SKIP_ENV_VALIDATION=true
 ENV NODE_ENV=production
 
 # create a non-root user

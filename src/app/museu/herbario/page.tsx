@@ -6,7 +6,7 @@ import getCachedQueryClient from "~/lib/react-query";
 import { getCharacteristicFilters, getPostQueryConfig } from "./api";
 import { PostProvider } from "./context/post-context";
 import { getHierarchiesConfig } from "~/app/dashboard/collection/taxonomy/api";
-import { env } from "~/env";
+import { env} from "~/config/env.client";
 import PlantSearch from "./components/plant-search";
 import PlantGrid from "./components/plant-grid";
 import { LdJsonScript } from "~/components/scripts/ld-json.script";

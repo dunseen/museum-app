@@ -38,7 +38,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Run ESLint
-        run: SKIP_ENV_VALIDATION=1 yarn lint
+        run: yarn lint
 
   # Job 2: Type checking (runs on PRs and pushes)
   typecheck:
@@ -58,7 +58,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Run TypeScript type check
-        run: SKIP_ENV_VALIDATION=1 yarn tsc --noEmit
+        run: yarn tsc --noEmit
 
   # Job 3: Build application (runs on PRs and pushes)
   build:
@@ -168,7 +168,6 @@ jobs:
           NEXT_PUBLIC_APP_URL=${{ vars.NEXT_PUBLIC_APP_URL }}
           NEXT_PUBLIC_ENV=production
           NEXT_PUBLIC_FARO_COLLECTOR_URL=${{ vars.NEXT_PUBLIC_FARO_COLLECTOR_URL || '' }}
-          SKIP_ENV_VALIDATION=true
           EOF
 
       - name: Deploy frontend stack (cssnr/stack-deploy-action)

@@ -1,4 +1,4 @@
-import { env } from "~/env";
+import { env } from "~/config/env.client";
 import { type GetPostDetailsApiResponse } from "../types/post.types";
 
 export function generateSpecieDetailsMetadata(

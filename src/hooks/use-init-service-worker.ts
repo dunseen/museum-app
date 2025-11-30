@@ -1,5 +1,5 @@
 import React from "react";
-import { env } from "~/env";
+import { env } from "~/config/env.client";
 
 export function useInitServiceWorker() {
   React.useEffect(() => {

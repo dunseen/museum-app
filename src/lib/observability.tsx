@@ -6,7 +6,7 @@ import {
   initializeFaro,
 } from "@grafana/faro-web-sdk";
 import { TracingInstrumentation } from "@grafana/faro-web-tracing";
-import { env } from "~/env";
+import { env } from "~/config/env.client";
 
 export function FrontendObservability() {
   if (faro.api || env.NEXT_PUBLIC_ENV !== "production") {

@@ -5,7 +5,7 @@ import Providers from "./providers";
 
 import "~/styles/globals.css";
 import { type PropsWithChildren } from "react";
-import { env } from "~/env";
+import { env } from "~/config/env.client";
 
 const openSans = Open_Sans({ subsets: ["latin"] });
 

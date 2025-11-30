@@ -1,4 +1,4 @@
-import { env } from "~/env";
+import { env} from "~/config/env.client";
 
 export const plantGridLdJson = {
   "@context": "https://schema.org",
