@@ -11,7 +11,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
 import { AuthService } from "~/services/auth.service";
 import { RoleEnum } from "~/types";
-import { env } from "~/env";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -61,7 +60,7 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
     maxAge: 1 * 24 * 60 * 60, // 1 day
   },
-  secret: env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "Credentials",

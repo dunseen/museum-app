@@ -130,8 +130,7 @@ jobs:
             NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_APP_URL=${{ vars.NEXT_PUBLIC_APP_URL }}
             NEXT_PUBLIC_ENV=production
-            NEXT_PUBLIC_FARO_COLLECTOR_URL=${{ vars.NEXT_PUBLIC_FARO_COLLECTOR_URL }}
-            SKIP_ENV_VALIDATION=1
+            NEXT_PUBLIC_FARO_COLLECTOR_URL=${{ vars.NEXT_PUBLIC_FARO_COLLECTOR_URL || '' }}
           platforms: linux/arm64
           cache-from: type=registry,ref=${{ env.REGISTRY_IMAGE }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY_IMAGE }}:buildcache,mode=max
@@ -169,6 +168,7 @@ jobs:
           NEXT_PUBLIC_APP_URL=${{ vars.NEXT_PUBLIC_APP_URL }}
           NEXT_PUBLIC_ENV=production
           NEXT_PUBLIC_FARO_COLLECTOR_URL=${{ vars.NEXT_PUBLIC_FARO_COLLECTOR_URL || '' }}
+          SKIP_ENV_VALIDATION=true
           EOF
 
       - name: Deploy frontend stack (cssnr/stack-deploy-action)
