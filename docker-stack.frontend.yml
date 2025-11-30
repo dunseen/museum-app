@@ -13,8 +13,6 @@ services:
       - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
       - NEXT_PUBLIC_ENV=${NEXT_PUBLIC_ENV:-production}
       - NEXT_PUBLIC_FARO_COLLECTOR_URL=${NEXT_PUBLIC_FARO_COLLECTOR_URL}
-    ports:
-      - '${APP_PORT:-3000}:3000'
     networks:
       - app_net
     deploy:
