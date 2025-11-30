@@ -49,99 +49,117 @@ declare module "next-auth/jwt" {
 }
 
 /**
+ * ❗ VERY IMPORTANT:
+ *
+ * authOptions MUST be a function so it loads env at runtime.
+ *
+ * Otherwise Next.js calls it at build time and your env is undefined.
+ */
+
+/**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  *
  * @see https://next-auth.js.org/configuration/options
  */
-export const authOptions: NextAuthOptions = {
-  pages: {
-    signIn: "/login",
-  },
-  session: {
-    strategy: "jwt",
-    maxAge: 1 * 24 * 60 * 60, // 1 day
-  },
-  secret: serverEnv().NEXTAUTH_SECRET,
-  providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      id: "credentials",
-      type: "credentials",
-      credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        const parsedCredentials = z
-          .object({ email: z.string(), password: z.string() })
-          .safeParse(credentials);
+function buildAuthOptions(): NextAuthOptions {
+  const env = serverEnv();
 
-        if (!parsedCredentials.success) {
-          return null;
+  return {
+    pages: {
+      signIn: "/login",
+    },
+    session: {
+      strategy: "jwt",
+      maxAge: 1 * 24 * 60 * 60,
+    },
+    secret: env.NEXTAUTH_SECRET,
+
+    providers: [
+      CredentialsProvider({
+        name: "Credentials",
+        id: "credentials",
+        type: "credentials",
+        credentials: {
+          email: { label: "Email", type: "text" },
+          password: { label: "Password", type: "password" },
+        },
+        async authorize(credentials) {
+          const parsed = z
+            .object({
+              email: z.string(),
+              password: z.string(),
+            })
+            .safeParse(credentials);
+
+          if (!parsed.success) return null;
+
+          try {
+            const { user, token, refreshToken, tokenExpires } =
+              await AuthService.login(parsed.data);
+
+            return {
+              id: user.id,
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              phone: user.phone,
+              role: RoleEnum[user.role.name as keyof typeof RoleEnum],
+              status: user.status,
+              token,
+              refreshToken,
+              tokenExpires,
+            };
+          } catch (err) {
+            console.error("Login error:", err);
+            return null;
+          }
+        },
+      }),
+    ],
+
+    callbacks: {
+      jwt({ token, user, trigger, session }) {
+        if (user) {
+          token.id = user.id;
+          token.email = user.email;
+          token.firstName = user.firstName;
+          token.lastName = user.lastName;
+          token.phone = user.phone;
+          token.role = user.role;
+          token.status = user.status;
+          token.token = user.token;
+          token.refreshToken = user.refreshToken;
+          token.tokenExpires = user.tokenExpires;
         }
 
-        try {
-          const { user, token, refreshToken, tokenExpires } =
-            await AuthService.login(parsedCredentials.data);
-
-          return {
-            id: user.id,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phone: user.phone,
-            role: RoleEnum[user.role.name as keyof typeof RoleEnum],
-            status: user.status,
-            token: token,
-            refreshToken: refreshToken,
-            tokenExpires: tokenExpires,
-          };
-        } catch (error) {
-          console.error("Error logging in:", error);
-          return null;
+        if (trigger === "update") {
+          token.token = session?.token;
+          token.refreshToken = session?.refreshToken;
+          token.tokenExpires = session?.tokenExpires;
         }
+
+        return token;
       },
-    }),
-  ],
-  callbacks: {
-    jwt({ token, user, trigger, session }) {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.firstName = user.firstName;
-        token.lastName = user.lastName;
-        token.phone = user.phone;
-        token.role = user.role;
-        token.status = user.status;
-        token.token = user.token;
-        token.refreshToken = user.refreshToken;
-        token.tokenExpires = user.tokenExpires;
-      }
 
-      if (trigger === "update") {
-        token.token = session?.token;
-        token.refreshToken = session?.refreshToken;
-        token.tokenExpires = session?.tokenExpires;
-      }
+      session({ session, token }) {
+        session.user.id = String(token.id);
+        session.user.email = String(token.email);
+        session.user.firstName = token.firstName;
+        session.user.lastName = token.lastName;
+        session.user.phone = token.phone;
+        session.user.role = token.role;
+        session.user.status = token.status;
+        session.user.token = token.token;
+        session.user.refreshToken = token.refreshToken;
+        session.user.tokenExpires = token.tokenExpires;
 
-      return token;
+        return session;
+      },
     },
-    session: ({ session, token }) => {
-      session.user.id = String(token.id);
-      session.user.email = String(token.email);
-      session.user.firstName = token.firstName;
-      session.user.lastName = token.lastName;
-      session.user.phone = token.phone;
-      session.user.role = token.role;
-      session.user.status = token.status;
-      session.user.token = token.token;
-      session.user.refreshToken = token.refreshToken;
-      session.user.tokenExpires = token.tokenExpires;
+  };
+}
 
-      return session;
-    },
-  },
-};
+export const authOptions = buildAuthOptions();
 
 export async function auth() {
   return getServerSession(authOptions);
