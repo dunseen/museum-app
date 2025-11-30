@@ -13,9 +13,10 @@ services:
       - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
       - NEXT_PUBLIC_ENV=${NEXT_PUBLIC_ENV:-production}
       - NEXT_PUBLIC_FARO_COLLECTOR_URL=${NEXT_PUBLIC_FARO_COLLECTOR_URL}
+    ports:
+      - '${APP_PORT:-3000}:3000'
     networks:
-      - museum-public
-      - museum-internal
+      - app_net
     deploy:
       replicas: 1
       update_config:
@@ -44,9 +45,6 @@ services:
       start_period: 60s
 
 networks:
-  museum-public:
-    external: true
-    name: museum_museum-public
-  museum-internal:
-    external: true
-    name: museum_museum-internal
+  app_net:
+    name: app_net
+    attachable: true
