@@ -48,5 +48,4 @@ RUN mkdir -p /app/.next/cache && chown -R nextjs:nodejs /app/.next
 
 USER nextjs
 
-EXPOSE 3000
 CMD ["node", "server.js"]
