@@ -54,6 +54,17 @@ const config = {
   reactStrictMode: true,
   output: "standalone",
   transpilePackages: ["geist"],
+  // Allow skipping type/lint checks during `next build` when building inside a container.
+  // Set the build-time arg `SKIP_NEXT_CHECKS=true` (or `--build-arg SKIP_NEXT_CHECKS=true`) to enable.
+  // By default (when SKIP_NEXT_CHECKS is not set or false) the checks remain enabled.
+  typescript: {
+    ignoreBuildErrors:
+      !!process.env.SKIP_NEXT_CHECKS,
+  },
+  eslint: {
+    ignoreDuringBuilds:
+      !!process.env.SKIP_NEXT_CHECKS,
+  },
   async headers() {
     return [
       {

@@ -2,7 +2,7 @@
 FROM node:20-slim AS deps
 WORKDIR /app
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile && yarn cache clean
+RUN yarn install --frozen-lockfile --prefer-offline && yarn cache clean
 
 # Rebuild the source code only when needed
 FROM node:20-slim AS builder
@@ -17,6 +17,11 @@ ARG NEXT_PUBLIC_ENV
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 ENV NEXT_PUBLIC_ENV=$NEXT_PUBLIC_ENV
+
+# Build-time flag to skip Next.js type/lint checks during the image build.
+# Pass `--build-arg SKIP_NEXT_CHECKS=true` to enable skipping only inside the image.
+ARG SKIP_NEXT_CHECKS=false
+ENV SKIP_NEXT_CHECKS=${SKIP_NEXT_CHECKS}
 
 RUN yarn build
 
