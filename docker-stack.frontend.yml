@@ -14,6 +14,7 @@ services:
       - NEXT_PUBLIC_ENV=${NEXT_PUBLIC_ENV:-production}
       - NEXT_PUBLIC_FARO_COLLECTOR_URL=${NEXT_PUBLIC_FARO_COLLECTOR_URL}
       - PORT=3000
+      - HOST=0.0.0.0
     networks:
       - app_net
     deploy:

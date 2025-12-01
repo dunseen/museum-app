@@ -28,6 +28,16 @@ RUN yarn build
 # Production image using standalone output
 FROM node:20-slim AS runner
 WORKDIR /app
+
+# Install required system libs
+RUN apt-get update && apt-get install -y \
+  libc6 \
+  libstdc++6 \
+  curl \
+  wget \
+  procps \
+  && rm -rf /var/lib/apt/lists/*
+
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_APP_URL
 ARG NEXT_PUBLIC_ENV
@@ -35,11 +45,8 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 ENV NEXT_PUBLIC_ENV=$NEXT_PUBLIC_ENV
 ENV NODE_ENV=production
-
-# install tools for debugging + healthcheck
-RUN apt-get update && apt-get install -y \
-  curl wget procps \
-  && rm -rf /var/lib/apt/lists/*
+ENV PORT=3000
+ENV HOST=0.0.0.0
 
 # create a non-root user
 RUN groupadd -g 1001 nodejs && useradd -m -u 1001 -g nodejs nextjs
