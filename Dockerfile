@@ -35,6 +35,7 @@ RUN apt-get update && apt-get install -y \
   libstdc++6 \
   curl \
   wget \
+  net-tools \
   procps \
   && rm -rf /var/lib/apt/lists/*
 
@@ -45,7 +46,7 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 ENV NEXT_PUBLIC_ENV=$NEXT_PUBLIC_ENV
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=4000
 ENV HOST=0.0.0.0
 
 # create a non-root user
