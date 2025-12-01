@@ -61,4 +61,4 @@ USER nextjs
 ENV PORT=3000
 ENV HOST=0.0.0.0
 
-CMD ["sh", "-c", "exec node server.js --port \"$PORT\" --hostname \"$HOST\""]
+CMD ["node", "server.js"]
