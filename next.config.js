@@ -65,6 +65,7 @@ const config = {
     ignoreDuringBuilds:
       !!process.env.SKIP_NEXT_CHECKS,
   },
+  basePath: "/app",
   async headers() {
     return [
       {
