@@ -1,5 +1,5 @@
-import React from "react";
-import { GridLoading } from "~/app/museu/herbario/components/grid-loading";
+import React from 'react';
+import { GridLoading } from '~/app/museu/herbario/components/grid-loading';
 
 interface LoadingErrorWrapperProps {
   loading?: boolean;

@@ -1,9 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation } from '@tanstack/react-query';
 import {
   type SpecialistType,
   type SpecialistApiResponse,
-} from "~/app/museu/herbario/types/specialist.types";
-import { api } from "~/server/api";
+} from '~/app/museu/herbario/types/specialist.types';
+import { api } from '~/server/api';
 
 type PostSpecialistPayload = {
   name: string;
@@ -12,7 +12,7 @@ type PostSpecialistPayload = {
 
 async function postSpecialists(payload: PostSpecialistPayload) {
   const { data } = await api.post<SpecialistApiResponse>(
-    "/dashboard/specialists",
+    '/dashboard/specialists',
     payload,
   );
 

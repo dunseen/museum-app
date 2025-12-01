@@ -1,7 +1,7 @@
-import Image from "next/image";
-import Link from "next/link";
-import { NavList } from "./nav-list";
-import { Leaf } from "lucide-react";
+import Image from 'next/image';
+import Link from 'next/link';
+import { NavList } from './nav-list';
+import { Leaf } from 'lucide-react';
 
 type HeaderProps = {
   showNavMenu?: boolean;

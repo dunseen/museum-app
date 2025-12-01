@@ -1,17 +1,17 @@
-import React from "react";
-import { Accordion } from "~/components/ui/accordion";
-import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
-import { type ChangeRequestDiff } from "../../../types/change-request-detail.types";
+import React from 'react';
+import { Accordion } from '~/components/ui/accordion';
+import { type GetSpecieApiResponse } from '~/app/museu/herbario/types/specie.types';
+import { type ChangeRequestDiff } from '../../../types/change-request-detail.types';
 import {
   GeneralInfoSection,
   LocationSection,
   SpecialistsSection,
   FilesSection,
-} from "./sections";
+} from './sections';
 
 type SpecieChangeRequestContentProps = {
   data: GetSpecieApiResponse;
-  action: "create" | "update" | "delete";
+  action: 'create' | 'update' | 'delete';
 };
 
 /**
@@ -22,12 +22,12 @@ export function SpecieChangeRequestContent({
   action,
 }: SpecieChangeRequestContentProps): React.JSX.Element {
   const diff = (data.diff ?? {}) as ChangeRequestDiff;
-  const isUpdate = action === "update";
+  const isUpdate = action === 'update';
 
   return (
     <Accordion
       type="multiple"
-      defaultValue={["general", "location", "specialists"]}
+      defaultValue={['general', 'location', 'specialists']}
       className="w-full pt-4"
     >
       <GeneralInfoSection
@@ -40,7 +40,11 @@ export function SpecieChangeRequestContent({
         isUpdate={isUpdate}
       />
 
-      <LocationSection location={data.location} diff={diff} isUpdate={isUpdate} />
+      <LocationSection
+        location={data.location}
+        diff={diff}
+        isUpdate={isUpdate}
+      />
 
       <SpecialistsSection
         collector={data.collector}

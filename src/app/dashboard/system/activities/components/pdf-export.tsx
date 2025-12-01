@@ -1,12 +1,12 @@
-import React from "react";
-import Image from "next/image";
-import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
-import { type GetTaxonApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
-import { decimalToDMS } from "~/utils/lat-long";
+import React from 'react';
+import Image from 'next/image';
+import { type GetSpecieApiResponse } from '~/app/museu/herbario/types/specie.types';
+import { type GetTaxonApiResponse } from '~/app/museu/herbario/types/taxonomy.types';
+import { decimalToDMS } from '~/utils/lat-long';
 
 const getFamilyFromTaxons = (taxons: GetTaxonApiResponse[]) => {
   const family = taxons.find(
-    (taxon) => taxon?.hierarchy?.name?.toLowerCase() === "família",
+    (taxon) => taxon?.hierarchy?.name?.toLowerCase() === 'família',
   );
 
   if (family) {
@@ -59,18 +59,17 @@ export const PdfExport = React.forwardRef<
       </p>
       <p className="italic">{specie.scientificName}</p>
       <p>
-        <strong>Nome vulgar:</strong> {specie?.commonName ?? "-"}
+        <strong>Nome vulgar:</strong> {specie?.commonName ?? '-'}
       </p>
       <p>
-        <strong>Determinador:</strong> {specie?.determinator?.name ?? "-"}
+        <strong>Determinador:</strong> {specie?.determinator?.name ?? '-'}
       </p>
       <p>
-        <strong>Coordenadas:</strong>{" "}
-        {decimalToDMS(specie.location.lat, true)}{" "}
+        <strong>Coordenadas:</strong> {decimalToDMS(specie.location.lat, true)}{' '}
         {decimalToDMS(specie.location.long, false)}
       </p>
       <p>
-        <strong>Localização:</strong> {specie.location.address} -{" "}
+        <strong>Localização:</strong> {specie.location.address} -{' '}
         {specie.location.state.code}/{specie.location.city.name},
       </p>
 
@@ -79,7 +78,7 @@ export const PdfExport = React.forwardRef<
       </p>
 
       <p>
-        <strong>Data da coleta:</strong>{" "}
+        <strong>Data da coleta:</strong>{' '}
         {new Date(specie.collectedAt).toLocaleDateString()}
       </p>
 
@@ -100,4 +99,4 @@ export const PdfExport = React.forwardRef<
   );
 });
 
-PdfExport.displayName = "PdfExport";
+PdfExport.displayName = 'PdfExport';

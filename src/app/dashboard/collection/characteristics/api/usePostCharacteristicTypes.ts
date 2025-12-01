@@ -1,5 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
-import { api } from "~/server/api";
+import { useMutation } from '@tanstack/react-query';
+import { api } from '~/server/api';
 
 type PostCharacteristicTypes = {
   name: string;
@@ -12,7 +12,7 @@ type PostCharacteristicTypesResponse = {
 
 async function postCharacteristicTypes(payload: PostCharacteristicTypes) {
   const { data } = await api.post<PostCharacteristicTypesResponse>(
-    "/dashboard/characteristic-types",
+    '/dashboard/characteristic-types',
     payload,
   );
 

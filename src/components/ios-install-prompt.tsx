@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Share, X } from "lucide-react";
+import React from 'react';
+import { Share, X } from 'lucide-react';
 
-const DISMISS_STORAGE_KEY = "herbarium-ios-install-dismissed-at";
+const DISMISS_STORAGE_KEY = 'herbarium-ios-install-dismissed-at';
 const DISMISS_COOLDOWN_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
 
 function isIosSafari() {
-  if (typeof navigator === "undefined") return false;
+  if (typeof navigator === 'undefined') return false;
   const userAgent = navigator.userAgent || navigator.vendor;
   const isIOS = /iphone|ipad|ipod/i.test(userAgent);
   const isStandalone =
-    window.matchMedia("(display-mode: standalone)").matches ||
+    window.matchMedia('(display-mode: standalone)').matches ||
     (window.navigator as typeof navigator & { standalone?: boolean })
       .standalone;
 
@@ -54,9 +54,9 @@ export function IosInstallPrompt() {
             Toque em <span className="font-semibold">Compartilhar</span> e
             depois em
             <span className="font-semibold">
-              {" "}
+              {' '}
               &quot;Adicionar à Tela de Início&quot;
-            </span>{" "}
+            </span>{' '}
             para usar o Herbário Virtual em modo aplicativo.
           </p>
         </div>

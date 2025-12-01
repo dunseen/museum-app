@@ -1,70 +1,67 @@
-"use client";
+'use client';
 
-import { DataTable } from "../../../shared/components/data-table";
-import { useCallback, useMemo, useState } from "react";
-import type { ColumnDef } from "@tanstack/react-table";
+import { DataTable } from '../../../shared/components/data-table';
+import { useCallback, useMemo, useState } from 'react';
+import type { ColumnDef } from '@tanstack/react-table';
 
-import { ActivitiesHeader } from "../components/activities-header";
+import { ActivitiesHeader } from '../components/activities-header';
 
-import { ActivitiesTableActions } from "../components/activities-table-actions";
-import RejectActivityDialog from "../components/reject-activity-dialog";
-import { useDisclosure } from "~/hooks/use-disclosure";
-import { ConfirmationAlert } from "../../../shared/components/confirmation-alert";
-import { useDebouncedInput } from "~/hooks/use-debounced-input";
+import { ActivitiesTableActions } from '../components/activities-table-actions';
+import RejectActivityDialog from '../components/reject-activity-dialog';
+import { useDisclosure } from '~/hooks/use-disclosure';
+import { ConfirmationAlert } from '../../../shared/components/confirmation-alert';
+import { useDebouncedInput } from '~/hooks/use-debounced-input';
 import {
   type DraftWithChangeRequest,
   useGetChangeRequests,
   getChangeRequestDetailConfig,
   useApproveChangeRequest,
   useRejectChangeRequest,
-} from "../../api";
+} from '../../api';
 import type {
   ChangeRequestAction,
   ChangeRequestStatus,
-} from "../../api/useGetChangeRequests";
-import { toast } from "sonner";
-import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
+} from '../../api/useGetChangeRequests';
+import { toast } from 'sonner';
+import { type GetSpecieApiResponse } from '~/app/museu/herbario/types/specie.types';
 import {
   type GetCharacteristicDraftDetailApiResponse,
   type GetTaxonDraftDetailApiResponse,
-} from "../../types/change-request-detail.types";
-import { useQueryClient } from "@tanstack/react-query";
-import { EntityType } from "~/types";
-import { ChangeRequestDetailDialog } from "./change-request-detail-dialog";
-import { Badge } from "~/components/ui/badge";
-import { cn } from "~/lib/utils";
+} from '../../types/change-request-detail.types';
+import { useQueryClient } from '@tanstack/react-query';
+import { EntityType } from '~/types';
+import { ChangeRequestDetailDialog } from './change-request-detail-dialog';
+import { Badge } from '~/components/ui/badge';
+import { cn } from '~/lib/utils';
 
 const STATUS_PARSER: Record<ChangeRequestStatus, string> = {
-  pending: "Pendente",
-  approved: "Aprovado",
-  rejected: "Rejeitado",
-  withdrawn: "Retirado",
+  pending: 'Pendente',
+  approved: 'Aprovado',
+  rejected: 'Rejeitado',
+  withdrawn: 'Retirado',
 };
 
 const STATUS_BADGE_STYLES: Record<ChangeRequestStatus, string> = {
   pending:
-    "bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200",
+    'bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200',
   approved:
-    "bg-emerald-100 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-200",
-  rejected:
-    "bg-rose-100 text-rose-900 dark:bg-rose-900/40 dark:text-rose-200",
+    'bg-emerald-100 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-200',
+  rejected: 'bg-rose-100 text-rose-900 dark:bg-rose-900/40 dark:text-rose-200',
   withdrawn:
-    "bg-slate-100 text-slate-900 dark:bg-slate-900/40 dark:text-slate-200",
+    'bg-slate-100 text-slate-900 dark:bg-slate-900/40 dark:text-slate-200',
 };
 
 const ACTION_PARSER: Record<ChangeRequestAction, string> = {
-  create: "Criação",
-  update: "Atualização",
-  delete: "Remoção",
+  create: 'Criação',
+  update: 'Atualização',
+  delete: 'Remoção',
 };
 
 const ACTION_BADGE_STYLES: Record<ChangeRequestAction, string> = {
   create:
-    "bg-emerald-100 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-200",
-  update:
-    "bg-sky-100 text-sky-900 dark:bg-sky-900/40 dark:text-sky-200",
-  delete:
-    "bg-rose-100 text-rose-900 dark:bg-rose-900/40 dark:text-rose-200",
+    'bg-emerald-100 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-200',
+  update: 'bg-sky-100 text-sky-900 dark:bg-sky-900/40 dark:text-sky-200',
+  delete: 'bg-rose-100 text-rose-900 dark:bg-rose-900/40 dark:text-rose-200',
 };
 
 type ViewedDetail =
@@ -132,7 +129,7 @@ export default function System() {
         cr.entityType !== EntityType.CHARACTERISTIC &&
         cr.entityType !== EntityType.TAXON
       ) {
-        toast.error("Visualização não suportada para este tipo de entidade");
+        toast.error('Visualização não suportada para este tipo de entidade');
         return;
       }
 
@@ -162,7 +159,7 @@ export default function System() {
         addDialog.onOpen();
       } catch (e) {
         console.error(e);
-        toast.error("Erro ao carregar detalhes da entidade");
+        toast.error('Erro ao carregar detalhes da entidade');
       }
     },
     [addDialog, queryClient],
@@ -171,36 +168,36 @@ export default function System() {
   const columns = useMemo<ColumnDef<DraftWithChangeRequest>[]>(
     () => [
       {
-        header: "Nome",
-        accessorKey: "entityName",
+        header: 'Nome',
+        accessorKey: 'entityName',
         cell: ({ row }) => (
           <span className="max-w-96 truncate">{row.original.entityName}</span>
         ),
       },
       {
-        header: "Recurso",
-        accessorKey: "entityType",
+        header: 'Recurso',
+        accessorKey: 'entityType',
         cell: ({ row }) => {
           const typeLabels: Record<string, string> = {
-            [EntityType.SPECIE]: "Espécie",
-            [EntityType.CHARACTERISTIC]: "Característica",
-            [EntityType.TAXON]: "Taxonomia",
+            [EntityType.SPECIE]: 'Espécie',
+            [EntityType.CHARACTERISTIC]: 'Característica',
+            [EntityType.TAXON]: 'Taxonomia',
           };
           return typeLabels[row.original.entityType] ?? row.original.entityType;
         },
       },
       {
-        header: "Solicitação",
-        accessorKey: "action",
+        header: 'Solicitação',
+        accessorKey: 'action',
         cell: ({ row }) => {
           const action = row.original.changeRequest.action;
           const label = ACTION_PARSER[action] ?? action;
-          const style = ACTION_BADGE_STYLES[action] ?? "";
+          const style = ACTION_BADGE_STYLES[action] ?? '';
           return (
             <Badge
               variant="outline"
               className={cn(
-                "border-transparent px-2 py-0.5 text-xs font-medium",
+                'border-transparent px-2 py-0.5 text-xs font-medium',
                 style,
               )}
             >
@@ -210,17 +207,17 @@ export default function System() {
         },
       },
       {
-        header: "Status",
-        accessorKey: "status",
+        header: 'Status',
+        accessorKey: 'status',
         cell: ({ row }) => {
           const status = row.original.changeRequest.status;
           const label = STATUS_PARSER[status] ?? status;
-          const style = STATUS_BADGE_STYLES[status] ?? "";
+          const style = STATUS_BADGE_STYLES[status] ?? '';
           return (
             <Badge
               variant="outline"
               className={cn(
-                "border-transparent px-2 py-0.5 text-xs font-medium",
+                'border-transparent px-2 py-0.5 text-xs font-medium',
                 style,
               )}
             >
@@ -230,46 +227,46 @@ export default function System() {
         },
       },
       {
-        header: "Autor",
-        accessorKey: "author",
+        header: 'Autor',
+        accessorKey: 'author',
         cell: ({ row }) =>
-          `${row.original.changeRequest.proposedBy.firstName ?? ""} ${row.original.changeRequest.proposedBy.lastName ?? ""}`,
+          `${row.original.changeRequest.proposedBy.firstName ?? ''} ${row.original.changeRequest.proposedBy.lastName ?? ''}`,
       },
       {
-        header: "Validador",
-        accessorKey: "validator",
+        header: 'Validador',
+        accessorKey: 'validator',
         cell: ({ row }) => {
           const rv = row.original.changeRequest.reviewedBy;
-          if (rv) return `${rv.firstName ?? ""} ${rv.lastName ?? ""}`;
-          return "-";
+          if (rv) return `${rv.firstName ?? ''} ${rv.lastName ?? ''}`;
+          return '-';
         },
       },
       {
-        header: "Comentário",
-        accessorKey: "reviewerNote",
-        cell: ({ row }) => row.original.changeRequest.reviewerNote ?? "-",
+        header: 'Comentário',
+        accessorKey: 'reviewerNote',
+        cell: ({ row }) => row.original.changeRequest.reviewerNote ?? '-',
       },
       {
-        header: "Data de Criação",
-        accessorKey: "proposedAt",
+        header: 'Data de Criação',
+        accessorKey: 'proposedAt',
         cell: ({ row }) =>
           new Date(row.original.changeRequest.proposedAt).toLocaleString(
-            "pt-BR",
+            'pt-BR',
           ),
       },
       {
-        header: "Data de Aprovação",
-        accessorKey: "decidedAt",
+        header: 'Data de Aprovação',
+        accessorKey: 'decidedAt',
         cell: ({ row }) =>
           row.original.changeRequest.decidedAt
             ? new Date(row.original.changeRequest.decidedAt).toLocaleString(
-                "pt-BR",
+                'pt-BR',
               )
-            : "-",
+            : '-',
       },
       {
-        header: "Ações",
-        accessorKey: "id",
+        header: 'Ações',
+        accessorKey: 'id',
         cell: ({ row }) => (
           <ActivitiesTableActions
             onApprove={() => handleApprove(row.original)}
@@ -291,10 +288,10 @@ export default function System() {
         onSuccess() {
           rejectDialog.onClose();
           setSelectedCrId(null);
-          toast.success("Solicitação rejeitada com sucesso");
+          toast.success('Solicitação rejeitada com sucesso');
         },
         onError() {
-          toast.error("Erro ao rejeitar solicitação");
+          toast.error('Erro ao rejeitar solicitação');
         },
       },
     );
@@ -306,10 +303,10 @@ export default function System() {
       onSuccess() {
         approveDialog.onClose();
         setSelectedCrId(null);
-        toast.success("Solicitação aprovada com sucesso");
+        toast.success('Solicitação aprovada com sucesso');
       },
       onError() {
-        toast.error("Erro ao aprovar solicitação");
+        toast.error('Erro ao aprovar solicitação');
       },
     });
   }

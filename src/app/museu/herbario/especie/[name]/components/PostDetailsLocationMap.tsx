@@ -1,6 +1,6 @@
-import { MapPin } from "lucide-react";
-import { LocationMapHandler } from "~/components/map";
-import { type GetSpecieApiResponse } from "../../../types/specie.types";
+import { MapPin } from 'lucide-react';
+import { LocationMapHandler } from '~/components/map';
+import { type GetSpecieApiResponse } from '../../../types/specie.types';
 
 type PostDetailsLocationMapProps = {
   specie: GetSpecieApiResponse;
@@ -12,8 +12,8 @@ export function PostDetailsLocationMap({
   if (
     !specie?.location?.lat ||
     !specie?.location?.long ||
-    specie.location.lat === "0" ||
-    specie.location.long === "0"
+    specie.location.lat === '0' ||
+    specie.location.long === '0'
   ) {
     return null;
   }
@@ -43,11 +43,11 @@ export function PostDetailsLocationMap({
         />
         <div className="border-t bg-muted/50 p-4">
           <p className="text-sm text-muted-foreground">
-            <strong className="text-foreground">Endereço:</strong>{" "}
+            <strong className="text-foreground">Endereço:</strong>{' '}
             {specie.location.address}
           </p>
           <p className="text-sm text-muted-foreground">
-            <strong className="text-foreground">Cidade:</strong>{" "}
+            <strong className="text-foreground">Cidade:</strong>{' '}
             {specie.location.city.name} / {specie.location.state.code}
           </p>
         </div>

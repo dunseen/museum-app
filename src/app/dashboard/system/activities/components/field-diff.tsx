@@ -1,5 +1,5 @@
-import React from "react";
-import { cn } from "~/lib/utils";
+import React from 'react';
+import { cn } from '~/lib/utils';
 
 type FieldDiffProps = {
   label: string;
@@ -13,15 +13,15 @@ type FieldDiffProps = {
  * Default formatter for unknown values
  */
 function defaultFormatter(value: unknown): string {
-  if (value == null) return "-";
-  if (typeof value === "string") return value;
-  if (typeof value === "number") return String(value);
-  if (typeof value === "boolean") return value ? "Sim" : "Não";
-  if (typeof value === "object") {
+  if (value == null) return '-';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number') return String(value);
+  if (typeof value === 'boolean') return value ? 'Sim' : 'Não';
+  if (typeof value === 'object') {
     // Handle objects with toString method or JSON stringify
-    return "-";
+    return '-';
   }
-  return "-";
+  return '-';
 }
 
 /**
@@ -37,7 +37,7 @@ export function FieldDiff({
   const hasChange = oldValue !== newValue;
 
   return (
-    <div className={cn("space-y-1", className)}>
+    <div className={cn('space-y-1', className)}>
       <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
         {label}
       </label>
@@ -49,10 +49,10 @@ export function FieldDiff({
         )}
         <div
           className={cn(
-            "rounded border px-3 py-2 text-sm",
+            'rounded border px-3 py-2 text-sm',
             hasChange
-              ? "border-green-300 bg-green-50 text-green-900 dark:border-green-700 dark:bg-green-950/20 dark:text-green-100"
-              : "border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300",
+              ? 'border-green-300 bg-green-50 text-green-900 dark:border-green-700 dark:bg-green-950/20 dark:text-green-100'
+              : 'border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300',
           )}
         >
           {formatValue(newValue)}

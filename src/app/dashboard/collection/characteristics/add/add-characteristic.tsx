@@ -1,10 +1,10 @@
-import React from "react";
-import { useDisclosure } from "~/hooks/use-disclosure";
-import { AddCharacteristicDialog } from "./add-characteristic-dialog";
-import { Button } from "~/components/ui/button";
-import { PlusIcon } from "lucide-react";
-import { type Nullable } from "~/types";
-import { type GetCharacteristicApiResponse } from "~/app/museu/herbario/types/characteristic.types";
+import React from 'react';
+import { useDisclosure } from '~/hooks/use-disclosure';
+import { AddCharacteristicDialog } from './add-characteristic-dialog';
+import { Button } from '~/components/ui/button';
+import { PlusIcon } from 'lucide-react';
+import { type Nullable } from '~/types';
+import { type GetCharacteristicApiResponse } from '~/app/museu/herbario/types/characteristic.types';
 
 type AddCharacteristicProps = {
   data?: Nullable<GetCharacteristicApiResponse>;
@@ -32,7 +32,7 @@ export const AddCharacteristic: React.FC<AddCharacteristicProps> = ({
       </Button>
 
       <AddCharacteristicDialog
-        dialogActionTitle={data ? "Editar" : "Adicionar"}
+        dialogActionTitle={data ? 'Editar' : 'Adicionar'}
         isOpen={addDialog.isOpen || !!data}
         onClose={onCloseAddDialog}
         data={data}

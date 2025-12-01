@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import { Sheet, SheetTrigger } from "~/components/ui/sheet";
-import { FilterIcon, FilterXIcon } from "lucide-react";
-import { usePost } from "../context/post-context";
-import { FiltersBadge } from "./filters-badge";
+import { useState } from 'react';
+import { Input } from '~/components/ui/input';
+import { Button } from '~/components/ui/button';
+import { Sheet, SheetTrigger } from '~/components/ui/sheet';
+import { FilterIcon, FilterXIcon } from 'lucide-react';
+import { usePost } from '../context/post-context';
+import { FiltersBadge } from './filters-badge';
 
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
 const FiltersContent = dynamic(
-  () => import("./filters-content").then((mod) => mod.FiltersContent),
+  () => import('./filters-content').then((mod) => mod.FiltersContent),
   { ssr: false },
 );
 

@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type ReactNode } from 'react';
 
 type BotanicalLayoutProps = {
   children: ReactNode;
@@ -7,7 +7,7 @@ type BotanicalLayoutProps = {
 
 export function BotanicalLayout({
   children,
-  className = "",
+  className = '',
 }: BotanicalLayoutProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50/30 via-emerald-50/20 to-teal-50/30">

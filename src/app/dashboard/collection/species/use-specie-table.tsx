@@ -1,23 +1,23 @@
 /* eslint-disable jsx-a11y/alt-text */
-"use client";
+'use client';
 
-import { type ColumnDef } from "@tanstack/react-table";
-import { Image, MoreHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
+import { type ColumnDef } from '@tanstack/react-table';
+import { Image, MoreHorizontal } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
-import { Button } from "~/components/ui/button";
+import { Button } from '~/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
-import { decimalToDMS } from "~/utils/lat-long";
-import { Can } from "../../context/ability-context";
-import { formatDate } from "~/utils/date";
-import { useGeneratePdf } from "../../system/hooks/useExportPdf";
+} from '~/components/ui/dropdown-menu';
+import { type GetSpecieApiResponse } from '~/app/museu/herbario/types/specie.types';
+import { decimalToDMS } from '~/utils/lat-long';
+import { Can } from '../../context/ability-context';
+import { formatDate } from '~/utils/date';
+import { useGeneratePdf } from '../../system/hooks/useExportPdf';
 
 export function useSpecieTable() {
   const [selectedSpecie, setSelectedSpecie] =
@@ -38,10 +38,10 @@ export function useSpecieTable() {
   const columns = useMemo<ColumnDef<GetSpecieApiResponse>[]>(
     () => [
       {
-        header: "Nome científico",
+        header: 'Nome científico',
         cell: ({ row }) => (
           <p
-            title={row.original.scientificName ?? ""}
+            title={row.original.scientificName ?? ''}
             className="max-w-96 truncate"
           >
             {row.original.scientificName}
@@ -49,10 +49,10 @@ export function useSpecieTable() {
         ),
       },
       {
-        header: "Nome popular",
+        header: 'Nome popular',
         cell: ({ row }) => (
           <p
-            title={row.original.commonName ?? ""}
+            title={row.original.commonName ?? ''}
             className="max-w-96 truncate"
           >
             {row.original.commonName}
@@ -60,10 +60,10 @@ export function useSpecieTable() {
         ),
       },
       {
-        header: "Descrição",
+        header: 'Descrição',
         cell: ({ row }) => (
           <p
-            title={row.original.description ?? ""}
+            title={row.original.description ?? ''}
             className="max-w-60 truncate"
           >
             {row.original.description}
@@ -71,10 +71,10 @@ export function useSpecieTable() {
         ),
       },
       {
-        header: "Família",
+        header: 'Família',
         cell: ({ row }) => {
           const family = row.original?.taxons.find(
-            (taxon) => taxon?.hierarchy?.name?.toLowerCase() === "família",
+            (taxon) => taxon?.hierarchy?.name?.toLowerCase() === 'família',
           );
 
           return (
@@ -85,10 +85,10 @@ export function useSpecieTable() {
         },
       },
       {
-        header: "Ordem",
+        header: 'Ordem',
         cell: ({ row }) => {
           const ordem = row.original?.taxons.find(
-            (taxon) => taxon?.hierarchy?.name?.toLowerCase() === "ordem",
+            (taxon) => taxon?.hierarchy?.name?.toLowerCase() === 'ordem',
           );
 
           return (
@@ -99,11 +99,11 @@ export function useSpecieTable() {
         },
       },
       {
-        header: "Imagens",
+        header: 'Imagens',
         cell: ({ row }) => {
           return (
             <Button
-              variant={"ghost"}
+              variant={'ghost'}
               disabled={!row.original?.files.length}
               onClick={() =>
                 setSelectedSpecieImages({
@@ -118,7 +118,7 @@ export function useSpecieTable() {
         },
       },
       {
-        header: "Coletor",
+        header: 'Coletor',
         cell: ({ row }) => {
           const text = row.original.collector.name;
 
@@ -130,7 +130,7 @@ export function useSpecieTable() {
         },
       },
       {
-        header: "Determinador",
+        header: 'Determinador',
         cell: ({ row }) => {
           const text = row.original.determinator.name;
 
@@ -142,7 +142,7 @@ export function useSpecieTable() {
         },
       },
       {
-        header: "Local",
+        header: 'Local',
         cell: ({ row }) => {
           const text = `${row.original?.location?.address} - ${row.original?.location?.city?.name}/${row.original?.location?.state?.code}`;
 
@@ -155,7 +155,7 @@ export function useSpecieTable() {
       },
 
       {
-        header: "Coordenadas",
+        header: 'Coordenadas',
         cell: ({ row }) => {
           const text = `${decimalToDMS(row.original?.location?.lat, true)} , ${decimalToDMS(row.original?.location?.long, false)}`;
           return (
@@ -166,7 +166,7 @@ export function useSpecieTable() {
         },
       },
       {
-        header: "Data de coleta",
+        header: 'Data de coleta',
         cell: ({ row }) => {
           const text = formatDate(row.original?.collectedAt);
 
@@ -178,7 +178,7 @@ export function useSpecieTable() {
         },
       },
       {
-        header: "Data de determinação",
+        header: 'Data de determinação',
         cell: ({ row }) => {
           const text = formatDate(row.original?.determinatedAt);
 
@@ -190,8 +190,8 @@ export function useSpecieTable() {
         },
       },
       {
-        id: "actions",
-        header: "Ações",
+        id: 'actions',
+        header: 'Ações',
         cell: ({ row }) => {
           return (
             <DropdownMenu>

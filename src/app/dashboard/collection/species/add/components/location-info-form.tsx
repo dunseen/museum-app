@@ -4,13 +4,13 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
-import { DMSInput } from "~/components/ui/dms-input";
-import { type useForm } from "react-hook-form";
-import { type SpecieFormType } from "../add-specie-dialog";
-import Select from "react-select";
-import { useGetCities, useGetStates } from "../../api";
+} from '~/components/ui/form';
+import { Input } from '~/components/ui/input';
+import { DMSInput } from '~/components/ui/dms-input';
+import { type useForm } from 'react-hook-form';
+import { type SpecieFormType } from '../add-specie-dialog';
+import Select from 'react-select';
+import { useGetCities, useGetStates } from '../../api';
 
 type LocationInfoFormProps = {
   form: ReturnType<typeof useForm<SpecieFormType>>;
@@ -21,7 +21,7 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({
   form,
   isReadOnly,
 }) => {
-  const stateWatch = form.watch("location.state");
+  const stateWatch = form.watch('location.state');
 
   const { data: cityDataOptions, isLoading: cityLoading } = useGetCities({
     stateId: Number(stateWatch?.value),
@@ -56,14 +56,14 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({
                 <Select
                   name="location.state"
                   placeholder="Pesquisar Estado"
-                  noOptionsMessage={() => "Nenhum estado encontrado"}
+                  noOptionsMessage={() => 'Nenhum estado encontrado'}
                   options={stateOptions}
                   id={field.name}
                   onBlur={field.onBlur}
                   onChange={field.onChange}
                   defaultValue={field.value}
                   isDisabled={field.disabled ?? (stateLoading || isReadOnly)}
-                  loadingMessage={() => "Carregando..."}
+                  loadingMessage={() => 'Carregando...'}
                   isLoading={stateLoading}
                   ref={field.ref}
                 />
@@ -84,7 +84,7 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({
                 <Select
                   name="location.city"
                   placeholder="Pesquisar Cidade"
-                  noOptionsMessage={() => "Nenhuma cidade encontrada"}
+                  noOptionsMessage={() => 'Nenhuma cidade encontrada'}
                   isLoading={cityLoading}
                   options={cityOptions}
                   id={field.name}
@@ -92,7 +92,7 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({
                   onChange={field.onChange}
                   defaultValue={field.value}
                   isDisabled={field.disabled ?? (!stateWatch || isReadOnly)}
-                  loadingMessage={() => "Carregando cidades..."}
+                  loadingMessage={() => 'Carregando cidades...'}
                   ref={field.ref}
                 />
               </FormControl>
@@ -112,7 +112,7 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({
                 <DMSInput
                   isLat
                   defaultValue={field.value}
-                  placeholder={"ex: 01°32'00\"S"}
+                  placeholder={'ex: 01°32\'00"S'}
                   ref={field.ref}
                   name={field.name}
                   onChange={field.onChange}
@@ -139,7 +139,7 @@ export const LocationInfoForm: React.FC<LocationInfoFormProps> = ({
                   defaultValue={field.value}
                   ref={field.ref}
                   name={field.name}
-                  placeholder={"ex: 046°38'00\"W"}
+                  placeholder={'ex: 046°38\'00"W'}
                   onChange={field.onChange}
                   onBlur={field.onBlur}
                   readOnly={isReadOnly}

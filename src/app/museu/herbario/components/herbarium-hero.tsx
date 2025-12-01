@@ -1,4 +1,4 @@
-import { Leaf, Search, BookOpen } from "lucide-react";
+import { Leaf, Search, BookOpen } from 'lucide-react';
 
 export default function HerbariumHero() {
   return (

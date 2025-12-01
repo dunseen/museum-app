@@ -1,6 +1,6 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import {
   Dialog,
   DialogContent,
@@ -8,7 +8,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "~/components/ui/dialog";
+} from '~/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -16,27 +16,27 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
+} from '~/components/ui/form';
+import { Input } from '~/components/ui/input';
 
-import { z } from "zod";
-import { type Nullable } from "~/types";
+import { z } from 'zod';
+import { type Nullable } from '~/types';
 import ImageManager, {
   type ImageType,
-} from "~/app/dashboard/shared/components/image-manager";
-import { Button } from "~/components/ui/button";
-import { type GetCharacteristicApiResponse } from "~/app/museu/herbario/types/characteristic.types";
+} from '~/app/dashboard/shared/components/image-manager';
+import { Button } from '~/components/ui/button';
+import { type GetCharacteristicApiResponse } from '~/app/museu/herbario/types/characteristic.types';
 import {
   useGetCharacteristicTypes,
   usePostCharacteristics,
   usePostCharacteristicTypes,
-} from "../api";
-import { toast } from "sonner";
-import { AsyncSelect } from "~/components/ui/async-select";
-import { useDebouncedInput } from "~/hooks/use-debounced-input";
-import { appendFiles } from "~/utils/files";
-import { usePutCharacteristics } from "../api/usePutCharacteristics";
-import { OperationStatus } from "../types";
+} from '../api';
+import { toast } from 'sonner';
+import { AsyncSelect } from '~/components/ui/async-select';
+import { useDebouncedInput } from '~/hooks/use-debounced-input';
+import { appendFiles } from '~/utils/files';
+import { usePutCharacteristics } from '../api/usePutCharacteristics';
+import { OperationStatus } from '../types';
 
 type AddCharacteristicDialogProps = {
   isOpen: boolean;
@@ -53,28 +53,28 @@ const imageSchema = z.object(
     isNew: z.boolean().optional(),
   },
   {
-    required_error: "Campo obrigatório",
+    required_error: 'Campo obrigatório',
   },
 );
 
 const formCharacteristicSchema = z.object({
-  name: z.string({ required_error: "Campo obrigatório" }),
+  name: z.string({ required_error: 'Campo obrigatório' }),
   type: z.object(
     {
-      value: z.string({ required_error: "Campo obrigatório" }),
-      label: z.string({ required_error: "Campo obrigatório" }),
+      value: z.string({ required_error: 'Campo obrigatório' }),
+      label: z.string({ required_error: 'Campo obrigatório' }),
       __isNew__: z.boolean().optional(),
     },
     {
-      required_error: "Campo obrigatório",
-      invalid_type_error: "Campo obrigatório",
+      required_error: 'Campo obrigatório',
+      invalid_type_error: 'Campo obrigatório',
     },
   ),
   images: z
     .array(imageSchema, {
-      required_error: "Campo obrigatório",
+      required_error: 'Campo obrigatório',
     })
-    .min(1, "Adicione ao menos uma imagem"),
+    .min(1, 'Adicione ao menos uma imagem'),
 });
 
 export type CharacteristicFormType = z.infer<typeof formCharacteristicSchema>;
@@ -122,8 +122,8 @@ export const AddCharacteristicDialog: React.FC<
         typeId = type?.id;
       }
 
-      formData.append("typeId", typeId.toString() || "");
-      formData.append("name", values.name);
+      formData.append('typeId', typeId.toString() || '');
+      formData.append('name', values.name);
 
       if (values.images.length > 0) {
         const removedFiles = values.images
@@ -131,7 +131,7 @@ export const AddCharacteristicDialog: React.FC<
           .map((f) => f.id);
 
         if (removedFiles.length > 0) {
-          formData.append("filesToDelete", removedFiles.join(","));
+          formData.append('filesToDelete', removedFiles.join(','));
         }
 
         const newFiles = values.images.filter((f) => f.isNew);
@@ -139,7 +139,7 @@ export const AddCharacteristicDialog: React.FC<
         if (newFiles.length > 0) {
           await appendFiles(
             formData,
-            "file",
+            'file',
             newFiles.map((f) => f.url),
           );
         }
@@ -152,10 +152,10 @@ export const AddCharacteristicDialog: React.FC<
         });
 
         if (result.status === OperationStatus.COMPLETED) {
-          toast.success("Característica atualizada com sucesso");
+          toast.success('Característica atualizada com sucesso');
         } else {
           const count = result.affectedSpeciesCount ?? 0;
-          const speciesText = count === 1 ? "espécie" : "espécies";
+          const speciesText = count === 1 ? 'espécie' : 'espécies';
           toast.info(
             `Solicitação enviada para aprovação. Esta característica está sendo usada por ${count} ${speciesText}.`,
           );
@@ -165,32 +165,32 @@ export const AddCharacteristicDialog: React.FC<
       }
 
       await postCharacteristicsMutation.mutateAsync(formData);
-      toast.success("Característica adicionada com sucesso");
+      toast.success('Característica adicionada com sucesso');
       onCloseAddDialog();
     } catch (error) {
       console.error(error);
-      toast.error("Erro ao processar solicitação");
+      toast.error('Erro ao processar solicitação');
     }
   }
 
   function onCloseAddDialog() {
-    form.resetField("type");
-    form.resetField("name");
-    form.resetField("images");
+    form.resetField('type');
+    form.resetField('name');
+    form.resetField('images');
 
     onClose();
   }
 
   useEffect(() => {
     if (data) {
-      form.setValue("name", data.name);
-      form.setValue("type", {
+      form.setValue('name', data.name);
+      form.setValue('type', {
         label: data.type?.name,
         value: String(data.type?.id),
       });
 
       form.setValue(
-        "images",
+        'images',
         data.files.map((file) => ({
           id: file.id,
           url: file.url,
@@ -270,7 +270,7 @@ export const AddCharacteristicDialog: React.FC<
 
               <FormField
                 control={form.control}
-                name={"images"}
+                name={'images'}
                 defaultValue={defaultImages}
                 render={({ field }) => (
                   <FormItem className="max-w-full overflow-x-auto">
@@ -290,7 +290,7 @@ export const AddCharacteristicDialog: React.FC<
             </div>
             <DialogFooter className="pt-8">
               <Button
-                variant={"secondary"}
+                variant={'secondary'}
                 type="button"
                 onClick={onCloseAddDialog}
                 disabled={

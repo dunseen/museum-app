@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "~/components/ui/accordion";
-import { FieldDiff } from "../../field-diff";
-import { formatTaxonomy, formatCharacteristics } from "../formatters";
-import { getOldValueFromDiff } from "../utils";
-import { type ChangeRequestDiff } from "../../../../types/change-request-detail.types";
+} from '~/components/ui/accordion';
+import { FieldDiff } from '../../field-diff';
+import { formatTaxonomy, formatCharacteristics } from '../formatters';
+import { getOldValueFromDiff } from '../utils';
+import { type ChangeRequestDiff } from '../../../../types/change-request-detail.types';
 
 type GeneralInfoSectionProps = {
   scientificName: string;
@@ -37,7 +37,7 @@ export function GeneralInfoSection({
             label="Nome Científico"
             oldValue={getOldValueFromDiff(
               diff,
-              "scientificName",
+              'scientificName',
               scientificName,
               isUpdate,
             )}
@@ -46,19 +46,29 @@ export function GeneralInfoSection({
 
           <FieldDiff
             label="Nome Popular"
-            oldValue={getOldValueFromDiff(diff, "commonName", commonName, isUpdate)}
+            oldValue={getOldValueFromDiff(
+              diff,
+              'commonName',
+              commonName,
+              isUpdate,
+            )}
             newValue={commonName}
           />
 
           <FieldDiff
             label="Descrição"
-            oldValue={getOldValueFromDiff(diff, "description", description, isUpdate)}
+            oldValue={getOldValueFromDiff(
+              diff,
+              'description',
+              description,
+              isUpdate,
+            )}
             newValue={description}
           />
 
           <FieldDiff
             label="Taxonomia"
-            oldValue={getOldValueFromDiff(diff, "taxons", taxons, isUpdate)}
+            oldValue={getOldValueFromDiff(diff, 'taxons', taxons, isUpdate)}
             newValue={taxons}
             formatValue={formatTaxonomy}
           />
@@ -67,7 +77,7 @@ export function GeneralInfoSection({
             label="Características"
             oldValue={getOldValueFromDiff(
               diff,
-              "characteristics",
+              'characteristics',
               characteristics,
               isUpdate,
             )}

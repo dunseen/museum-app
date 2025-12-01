@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Card,
@@ -6,14 +6,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "~/components/ui/card";
-import { Can } from "../../context/ability-context";
-import Link from "next/link";
+} from '~/components/ui/card';
+import { Can } from '../../context/ability-context';
+import Link from 'next/link';
 import {
   RecentActivities,
   type LastPostsSimplified,
-} from "./recent-activities";
-import { useGetChangeRequests } from "../../system/api";
+} from './recent-activities';
+import { useGetChangeRequests } from '../../system/api';
 
 export function ActivitiesContainer() {
   const { data } = useGetChangeRequests({ limit: 10, page: 1 });
@@ -22,7 +22,7 @@ export function ActivitiesContainer() {
 
   const activities: LastPostsSimplified[] = data?.data?.map((cr) => ({
     id: String(cr.changeRequest.id),
-    author: `${cr.changeRequest.proposedBy.firstName ?? ""} ${cr.changeRequest.proposedBy.lastName ?? ""}`,
+    author: `${cr.changeRequest.proposedBy.firstName ?? ''} ${cr.changeRequest.proposedBy.lastName ?? ''}`,
     date: new Date(cr.createdAt),
     resource: cr.entityName,
     status: cr.changeRequest.status,
@@ -30,13 +30,13 @@ export function ActivitiesContainer() {
   }));
 
   return (
-    <Can I={"manage"} a={"System"}>
+    <Can I={'manage'} a={'System'}>
       <Card className="col-span-3">
         <CardHeader>
           <CardTitle className="inline-flex">
             Atividades
             <Link
-              href={"/dashboard/system/activities"}
+              href={'/dashboard/system/activities'}
               className="ml-auto text-base font-medium underline"
             >
               Ver todas

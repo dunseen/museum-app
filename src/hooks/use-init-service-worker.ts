@@ -1,13 +1,13 @@
-import React from "react";
-import { env } from "~/config/env.client";
+import React from 'react';
+import { env } from '~/config/env.client';
 
 export function useInitServiceWorker() {
   React.useEffect(() => {
     const canUseServiceWorker =
-      typeof window !== "undefined" && "serviceWorker" in navigator;
+      typeof window !== 'undefined' && 'serviceWorker' in navigator;
 
     if (!canUseServiceWorker) return;
-    if (process.env.NODE_ENV !== "production") return;
+    if (process.env.NODE_ENV !== 'production') return;
 
     const apiUrl = env.NEXT_PUBLIC_API_URL;
     const appUrl = env.NEXT_PUBLIC_APP_URL;
@@ -29,22 +29,22 @@ export function useInitServiceWorker() {
           const installing = registration.installing;
           if (!installing) return;
 
-          installing.addEventListener("statechange", () => {
+          installing.addEventListener('statechange', () => {
             if (
-              installing.state === "installed" &&
+              installing.state === 'installed' &&
               navigator.serviceWorker.controller
             ) {
-              installing.postMessage({ type: "SKIP_WAITING" });
+              installing.postMessage({ type: 'SKIP_WAITING' });
             }
           });
         };
 
         console.log(
-          "Service Worker registered with scope:",
+          'Service Worker registered with scope:',
           registration.scope,
         );
       } catch (error) {
-        console.error("Service Worker registration failed:", error);
+        console.error('Service Worker registration failed:', error);
       }
     };
 

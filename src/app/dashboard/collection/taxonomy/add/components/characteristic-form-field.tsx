@@ -1,15 +1,15 @@
-import { type useForm } from "react-hook-form";
-import { type TaxonomyFormType } from "../add-taxonomy-dialog";
+import { type useForm } from 'react-hook-form';
+import { type TaxonomyFormType } from '../add-taxonomy-dialog';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form";
-import { type useDebouncedInput } from "~/hooks/use-debounced-input";
-import Select from "react-select";
-import { useGetCharacteristics } from "../../../characteristics/api";
+} from '~/components/ui/form';
+import { type useDebouncedInput } from '~/hooks/use-debounced-input';
+import Select from 'react-select';
+import { useGetCharacteristics } from '../../../characteristics/api';
 
 type CharacteristicFormFieldProps = {
   form: ReturnType<typeof useForm<TaxonomyFormType>>;
@@ -41,7 +41,7 @@ export const CharacteristicFormField: React.FC<
   return (
     <FormField
       control={form.control}
-      name={"characteristics"}
+      name={'characteristics'}
       render={({ field }) => (
         <FormItem>
           <FormLabel>Características (opcional)</FormLabel>
@@ -51,13 +51,13 @@ export const CharacteristicFormField: React.FC<
               onInputChange={onInputChange}
               options={characteristicOptions}
               placeholder="Pesquisar características"
-              noOptionsMessage={() => "Nenhum dado encontrado"}
+              noOptionsMessage={() => 'Nenhum dado encontrado'}
               id={field.name}
               onBlur={field.onBlur}
               onChange={field.onChange}
               defaultValue={defaultValue}
               isDisabled={field.disabled}
-              loadingMessage={() => "Carregando..."}
+              loadingMessage={() => 'Carregando...'}
               isLoading={
                 getCharacteristics.isLoading || getCharacteristics.isFetching
               }

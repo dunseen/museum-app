@@ -1,15 +1,15 @@
-import { type useForm } from "react-hook-form";
-import { type TaxonomyFormType } from "../add-taxonomy-dialog";
+import { type useForm } from 'react-hook-form';
+import { type TaxonomyFormType } from '../add-taxonomy-dialog';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form";
-import { AsyncSelect } from "~/components/ui/async-select";
-import { type useDebouncedInput } from "~/hooks/use-debounced-input";
-import { useGetHierarchies } from "../../api";
+} from '~/components/ui/form';
+import { AsyncSelect } from '~/components/ui/async-select';
+import { type useDebouncedInput } from '~/hooks/use-debounced-input';
+import { useGetHierarchies } from '../../api';
 
 type HierarchyFormFieldProps = {
   form: ReturnType<typeof useForm<TaxonomyFormType>>;

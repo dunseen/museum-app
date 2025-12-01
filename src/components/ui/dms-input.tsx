@@ -1,6 +1,6 @@
-import React from "react";
-import { InputMask, format } from "@react-input/mask";
-import { Input, type InputProps } from "./input";
+import React from 'react';
+import { InputMask, format } from '@react-input/mask';
+import { Input, type InputProps } from './input';
 
 interface DMSInputProps extends InputProps {
   isLat: boolean;
@@ -32,4 +32,4 @@ export const DMSInput = React.forwardRef<HTMLInputElement, DMSInputProps>(
     );
   },
 );
-DMSInput.displayName = "DMSInput";
+DMSInput.displayName = 'DMSInput';

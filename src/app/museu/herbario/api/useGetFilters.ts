@@ -1,10 +1,10 @@
 import {
   type UndefinedInitialDataOptions,
   useQuery,
-} from "@tanstack/react-query";
-import { publicApi } from "~/server/api";
+} from '@tanstack/react-query';
+import { publicApi } from '~/server/api';
 
-const GET_CHARACTERISTIC_FILTERS_KEY = "useGetCharacteristicFilters";
+const GET_CHARACTERISTIC_FILTERS_KEY = 'useGetCharacteristicFilters';
 
 export interface GetCharacteristicFiltersApiResponse {
   type: string;
@@ -16,7 +16,7 @@ export interface GetCharacteristicFiltersApiResponse {
 
 async function fetchFilters() {
   const { data } = await publicApi.get<GetCharacteristicFiltersApiResponse[]>(
-    "/characteristics/home/filters",
+    '/characteristics/home/filters',
   );
 
   return data;

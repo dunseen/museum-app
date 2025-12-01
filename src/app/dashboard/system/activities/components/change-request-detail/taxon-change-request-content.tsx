@@ -1,52 +1,52 @@
-import React from "react";
-import { FieldDiff } from "../field-diff";
+import React from 'react';
+import { FieldDiff } from '../field-diff';
 import {
   type ChangeRequestDiff,
   type GetTaxonDraftDetailApiResponse,
-} from "../../../types/change-request-detail.types";
-import { getOldValueFromDiff } from "./utils";
+} from '../../../types/change-request-detail.types';
+import { getOldValueFromDiff } from './utils';
 
 type TaxonChangeRequestContentProps = {
   data: GetTaxonDraftDetailApiResponse;
-  action: "create" | "update" | "delete";
+  action: 'create' | 'update' | 'delete';
 };
 
 function formatHierarchy(value: unknown): string {
-  if (!value) return "-";
-  if (typeof value === "string") return value;
-  if (typeof value === "object" && value !== null && "name" in value) {
+  if (!value) return '-';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object' && value !== null && 'name' in value) {
     const hierarchy = value as { name?: string };
-    return hierarchy.name ?? "-";
+    return hierarchy.name ?? '-';
   }
-  return "-";
+  return '-';
 }
 
 function formatParent(value: unknown): string {
-  if (!value) return "-";
-  if (typeof value === "string") return value;
-  if (typeof value === "object" && value !== null && "name" in value) {
+  if (!value) return '-';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object' && value !== null && 'name' in value) {
     const parent = value as { name?: string };
-    return parent.name ?? "-";
+    return parent.name ?? '-';
   }
-  return "-";
+  return '-';
 }
 
 function formatCharacteristics(value: unknown): string {
-  if (!value) return "-";
+  if (!value) return '-';
   if (Array.isArray(value)) {
     return value
       .map((item) => {
-        if (typeof item === "string") return item;
-        if (typeof item === "number") return String(item);
-        if (typeof item === "object" && item !== null && "name" in item) {
-          return (item as { name?: string }).name ?? "-";
+        if (typeof item === 'string') return item;
+        if (typeof item === 'number') return String(item);
+        if (typeof item === 'object' && item !== null && 'name' in item) {
+          return (item as { name?: string }).name ?? '-';
         }
-        return "-";
+        return '-';
       })
-      .join(", ");
+      .join(', ');
   }
-  if (typeof value === "string") return value;
-  return "-";
+  if (typeof value === 'string') return value;
+  return '-';
 }
 
 export function TaxonChangeRequestContent({
@@ -54,13 +54,13 @@ export function TaxonChangeRequestContent({
   action,
 }: TaxonChangeRequestContentProps): React.JSX.Element {
   const diff: ChangeRequestDiff = data.diff ?? {};
-  const isUpdate = action === "update";
+  const isUpdate = action === 'update';
 
   return (
     <div className="space-y-4 pt-4">
       <FieldDiff
         label="Nome"
-        oldValue={getOldValueFromDiff(diff, "name", data.name, isUpdate)}
+        oldValue={getOldValueFromDiff(diff, 'name', data.name, isUpdate)}
         newValue={data.name}
       />
 
@@ -68,7 +68,7 @@ export function TaxonChangeRequestContent({
         label="Hierarquia"
         oldValue={getOldValueFromDiff(
           diff,
-          "hierarchy",
+          'hierarchy',
           data.hierarchy,
           isUpdate,
         )}
@@ -78,7 +78,7 @@ export function TaxonChangeRequestContent({
 
       <FieldDiff
         label="Taxonomia Pai"
-        oldValue={getOldValueFromDiff(diff, "parent", data.parent, isUpdate)}
+        oldValue={getOldValueFromDiff(diff, 'parent', data.parent, isUpdate)}
         newValue={data.parent}
         formatValue={formatParent}
       />
@@ -87,7 +87,7 @@ export function TaxonChangeRequestContent({
         label="Características"
         oldValue={getOldValueFromDiff(
           diff,
-          "characteristics",
+          'characteristics',
           data.characteristics,
           isUpdate,
         )}

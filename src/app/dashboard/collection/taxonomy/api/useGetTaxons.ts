@@ -1,11 +1,11 @@
 import {
   type UndefinedInitialDataOptions,
   useQuery,
-} from "@tanstack/react-query";
-import { type AxiosRequestConfig } from "axios";
-import { type GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
-import { api } from "~/server/api";
-import { type PaginationParams, type WithPagination } from "~/types/pagination";
+} from '@tanstack/react-query';
+import { type AxiosRequestConfig } from 'axios';
+import { type GetTaxonsApiResponse } from '~/app/museu/herbario/types/taxonomy.types';
+import { api } from '~/server/api';
+import { type PaginationParams, type WithPagination } from '~/types/pagination';
 
 export type PaginatedGetTaxonsApiResponse =
   WithPagination<GetTaxonsApiResponse>;
@@ -15,7 +15,7 @@ export type GetTaxonsParams = PaginationParams & {
   hierarchyId?: string;
 };
 
-export const GET_TAXONS_QUERY_KEY = "useGetTaxons";
+export const GET_TAXONS_QUERY_KEY = 'useGetTaxons';
 
 async function fetchTaxons(params?: GetTaxonsParams) {
   const requestConfig: AxiosRequestConfig = {
@@ -30,7 +30,7 @@ async function fetchTaxons(params?: GetTaxonsParams) {
   };
 
   const { data } = await api.get<PaginatedGetTaxonsApiResponse>(
-    "dashboard/taxons",
+    'dashboard/taxons',
     requestConfig,
   );
 

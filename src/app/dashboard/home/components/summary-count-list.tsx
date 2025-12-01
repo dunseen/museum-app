@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { BookOpen, Layers, List, Users } from "lucide-react";
-import { type GetHomeSummaryApiResponse, useGetHomeSummary } from "../api";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { BookOpen, Layers, List, Users } from 'lucide-react';
+import { type GetHomeSummaryApiResponse, useGetHomeSummary } from '../api';
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 
 type SummaryCard = {
   title: string;
@@ -13,26 +13,26 @@ type SummaryCard = {
 
 const cards: SummaryCard[] = [
   {
-    title: "Espécies",
-    key: "specieCount",
+    title: 'Espécies',
+    key: 'specieCount',
     value: 0,
     icon: <BookOpen />,
   },
   {
-    title: "Famílias",
-    key: "familyCount",
+    title: 'Famílias',
+    key: 'familyCount',
     value: 0,
     icon: <Users />,
   },
   {
-    title: "Gêneros",
-    key: "genusCount",
+    title: 'Gêneros',
+    key: 'genusCount',
     value: 0,
     icon: <Layers />,
   },
   {
-    title: "Características",
-    key: "characteristicCount",
+    title: 'Características',
+    key: 'characteristicCount',
     value: 0,
     icon: <List />,
   },

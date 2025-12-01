@@ -1,17 +1,17 @@
 import {
   type UndefinedInitialDataOptions,
   useQuery,
-} from "@tanstack/react-query";
-import { api } from "~/server/api";
-import { type GetCitiesApiResponse } from "../../taxonomy/types";
+} from '@tanstack/react-query';
+import { api } from '~/server/api';
+import { type GetCitiesApiResponse } from '../../taxonomy/types';
 
 type GetCitiesParams = {
   stateId?: number;
 };
-export const GET_CITIES_QUERY_KEY = "useGetCities";
+export const GET_CITIES_QUERY_KEY = 'useGetCities';
 
 async function fetchCities(params?: GetCitiesParams) {
-  const { data } = await api.get<GetCitiesApiResponse[]>("cities", {
+  const { data } = await api.get<GetCitiesApiResponse[]>('cities', {
     params: {
       stateId: params?.stateId,
     },

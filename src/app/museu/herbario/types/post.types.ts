@@ -1,5 +1,5 @@
-import { type Nullable } from "~/types";
-import { type GetSpecieApiResponse } from "./specie.types";
+import { type Nullable } from '~/types';
+import { type GetSpecieApiResponse } from './specie.types';
 
 type SimpleUser = {
   id: string;
@@ -8,7 +8,7 @@ type SimpleUser = {
   email: string;
 };
 
-export type PostStatusFilter = "pending" | "approved" | "rejected" | "all";
+export type PostStatusFilter = 'pending' | 'approved' | 'rejected' | 'all';
 
 export interface GetSimplifiedPostDetailsApiResponse {
   id: string;

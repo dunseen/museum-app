@@ -1,13 +1,13 @@
-import * as React from "react";
+import * as React from 'react';
 
-import { DashboardSidebar } from "./components/sidebar/sidebar";
-import { type Metadata } from "next";
-import { DashboardProvider } from "./providers/dashboard-provider";
-import { auth } from "~/server/auth";
+import { DashboardSidebar } from './components/sidebar/sidebar';
+import { type Metadata } from 'next';
+import { DashboardProvider } from './providers/dashboard-provider';
+import { auth } from '~/server/auth';
 
 export const metadata: Metadata = {
-  title: "UFRA - SIGHFC",
-  description: "Acesse o sistema de gerenciamento do herbário virtual da UFRA.",
+  title: 'UFRA - SIGHFC',
+  description: 'Acesse o sistema de gerenciamento do herbário virtual da UFRA.',
 };
 
 export default async function DashboardLayout({

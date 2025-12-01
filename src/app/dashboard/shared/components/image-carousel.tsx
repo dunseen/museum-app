@@ -1,14 +1,14 @@
-import Image from "next/image";
-import * as React from "react";
+import Image from 'next/image';
+import * as React from 'react';
 
-import { Card, CardContent, CardFooter } from "~/components/ui/card";
+import { Card, CardContent, CardFooter } from '~/components/ui/card';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "~/components/ui/carousel";
+} from '~/components/ui/carousel';
 
 type ImageCarouselProps = {
   images: string[];

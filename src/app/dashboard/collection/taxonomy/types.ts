@@ -33,8 +33,8 @@ export type GetStatesApiResponse = {
 };
 
 export enum TaxonOperationStatus {
-  COMPLETED = "completed",
-  PENDING_APPROVAL = "pending_approval",
+  COMPLETED = 'completed',
+  PENDING_APPROVAL = 'pending_approval',
 }
 
 export interface TaxonOperationResult {
@@ -43,4 +43,3 @@ export interface TaxonOperationResult {
   changeRequestId: number | null;
   affectedSpeciesCount?: number;
 }
-

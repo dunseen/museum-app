@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "~/server/api";
-import { GET_CHANGE_REQUESTS_QUERY_KEY } from "./useGetChangeRequests";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '~/server/api';
+import { GET_CHANGE_REQUESTS_QUERY_KEY } from './useGetChangeRequests';
 
 type RejectPayload = {
   id: number;
@@ -26,4 +26,3 @@ export function useRejectChangeRequest() {
     },
   });
 }
-

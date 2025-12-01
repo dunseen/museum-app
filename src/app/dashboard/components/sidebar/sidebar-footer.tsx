@@ -1,8 +1,8 @@
-import { ChevronsUpDown, LogOut, Users } from "lucide-react";
-import { type Session } from "next-auth";
-import { signOut } from "next-auth/react";
-import Link from "next/link";
-import { Avatar, AvatarFallback } from "~/components/ui/avatar";
+import { ChevronsUpDown, LogOut, Users } from 'lucide-react';
+import { type Session } from 'next-auth';
+import { signOut } from 'next-auth/react';
+import Link from 'next/link';
+import { Avatar, AvatarFallback } from '~/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,31 +11,31 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
+} from '~/components/ui/dropdown-menu';
 import {
   SidebarFooter,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "~/components/ui/sidebar";
-import { AuthService } from "~/services/auth.service";
-import { parseRole } from "~/utils/role";
+} from '~/components/ui/sidebar';
+import { AuthService } from '~/services/auth.service';
+import { parseRole } from '~/utils/role';
 
 type DashboardSideBarFooterProps = {
-  user?: Session["user"];
+  user?: Session['user'];
 };
 export function DashboardSideBarFooter({ user }: DashboardSideBarFooterProps) {
   if (!user) return null;
 
   const { firstName, lastName } = user;
 
-  const name = firstName + " " + lastName;
+  const name = firstName + ' ' + lastName;
 
   const initials = firstName.charAt(0) + lastName.charAt?.(0);
 
   const handleLogout = async () => {
     await Promise.all([
-      signOut({ callbackUrl: "/login" }),
+      signOut({ callbackUrl: '/login' }),
       AuthService.logout(),
     ]);
   };

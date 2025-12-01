@@ -1,28 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useRef, useState } from "react";
-import Select, { type ActionMeta, type MultiValue } from "react-select";
+import { useMemo, useRef, useState } from 'react';
+import Select, { type ActionMeta, type MultiValue } from 'react-select';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "~/components/ui/accordion";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
+} from '~/components/ui/accordion';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
 import {
   SheetContent,
   SheetDescription,
   SheetFooter,
   SheetTitle,
-} from "~/components/ui/sheet";
-import { useIsMobile } from "~/hooks/use-mobile";
+} from '~/components/ui/sheet';
+import { useIsMobile } from '~/hooks/use-mobile';
 import {
   useGetCharacteristics,
   useGetCharacteristicTypes,
   useGetHierarchies,
-} from "../api";
-import { usePost } from "../context/post-context";
+} from '../api';
+import { usePost } from '../context/post-context';
 
 type FiltersContentProps = {
   onCloseFilters: (clearInnerFilters?: () => void) => void;
@@ -43,7 +43,7 @@ export function FiltersContent({ onCloseFilters }: FiltersContentProps) {
     SelectOption[]
   >([]);
   const selectedCharacteristicsRef = useRef<any>(null);
-  const [accordionValue, setAccordionValue] = useState<string>("");
+  const [accordionValue, setAccordionValue] = useState<string>('');
   const isMobile = useIsMobile();
 
   const { handleSearch, handleCharacteristicFilter, handleClearAllFilters } =
@@ -63,24 +63,24 @@ export function FiltersContent({ onCloseFilters }: FiltersContentProps) {
   const { data: hierarchies } = useGetHierarchies();
 
   const onAccordionChange = (value: string) => {
-    setAccordionValue((prev) => (prev === value ? "" : value));
+    setAccordionValue((prev) => (prev === value ? '' : value));
   };
 
   const handleSearchByTaxon = (id: number, field: string, value: string) => {
     switch (field) {
-      case "família":
+      case 'família':
         handleSearch({
           familyName: value,
           familyHierarchyId: value ? id : undefined,
         });
         break;
-      case "gênero":
+      case 'gênero':
         handleSearch({
           genusName: value,
           genusHierarchyId: value ? id : undefined,
         });
         break;
-      case "ordem":
+      case 'ordem':
         handleSearch({
           orderName: value,
           orderHierarchyId: value ? id : undefined,
@@ -94,7 +94,7 @@ export function FiltersContent({ onCloseFilters }: FiltersContentProps) {
   const handleClearFilters = () => {
     setSelectedCharacteristicType([]);
     handleClearAllFilters();
-    setAccordionValue("");
+    setAccordionValue('');
     onCloseFilters();
   };
 
@@ -132,7 +132,7 @@ export function FiltersContent({ onCloseFilters }: FiltersContentProps) {
     newValue: MultiValue<SelectOption>,
     actionMeta: ActionMeta<SelectOption>,
   ) => {
-    if (actionMeta.action === "clear") {
+    if (actionMeta.action === 'clear') {
       setSelectedCharacteristicType([]);
       handleCharacteristicFilter([]);
       selectedCharacteristicsRef.current?.clearValue();
@@ -146,7 +146,7 @@ export function FiltersContent({ onCloseFilters }: FiltersContentProps) {
     newValue: MultiValue<SelectOption>,
     actionMeta: ActionMeta<SelectOption>,
   ) => {
-    if (actionMeta.action === "clear") {
+    if (actionMeta.action === 'clear') {
       handleCharacteristicFilter([]);
       return;
     }
@@ -156,7 +156,7 @@ export function FiltersContent({ onCloseFilters }: FiltersContentProps) {
 
   return (
     <SheetContent
-      side={isMobile ? "bottom" : "right"}
+      side={isMobile ? 'bottom' : 'right'}
       className="h-full max-w-full md:max-w-sm"
     >
       <SheetTitle>Filtros</SheetTitle>
@@ -218,8 +218,8 @@ export function FiltersContent({ onCloseFilters }: FiltersContentProps) {
                   placeholder="Selecione o grupo"
                   menuPosition="fixed"
                   menuPlacement="bottom"
-                  noOptionsMessage={() => "Nenhum resultado encontrado"}
-                  loadingMessage={() => "Carregando..."}
+                  noOptionsMessage={() => 'Nenhum resultado encontrado'}
+                  loadingMessage={() => 'Carregando...'}
                   onChange={handleCharacteristicTypeInputChange}
                 />
               </li>

@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "~/server/api";
-import { GET_USERS_QUERY_KEY } from "./useGetUsers";
-import { type GetUserApiResponse } from "~/app/museu/herbario/types/users.types";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '~/server/api';
+import { GET_USERS_QUERY_KEY } from './useGetUsers';
+import { type GetUserApiResponse } from '~/app/museu/herbario/types/users.types';
 
 export type PutTaxonsPayload = {
   id: string;

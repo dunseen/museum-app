@@ -1,10 +1,10 @@
-import React from "react";
-import { useDisclosure } from "~/hooks/use-disclosure";
-import { AddSpecieDialog } from "./add-specie-dialog";
-import { Button } from "~/components/ui/button";
-import { PlusIcon } from "lucide-react";
-import { type Nullable } from "~/types";
-import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
+import React from 'react';
+import { useDisclosure } from '~/hooks/use-disclosure';
+import { AddSpecieDialog } from './add-specie-dialog';
+import { Button } from '~/components/ui/button';
+import { PlusIcon } from 'lucide-react';
+import { type Nullable } from '~/types';
+import { type GetSpecieApiResponse } from '~/app/museu/herbario/types/specie.types';
 
 type AddSpecieProps = {
   data?: Nullable<GetSpecieApiResponse>;
@@ -32,7 +32,7 @@ export const AddSpecie: React.FC<AddSpecieProps> = ({
       </Button>
 
       <AddSpecieDialog
-        dialogActionTitle={data ? "Editar" : "Adicionar"}
+        dialogActionTitle={data ? 'Editar' : 'Adicionar'}
         isOpen={addDialog.isOpen || !!data}
         onClose={onCloseAddDialog}
         data={data}

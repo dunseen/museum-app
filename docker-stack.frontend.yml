@@ -38,7 +38,7 @@ services:
           cpus: '0.25'
           memory: 256M
     healthcheck:
-      test: 
+      test:
         [
           'CMD',
           'wget',

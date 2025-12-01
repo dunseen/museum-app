@@ -1,20 +1,20 @@
 /* eslint-disable jsx-a11y/alt-text */
-"use client";
+'use client';
 
-import { type ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
+import { type ColumnDef } from '@tanstack/react-table';
+import { MoreHorizontal } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
-import { Button } from "~/components/ui/button";
+import { Button } from '~/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { type GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
-import { Can } from "../../context/ability-context";
+} from '~/components/ui/dropdown-menu';
+import { type GetTaxonsApiResponse } from '~/app/museu/herbario/types/taxonomy.types';
+import { Can } from '../../context/ability-context';
 
 export function useTaxonomyTable() {
   const [selectedTaxonomyId, setSelectedTaxonomyId] = useState<number | null>(
@@ -31,22 +31,22 @@ export function useTaxonomyTable() {
   const columns = useMemo<ColumnDef<GetTaxonsApiResponse>[]>(
     () => [
       {
-        header: "Hierarquia",
-        accessorKey: "hierarchy",
+        header: 'Hierarquia',
+        accessorKey: 'hierarchy',
         cell: ({ row }) => row.original.hierarchy.name,
       },
       {
-        header: "Nome",
-        accessorKey: "name",
+        header: 'Nome',
+        accessorKey: 'name',
       },
       {
-        header: "Dependente",
-        accessorKey: "parent",
-        cell: ({ row }) => row.original.parent?.name ?? "-",
+        header: 'Dependente',
+        accessorKey: 'parent',
+        cell: ({ row }) => row.original.parent?.name ?? '-',
       },
       {
-        id: "actions",
-        header: "Ações",
+        id: 'actions',
+        header: 'Ações',
         cell: ({ row }) => {
           return (
             <DropdownMenu>

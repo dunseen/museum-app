@@ -1,15 +1,15 @@
-import { RoleEnum } from "~/types";
+import { RoleEnum } from '~/types';
 
 export const parseRole = (role: RoleEnum) => {
   switch (role) {
     case RoleEnum.ADMIN:
-      return "Admin";
+      return 'Admin';
     case RoleEnum.EDITOR:
-      return "Editor";
+      return 'Editor';
     case RoleEnum.OPERATOR:
-      return "Operador";
+      return 'Operador';
     default:
-      return "Unknown";
+      return 'Unknown';
   }
 };
 

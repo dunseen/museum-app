@@ -1,11 +1,11 @@
 import {
   type UndefinedInitialDataOptions,
   useQuery,
-} from "@tanstack/react-query";
-import { type AxiosRequestConfig } from "axios";
-import { type GetCharacteristicApiResponse } from "~/app/museu/herbario/types/characteristic.types";
-import { api } from "~/server/api";
-import { type PaginationParams, type WithPagination } from "~/types/pagination";
+} from '@tanstack/react-query';
+import { type AxiosRequestConfig } from 'axios';
+import { type GetCharacteristicApiResponse } from '~/app/museu/herbario/types/characteristic.types';
+import { api } from '~/server/api';
+import { type PaginationParams, type WithPagination } from '~/types/pagination';
 
 export type PaginatedGetCharacteristicsApiResponse =
   WithPagination<GetCharacteristicApiResponse>;
@@ -14,7 +14,7 @@ export type GetCharacteristicsParams = PaginationParams & {
   name?: string;
 };
 
-export const GET_CHARACTERISTICS_QUERY_KEY = "useGetCharacteristics";
+export const GET_CHARACTERISTICS_QUERY_KEY = 'useGetCharacteristics';
 
 async function fetchCharacteristics(params?: GetCharacteristicsParams) {
   const requestConfig: AxiosRequestConfig = {
@@ -26,7 +26,7 @@ async function fetchCharacteristics(params?: GetCharacteristicsParams) {
   };
 
   const { data } = await api.get<PaginatedGetCharacteristicsApiResponse>(
-    "dashboard/characteristics",
+    'dashboard/characteristics',
     requestConfig,
   );
 

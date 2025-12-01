@@ -5,7 +5,7 @@ export type LastActivity = {
     name: string;
     email: string;
   };
-  action: "create" | "update" | "delete";
+  action: 'create' | 'update' | 'delete';
   status: string;
   reason?: string;
   resource: string;

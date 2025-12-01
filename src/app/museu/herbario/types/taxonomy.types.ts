@@ -1,6 +1,6 @@
-import { type Nullable } from "~/types";
-import { type GetCharacteristicApiResponse } from "./characteristic.types";
-import { type GetHierarchyApiResponse } from "./hierarchy";
+import { type Nullable } from '~/types';
+import { type GetCharacteristicApiResponse } from './characteristic.types';
+import { type GetHierarchyApiResponse } from './hierarchy';
 
 export interface GetTaxonApiResponse {
   id: number;

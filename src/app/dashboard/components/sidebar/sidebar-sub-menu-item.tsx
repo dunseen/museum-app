@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import Link from "next/link";
+import Link from 'next/link';
 import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "~/components/ui/sidebar";
-import { type SubNavItem } from "./sidebar-data";
+} from '~/components/ui/sidebar';
+import { type SubNavItem } from './sidebar-data';
 
 interface SidebarSubMenuItemProps {
   subItem: SubNavItem;
@@ -22,7 +22,7 @@ export function SidebarSubMenuItem({
     <SidebarMenuSubItem>
       <SidebarMenuSubButton
         asChild
-        className={isActive ? "bg-gray-100 font-semibold" : "hover:bg-gray-50"}
+        className={isActive ? 'bg-gray-100 font-semibold' : 'hover:bg-gray-50'}
       >
         <Link
           href={subItem.url}

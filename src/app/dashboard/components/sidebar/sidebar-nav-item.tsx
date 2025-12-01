@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { ChevronRight } from "lucide-react";
-import Link from "next/link";
+import { ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "~/components/ui/collapsible";
+} from '~/components/ui/collapsible';
 import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarMenuSub,
-} from "~/components/ui/sidebar";
-import { type NavItem } from "./sidebar-data";
-import { SidebarSubMenuItem } from "./sidebar-sub-menu-item";
+} from '~/components/ui/sidebar';
+import { type NavItem } from './sidebar-data';
+import { SidebarSubMenuItem } from './sidebar-sub-menu-item';
 
 interface SidebarNavItemProps {
   item: NavItem;
@@ -34,8 +34,8 @@ export function SidebarNavItem({
   const isItemOrSubActive = isActive || hasActiveSubItem;
 
   const buttonStyles = isItemOrSubActive
-    ? "bg-gray-100 font-semibold"
-    : "hover:bg-gray-50";
+    ? 'bg-gray-100 font-semibold'
+    : 'hover:bg-gray-50';
 
   if (hasSubItems) {
     return (

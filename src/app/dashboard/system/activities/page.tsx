@@ -1,18 +1,18 @@
-import { auth } from "~/server/auth";
-import System from "./components/system";
-import { defineAbilityFor } from "~/lib/casl";
-import { redirect } from "next/navigation";
-import getCachedQueryClient from "~/lib/react-query";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { getChangeRequestsConfig } from "../api";
+import { auth } from '~/server/auth';
+import System from './components/system';
+import { defineAbilityFor } from '~/lib/casl';
+import { redirect } from 'next/navigation';
+import getCachedQueryClient from '~/lib/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { getChangeRequestsConfig } from '../api';
 
 export default async function Page() {
   const session = await auth();
 
   const ability = defineAbilityFor(session?.user);
 
-  if (ability.cannot("manage", "System")) {
-    redirect("/dashboard");
+  if (ability.cannot('manage', 'System')) {
+    redirect('/dashboard');
   }
 
   const client = getCachedQueryClient();

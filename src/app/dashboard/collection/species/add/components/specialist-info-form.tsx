@@ -1,17 +1,17 @@
-import React from "react";
-import { Controller, type useForm } from "react-hook-form";
+import React from 'react';
+import { Controller, type useForm } from 'react-hook-form';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form";
-import { AsyncSelect } from "~/components/ui/async-select";
-import { DatePicker } from "~/components/ui/date-picker";
-import { type SpecieFormType } from "../add-specie-dialog";
-import { useGetSpecialists } from "../../api";
-import { useDebouncedInput } from "~/hooks/use-debounced-input";
+} from '~/components/ui/form';
+import { AsyncSelect } from '~/components/ui/async-select';
+import { DatePicker } from '~/components/ui/date-picker';
+import { type SpecieFormType } from '../add-specie-dialog';
+import { useGetSpecialists } from '../../api';
+import { useDebouncedInput } from '~/hooks/use-debounced-input';
 
 type SpecialistInfoFormProps = {
   form: ReturnType<typeof useForm<SpecieFormType>>;
@@ -29,14 +29,14 @@ export const SpecialistInfoForm: React.FC<SpecialistInfoFormProps> = ({
     limit: collectorInput.pageLimit,
     page: collectorInput.curentPage,
     name: collectorInput.debouncedInput,
-    type: "collector",
+    type: 'collector',
   });
 
   const determinatorsQuery = useGetSpecialists({
     limit: determinatorInput.pageLimit,
     page: determinatorInput.curentPage,
     name: determinatorInput.debouncedInput,
-    type: "determinator",
+    type: 'determinator',
   });
 
   const collectorOptions =

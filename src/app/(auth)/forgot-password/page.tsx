@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { Lock } from "lucide-react";
-import Link from "next/link";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useForgotPassword } from "./api/useForgotPassword";
-import { Button } from "~/components/ui/button";
+import { Lock } from 'lucide-react';
+import Link from 'next/link';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { useForgotPassword } from './api/useForgotPassword';
+import { Button } from '~/components/ui/button';
 import {
   Card,
   CardHeader,
@@ -16,16 +16,16 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
+} from '~/components/ui/card';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
 
 export default function Page() {
   const router = useRouter();
   const forgotPassword = useForgotPassword();
 
   const schema = z.object({
-    email: z.string().email("Email inválido"),
+    email: z.string().email('Email inválido'),
   });
 
   const { register, handleSubmit, formState } = useForm<z.infer<typeof schema>>(
@@ -37,9 +37,9 @@ export default function Page() {
   async function onSubmit(values: z.infer<typeof schema>) {
     try {
       await forgotPassword.mutateAsync({ email: values.email });
-      router.push("/forgot-password/confirmation");
+      router.push('/forgot-password/confirmation');
     } catch {
-      toast.error("Erro ao solicitar recuperação de senha");
+      toast.error('Erro ao solicitar recuperação de senha');
     }
   }
 
@@ -71,7 +71,7 @@ export default function Page() {
                 required
                 autoComplete="email"
                 className="border-green-200 focus:border-green-500 focus:ring-green-500"
-                {...register("email")}
+                {...register('email')}
               />
             </div>
           </CardContent>

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Pagination,
   PaginationContent,
@@ -7,7 +7,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "~/components/ui/pagination";
+} from '~/components/ui/pagination';
 
 interface TablePaginationProps {
   currentPage: number;

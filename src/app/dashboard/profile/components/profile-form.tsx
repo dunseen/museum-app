@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useSession } from "next-auth/react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "~/components/ui/button";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useSession } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '~/components/ui/button';
 import {
   Form,
   FormControl,
@@ -12,14 +12,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
-import { usePutUsers } from "../../users/api";
-import { toast } from "sonner";
+} from '~/components/ui/form';
+import { Input } from '~/components/ui/input';
+import { usePutUsers } from '../../users/api';
+import { toast } from 'sonner';
 
-const DEFAULT_FORM_REQUIRED_MESSAGE = "Campo obrigatório";
-const DEFAULT_FORM_INVALID_MESSAGE = "Campo inválido";
-const DEFAULT_FORM_MIN_LENGTH_MESSAGE = "Campo deve ter no mínimo 8 caracteres";
+const DEFAULT_FORM_REQUIRED_MESSAGE = 'Campo obrigatório';
+const DEFAULT_FORM_INVALID_MESSAGE = 'Campo inválido';
+const DEFAULT_FORM_MIN_LENGTH_MESSAGE = 'Campo deve ter no mínimo 8 caracteres';
 
 const schema = z
   .object({
@@ -55,8 +55,8 @@ const schema = z
       .optional(),
   })
   .refine((data) => data.password === data.passwordConfirmation, {
-    message: "As senhas não correspondem",
-    path: ["passwordConfirmation"],
+    message: 'As senhas não correspondem',
+    path: ['passwordConfirmation'],
   });
 
 type ProfileFormType = z.infer<typeof schema>;
@@ -70,43 +70,43 @@ type FormFieldsInfoType = {
 
 const formFields: FormFieldsInfoType[] = [
   {
-    name: "firstName",
-    label: "Nome",
-    placeholder: "Digite seu nome",
-    type: "text",
+    name: 'firstName',
+    label: 'Nome',
+    placeholder: 'Digite seu nome',
+    type: 'text',
   },
   {
-    name: "lastName",
-    label: "Sobrenome",
-    placeholder: "Digite seu sobrenome",
-    type: "text",
+    name: 'lastName',
+    label: 'Sobrenome',
+    placeholder: 'Digite seu sobrenome',
+    type: 'text',
   },
   {
-    name: "email",
-    label: "Email",
-    placeholder: "Digite seu email",
-    type: "email",
+    name: 'email',
+    label: 'Email',
+    placeholder: 'Digite seu email',
+    type: 'email',
   },
   {
-    name: "phone",
-    label: "Telefone",
-    placeholder: "Digite seu telefone",
-    type: "tel",
+    name: 'phone',
+    label: 'Telefone',
+    placeholder: 'Digite seu telefone',
+    type: 'tel',
   },
 ];
 
 const passwordFields: FormFieldsInfoType[] = [
   {
-    name: "password",
-    label: "Senha",
-    placeholder: "Digite sua senha",
-    type: "password",
+    name: 'password',
+    label: 'Senha',
+    placeholder: 'Digite sua senha',
+    type: 'password',
   },
   {
-    name: "passwordConfirmation",
-    label: "Confirmação de senha",
-    placeholder: "Digite sua senha novamente",
-    type: "password",
+    name: 'passwordConfirmation',
+    label: 'Confirmação de senha',
+    placeholder: 'Digite sua senha novamente',
+    type: 'password',
   },
 ];
 
@@ -127,7 +127,7 @@ export function ProfileForm() {
   function onSubmit(values: ProfileFormType) {
     putUsersMutation.mutate(
       {
-        id: session?.user.id ?? "",
+        id: session?.user.id ?? '',
         email: values.email,
         firstName: values.firstName,
         lastName: values.lastName,
@@ -136,13 +136,13 @@ export function ProfileForm() {
       },
       {
         onSuccess() {
-          toast.success("Atualização realizada com sucesso", {
+          toast.success('Atualização realizada com sucesso', {
             description:
-              "As informações serão atualizadas na próxima vez que você entrar",
+              'As informações serão atualizadas na próxima vez que você entrar',
           });
         },
         onError() {
-          toast.error("Erro ao atualizar usuário");
+          toast.error('Erro ao atualizar usuário');
         },
       },
     );

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
-import "leaflet/dist/leaflet.css";
-import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-import "leaflet-defaulticon-compatibility";
-import type { LatLngExpression } from "leaflet";
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
+import 'leaflet-defaulticon-compatibility';
+import type { LatLngExpression } from 'leaflet';
 
 type LocationMapProps = {
   lat: number;
@@ -21,21 +21,21 @@ export function LocationMap({
   lng,
   title,
   zoom = 15,
-  height = "400px",
-  className = "",
+  height = '400px',
+  className = '',
 }: LocationMapProps) {
   const position: LatLngExpression = [lat, lng];
 
   return (
-    <div style={{ height, width: "100%" }} className={className}>
+    <div style={{ height, width: '100%' }} className={className}>
       <MapContainer
         center={position}
         zoom={zoom}
         className="z-40"
         style={{
-          width: "100%",
-          height: "100%",
-          borderRadius: "0.5rem",
+          width: '100%',
+          height: '100%',
+          borderRadius: '0.5rem',
         }}
       >
         <TileLayer

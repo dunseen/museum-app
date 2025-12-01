@@ -1,11 +1,11 @@
 import {
   type DefinedInitialDataInfiniteOptions,
   useInfiniteQuery,
-} from "@tanstack/react-query";
-import { type AxiosRequestConfig } from "axios";
-import { publicApi } from "~/server/api";
-import { type PaginationParams, type WithPagination } from "~/types/pagination";
-import { type GetTaxonApiResponse } from "../types/taxonomy.types";
+} from '@tanstack/react-query';
+import { type AxiosRequestConfig } from 'axios';
+import { publicApi } from '~/server/api';
+import { type PaginationParams, type WithPagination } from '~/types/pagination';
+import { type GetTaxonApiResponse } from '../types/taxonomy.types';
 
 export type Post = {
   id: string;
@@ -38,7 +38,7 @@ export type PostSearchParams = {
 
 export type GetPostParams = PaginationParams & PostSearchParams;
 
-export const GET_POST_QUERY_KEY = "posts";
+export const GET_POST_QUERY_KEY = 'posts';
 
 function sanitizeParams(value: string | number | undefined) {
   if (!value) return undefined;
@@ -58,7 +58,7 @@ export async function fetchPosts(
   };
 
   const { data } = await publicApi.get<PaginatedGetPostsApiResponse>(
-    "posts/species",
+    'posts/species',
     requestConfig,
   );
 
@@ -84,7 +84,7 @@ export const getPostQueryConfig = (
           limit: params?.limit ?? 100,
           name: sanitizeParams(params?.name),
           characteristicIds: params?.characteristics?.length
-            ? params?.characteristics.join(",")
+            ? params?.characteristics.join(',')
             : undefined,
           familyHierarchyId: sanitizeParams(params?.familyHierarchyId),
           familyName: sanitizeParams(params?.familyName),

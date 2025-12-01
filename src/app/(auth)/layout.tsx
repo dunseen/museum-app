@@ -1,6 +1,6 @@
-import type React from "react";
-import Header from "../museu/herbario/components/header";
-import Footer from "../museu/herbario/components/footer";
+import type React from 'react';
+import Header from '../museu/herbario/components/header';
+import Footer from '../museu/herbario/components/footer';
 
 export default function AuthLayout({
   children,

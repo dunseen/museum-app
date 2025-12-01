@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "~/server/api";
-import { GET_USERS_QUERY_KEY } from "./useGetUsers";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '~/server/api';
+import { GET_USERS_QUERY_KEY } from './useGetUsers';
 
 export type DeleteUsersPayload = {
   id: string;

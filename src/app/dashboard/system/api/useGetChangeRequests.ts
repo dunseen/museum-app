@@ -1,18 +1,18 @@
 import {
   type UndefinedInitialDataOptions,
   useQuery,
-} from "@tanstack/react-query";
-import { type AxiosRequestConfig } from "axios";
-import { api } from "~/server/api";
-import { type PaginationParams, type WithPagination } from "~/types/pagination";
+} from '@tanstack/react-query';
+import { type AxiosRequestConfig } from 'axios';
+import { api } from '~/server/api';
+import { type PaginationParams, type WithPagination } from '~/types/pagination';
 
 export type ChangeRequestStatus =
-  | "pending"
-  | "approved"
-  | "rejected"
-  | "withdrawn";
+  | 'pending'
+  | 'approved'
+  | 'rejected'
+  | 'withdrawn';
 
-export type ChangeRequestAction = "create" | "update" | "delete";
+export type ChangeRequestAction = 'create' | 'update' | 'delete';
 
 export type UserAuthor = {
   id: string;
@@ -50,7 +50,7 @@ export type GetDraftsParams = PaginationParams & {
   search?: string;
 };
 
-export const GET_CHANGE_REQUESTS_QUERY_KEY = "useGetChangeRequests";
+export const GET_CHANGE_REQUESTS_QUERY_KEY = 'useGetChangeRequests';
 
 async function fetchChangeRequests(params?: GetDraftsParams) {
   const requestConfig: AxiosRequestConfig = {
@@ -65,7 +65,7 @@ async function fetchChangeRequests(params?: GetDraftsParams) {
   };
 
   const { data } = await api.get<PaginatedDraftsApiResponse>(
-    "dashboard/change-requests",
+    'dashboard/change-requests',
     requestConfig,
   );
 

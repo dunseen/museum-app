@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, Home, Info, Lock } from "lucide-react";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Menu, Home, Info, Lock } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -10,24 +10,24 @@ import {
   SheetTitle,
   SheetTrigger,
   SheetClose,
-} from "~/components/ui/sheet";
+} from '~/components/ui/sheet';
 
 const links = [
   {
-    href: "/museu/herbario",
-    label: "Início",
+    href: '/museu/herbario',
+    label: 'Início',
     icon: Home,
     active: false,
   },
   {
-    href: "/museu/herbario/sobre",
-    label: "Sobre",
+    href: '/museu/herbario/sobre',
+    label: 'Sobre',
     icon: Info,
     active: false,
   },
   {
-    href: "/login",
-    label: "Gerenciar",
+    href: '/login',
+    label: 'Gerenciar',
     icon: Lock,
     active: false,
   },
@@ -48,8 +48,8 @@ export function NavList() {
               <Link
                 className={`group relative inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
                   isActive
-                    ? "bg-green-600 text-white shadow-sm"
-                    : "text-gray-700 hover:bg-green-50 hover:text-green-700"
+                    ? 'bg-green-600 text-white shadow-sm'
+                    : 'text-gray-700 hover:bg-green-50 hover:text-green-700'
                 }`}
                 href={link.href}
               >
@@ -91,8 +91,8 @@ export function NavList() {
                       <Link
                         className={`flex items-center gap-3 rounded-lg px-4 py-3 text-lg transition-all duration-200 ${
                           isActive
-                            ? "bg-green-600 font-bold text-white shadow-md"
-                            : "text-gray-700 hover:bg-green-100 hover:text-green-700"
+                            ? 'bg-green-600 font-bold text-white shadow-md'
+                            : 'text-gray-700 hover:bg-green-100 hover:text-green-700'
                         }`}
                         href={link.href}
                       >

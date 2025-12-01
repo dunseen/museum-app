@@ -1,6 +1,6 @@
-import * as React from "react";
-import { createContextualCan, useAbility as useCaslAbility } from "@casl/react";
-import { type AppAbility } from "~/lib/casl";
+import * as React from 'react';
+import { createContextualCan, useAbility as useCaslAbility } from '@casl/react';
+import { type AppAbility } from '~/lib/casl';
 
 export const AbilityContext = React.createContext({} as AppAbility);
 

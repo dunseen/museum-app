@@ -1,7 +1,7 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { Button } from "~/components/ui/button";
+import { zodResolver } from '@hookform/resolvers/zod';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { Button } from '~/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "~/components/ui/dialog";
+} from '~/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -17,22 +17,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
+} from '~/components/ui/form';
+import { Input } from '~/components/ui/input';
 
-import { z } from "zod";
-import { type Nullable } from "~/types";
-import { type GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
-import { useDebouncedInput } from "~/hooks/use-debounced-input";
-import { type PostTaxonsPayload, usePostTaxons, usePutTaxons } from "../api";
-import { toast } from "sonner";
-import { HierarchyFormField } from "./components/hierarchy-form-field";
-import { TaxonomyFormField } from "./components/taxonomy-form-field";
-import { CharacteristicFormField } from "./components/characteristic-form-field";
-import {
-  TaxonOperationStatus,
-  type TaxonOperationResult,
-} from "../types";
+import { z } from 'zod';
+import { type Nullable } from '~/types';
+import { type GetTaxonsApiResponse } from '~/app/museu/herbario/types/taxonomy.types';
+import { useDebouncedInput } from '~/hooks/use-debounced-input';
+import { type PostTaxonsPayload, usePostTaxons, usePutTaxons } from '../api';
+import { toast } from 'sonner';
+import { HierarchyFormField } from './components/hierarchy-form-field';
+import { TaxonomyFormField } from './components/taxonomy-form-field';
+import { CharacteristicFormField } from './components/characteristic-form-field';
+import { TaxonOperationStatus, type TaxonOperationResult } from '../types';
 
 type AddTaxonomyDialogProps = {
   isOpen: boolean;
@@ -42,12 +39,12 @@ type AddTaxonomyDialogProps = {
 };
 
 const formTaxonomySchema = z.object({
-  name: z.string({ required_error: "Campo obrigatório" }),
+  name: z.string({ required_error: 'Campo obrigatório' }),
   hierarchy: z.object(
     { value: z.string(), label: z.string(), __isNew__: z.boolean().optional() },
     {
-      required_error: "Campo obrigatório",
-      invalid_type_error: "Campo obrigatório",
+      required_error: 'Campo obrigatório',
+      invalid_type_error: 'Campo obrigatório',
     },
   ),
   parent: z
@@ -116,17 +113,16 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
 
     if (data) {
       try {
-        const result: TaxonOperationResult =
-          await putTaxonomy.mutateAsync({
-            id: data.id,
-            ...payload,
-          });
+        const result: TaxonOperationResult = await putTaxonomy.mutateAsync({
+          id: data.id,
+          ...payload,
+        });
 
         if (result.status === TaxonOperationStatus.COMPLETED) {
-          toast.success("Taxonomia atualizada com sucesso");
+          toast.success('Taxonomia atualizada com sucesso');
         } else {
           const count = result.affectedSpeciesCount ?? 0;
-          const speciesText = count === 1 ? "espécie" : "espécies";
+          const speciesText = count === 1 ? 'espécie' : 'espécies';
           toast.info(
             `Solicitação enviada para aprovação. Esta taxonomia está sendo usada por ${count} ${speciesText}.`,
           );
@@ -135,7 +131,7 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
         onCloseAddDialog();
       } catch (error) {
         console.error(error);
-        toast.error("Erro ao atualizar taxonomia");
+        toast.error('Erro ao atualizar taxonomia');
       }
       return;
     }
@@ -143,34 +139,34 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
     postTaxonomy.mutate(payload, {
       onSuccess: () => {
         onCloseAddDialog();
-        toast.success("Taxonomia criada com sucesso");
+        toast.success('Taxonomia criada com sucesso');
       },
       onError: () => {
-        toast.error("Erro ao criar taxonomia");
+        toast.error('Erro ao criar taxonomia');
       },
     });
   }
 
   function onCloseAddDialog() {
-    form.resetField("name");
-    form.resetField("hierarchy");
-    form.resetField("characteristics");
-    form.resetField("parent");
+    form.resetField('name');
+    form.resetField('hierarchy');
+    form.resetField('characteristics');
+    form.resetField('parent');
 
     onClose();
   }
 
   useEffect(() => {
     if (data) {
-      form.setValue("name", data.name);
-      form.setValue("hierarchy", {
+      form.setValue('name', data.name);
+      form.setValue('hierarchy', {
         value: String(data.hierarchy.id),
         label: data.hierarchy.name,
       });
 
       if (data?.characteristics?.length) {
         form.setValue(
-          "characteristics",
+          'characteristics',
           data.characteristics.map((c) => ({
             label: c.name,
             value: String(c.id),
@@ -179,7 +175,7 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
       }
 
       if (data.parent) {
-        form.setValue("parent", {
+        form.setValue('parent', {
           value: String(data.parent.id),
           label: data.parent.name,
         });
@@ -267,7 +263,7 @@ export const AddTaxonomyDialog: React.FC<AddTaxonomyDialogProps> = ({
 
             <DialogFooter className="pt-8">
               <Button
-                variant={"secondary"}
+                variant={'secondary'}
                 type="button"
                 onClick={onCloseAddDialog}
                 disabled={postTaxonomy.isPending || putTaxonomy.isPending}

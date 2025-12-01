@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
-import React from "react";
+import dynamic from 'next/dynamic';
+import React from 'react';
 
 const HerbariumMap = dynamic(
-  () => import("./map").then((mod) => mod.HerbariumMap),
+  () => import('./map').then((mod) => mod.HerbariumMap),
   { ssr: false, loading: () => <p>Carregando mapa...</p> },
 );
 

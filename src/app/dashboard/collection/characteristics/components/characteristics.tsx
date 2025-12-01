@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { useCharacteristicTable } from "../use-characteristic-table";
-import { DataTable } from "../../../shared/components/data-table";
+import { useCharacteristicTable } from '../use-characteristic-table';
+import { DataTable } from '../../../shared/components/data-table';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "~/components/ui/dialog";
-import { ImageCarousel } from "../../../shared/components/image-carousel";
-import { ConfirmationAlert } from "../../../shared/components/confirmation-alert";
-import { useState } from "react";
-import { Input } from "~/components/ui/input";
-import { AddCharacteristic } from "../add/add-characteristic";
-import { useDeleteCharacteristic, useGetCharacteristics } from "../api";
-import { TablePagination } from "~/app/dashboard/shared/components/table-pagination";
-import { useDebouncedInput } from "~/hooks/use-debounced-input";
-import { toast } from "sonner";
-import { OperationStatus } from "../types";
+} from '~/components/ui/dialog';
+import { ImageCarousel } from '../../../shared/components/image-carousel';
+import { ConfirmationAlert } from '../../../shared/components/confirmation-alert';
+import { useState } from 'react';
+import { Input } from '~/components/ui/input';
+import { AddCharacteristic } from '../add/add-characteristic';
+import { useDeleteCharacteristic, useGetCharacteristics } from '../api';
+import { TablePagination } from '~/app/dashboard/shared/components/table-pagination';
+import { useDebouncedInput } from '~/hooks/use-debounced-input';
+import { toast } from 'sonner';
+import { OperationStatus } from '../types';
 
 export default function Characteristics() {
   const [curentPage, setCurrentPage] = useState(1);
@@ -43,10 +43,10 @@ export default function Characteristics() {
       {
         onSuccess(data) {
           if (data.status === OperationStatus.COMPLETED) {
-            toast.success("Característica deletada com sucesso");
+            toast.success('Característica deletada com sucesso');
           } else {
             const count = data.affectedSpeciesCount ?? 0;
-            const speciesText = count === 1 ? "espécie" : "espécies";
+            const speciesText = count === 1 ? 'espécie' : 'espécies';
             toast.info(
               `Solicitação enviada para aprovação. Esta característica está sendo usada por ${count} ${speciesText}.`,
             );
@@ -54,7 +54,7 @@ export default function Characteristics() {
           resetSelectedCharacteristicId();
         },
         onError() {
-          toast.error("Erro ao processar solicitação de exclusão");
+          toast.error('Erro ao processar solicitação de exclusão');
         },
       },
     );
@@ -76,7 +76,7 @@ export default function Characteristics() {
             <Input
               value={inputValue}
               onChange={(e) => onInputChange(e.target.value)}
-              placeholder={"Busca por nome, tipo ou descrição"}
+              placeholder={'Busca por nome, tipo ou descrição'}
             />
           </div>
           <AddCharacteristic

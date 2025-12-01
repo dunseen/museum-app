@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "~/server/api";
-import { GET_TAXONS_QUERY_KEY } from "./useGetTaxons";
-import { type TaxonOperationResult } from "../types";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '~/server/api';
+import { GET_TAXONS_QUERY_KEY } from './useGetTaxons';
+import { type TaxonOperationResult } from '../types';
 
 export type PutTaxonsPayload = {
   id: number;

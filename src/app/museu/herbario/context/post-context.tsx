@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, {
   createContext,
@@ -6,9 +6,9 @@ import React, {
   useMemo,
   type ReactNode,
   useCallback,
-} from "react";
-import { useDebounce } from "react-use";
-import { type PostSearchParams } from "../api";
+} from 'react';
+import { useDebounce } from 'react-use';
+import { type PostSearchParams } from '../api';
 
 interface PostContextProps {
   search: PostSearchParams;
@@ -87,7 +87,7 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
 export function usePost() {
   const context = React.useContext(PostContext);
   if (!context) {
-    throw new Error("usePost must be used within a PlantProvider");
+    throw new Error('usePost must be used within a PlantProvider');
   }
   return context;
 }

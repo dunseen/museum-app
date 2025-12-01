@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { BookOpen } from "lucide-react";
-import Link from "next/link";
-import type React from "react";
-import { Button } from "~/components/ui/button";
+import { BookOpen } from 'lucide-react';
+import Link from 'next/link';
+import type React from 'react';
+import { Button } from '~/components/ui/button';
 import {
   Card,
   CardHeader,
@@ -11,12 +11,12 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import { signIn } from "next-auth/react";
-import { type SubmitHandler, useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+} from '~/components/ui/card';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
+import { signIn } from 'next-auth/react';
+import { type SubmitHandler, useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 
 type LoginData = {
   email: string;
@@ -28,26 +28,26 @@ export function LoginForm() {
     useForm<Readonly<LoginData>>();
 
   const onSubmit: SubmitHandler<LoginData> = async (data) => {
-    const result = await signIn("credentials", {
+    const result = await signIn('credentials', {
       email: data.email,
       password: data.password,
       redirect: false,
     });
 
     if (result?.status && result?.status === 401) {
-      setError("password", { message: "Credenciais inválidas." });
+      setError('password', { message: 'Credenciais inválidas.' });
       return;
     }
 
     if (result?.error) {
-      setError("password", {
-        message: "Erro ao acessar o sistema. Tente novamente.",
+      setError('password', {
+        message: 'Erro ao acessar o sistema. Tente novamente.',
       });
 
       return;
     }
 
-    router.push("/dashboard");
+    router.push('/dashboard');
   };
 
   return (
@@ -75,7 +75,7 @@ export function LoginForm() {
                 autoComplete="email"
                 required
                 className="border-green-200 focus:border-green-500 focus:ring-green-500"
-                {...register("email")}
+                {...register('email')}
               />
             </div>
             <div className="grid gap-2">
@@ -89,7 +89,7 @@ export function LoginForm() {
                 placeholder="Digite sua senha"
                 autoComplete="current-password"
                 className="border-green-200 focus:border-green-500 focus:ring-green-500"
-                {...register("password")}
+                {...register('password')}
               />
               {formState.errors.password && (
                 <p className="text-sm text-red-600">

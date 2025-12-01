@@ -1,12 +1,12 @@
-import { CheckCircle, Clock, XCircle } from "lucide-react";
-import React from "react";
-import { Badge } from "~/components/ui/badge";
+import { CheckCircle, Clock, XCircle } from 'lucide-react';
+import React from 'react';
+import { Badge } from '~/components/ui/badge';
 
 export type LastPostsSimplified = {
   id: string;
   author: string;
   status: string;
-  action: "create" | "update" | "delete";
+  action: 'create' | 'update' | 'delete';
   resource: string;
   date: Date;
 };
@@ -20,25 +20,25 @@ export const RecentActivities: React.FC<Readonly<RecentActivitiesProps>> = ({
   const config = {
     pending: {
       icon: <Clock color="orange" />,
-      color: "border-orange-300",
-      label: "Pendente",
+      color: 'border-orange-300',
+      label: 'Pendente',
     },
     approved: {
       icon: <CheckCircle color="green" />,
-      color: "border-green-500",
-      label: "Aprovado",
+      color: 'border-green-500',
+      label: 'Aprovado',
     },
     rejected: {
       icon: <XCircle color="red" />,
-      color: "border-red-500",
-      label: "Rejeitado",
+      color: 'border-red-500',
+      label: 'Rejeitado',
     },
   } as const;
 
   const actionLabels = {
-    create: "Criar",
-    update: "Atualizar",
-    delete: "Deletar",
+    create: 'Criar',
+    update: 'Atualizar',
+    delete: 'Deletar',
   } as const;
 
   return (
@@ -52,8 +52,8 @@ export const RecentActivities: React.FC<Readonly<RecentActivitiesProps>> = ({
           <div className="ml-4 space-y-1">
             <p className="text-sm font-medium leading-none">{act.author}</p>
             <div className="flex gap-2">
-              <Badge variant={"outline"}>{actionLabels[act.action]}</Badge>
-              <Badge variant={"outline"}>
+              <Badge variant={'outline'}>{actionLabels[act.action]}</Badge>
+              <Badge variant={'outline'}>
                 {config[act.status as keyof typeof config].label}
               </Badge>
             </div>

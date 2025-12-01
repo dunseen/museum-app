@@ -1,14 +1,14 @@
 import {
   type UndefinedInitialDataOptions,
   useQuery,
-} from "@tanstack/react-query";
-import { api } from "~/server/api";
-import { type GetStatesApiResponse } from "../../taxonomy/types";
+} from '@tanstack/react-query';
+import { api } from '~/server/api';
+import { type GetStatesApiResponse } from '../../taxonomy/types';
 
-export const GET_STATES_QUERY_KEY = "useGetStates";
+export const GET_STATES_QUERY_KEY = 'useGetStates';
 
 async function fetchStates() {
-  const { data } = await api.get<GetStatesApiResponse[]>("states");
+  const { data } = await api.get<GetStatesApiResponse[]>('states');
 
   return data;
 }

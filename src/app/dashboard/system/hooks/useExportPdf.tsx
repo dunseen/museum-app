@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { PdfExport } from "../activities/components/pdf-export";
-import { createRoot } from "react-dom/client";
+import { PdfExport } from '../activities/components/pdf-export';
+import { createRoot } from 'react-dom/client';
 
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-import QRCode from "qrcode";
-import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
-import { useCallback } from "react";
-import { toast } from "sonner";
-import { useDisclosure } from "~/hooks/use-disclosure";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import QRCode from 'qrcode';
+import { type GetSpecieApiResponse } from '~/app/museu/herbario/types/specie.types';
+import { useCallback } from 'react';
+import { toast } from 'sonner';
+import { useDisclosure } from '~/hooks/use-disclosure';
 
 export type GeneratePdfProps = {
   specie: GetSpecieApiResponse;
@@ -26,17 +26,17 @@ export function useGeneratePdf() {
 
   const generatePDF = useCallback(async (data: GeneratePdfProps) => {
     try {
-      toast.info("Gerando ficha de identificação...");
+      toast.info('Gerando ficha de identificação...');
       const specieUrl = buildSpecieUrl(data.specie.scientificName);
 
       const qrCodeUrl = await QRCode.toDataURL(specieUrl);
 
-      const wrapper = document.createElement("div");
-      wrapper.style.position = "absolute";
-      wrapper.style.left = "-9999px";
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'absolute';
+      wrapper.style.left = '-9999px';
       document.body.appendChild(wrapper);
 
-      const container = document.createElement("div");
+      const container = document.createElement('div');
       wrapper.appendChild(container);
 
       const root = createRoot(container);
@@ -47,33 +47,33 @@ export function useGeneratePdf() {
       await new Promise((res) => setTimeout(res, 200));
 
       const canvas = await html2canvas(container);
-      const imgData = canvas.toDataURL("image/png");
+      const imgData = canvas.toDataURL('image/png');
 
       const pdf = new jsPDF({
         compress: true,
-        unit: "mm",
+        unit: 'mm',
         format: [148, 105],
       });
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(
         `ficha-${data.specie.scientificName}-${new Intl.DateTimeFormat(
-          "pt-BR",
+          'pt-BR',
           {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
           },
         ).format(new Date())}.pdf`,
       );
 
       document.body.removeChild(wrapper);
-      toast.success("Ficha de identificação gerada com sucesso!");
+      toast.success('Ficha de identificação gerada com sucesso!');
     } catch (error) {
       console.error(error);
-      toast.error("Erro ao gerar ficha de identificação");
+      toast.error('Erro ao gerar ficha de identificação');
     }
   }, []);
 

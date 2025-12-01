@@ -1,11 +1,11 @@
 import {
   type UndefinedInitialDataOptions,
   useQuery,
-} from "@tanstack/react-query";
-import { type AxiosRequestConfig } from "axios";
-import { type GetUserApiResponse } from "~/app/museu/herbario/types/users.types";
-import { api } from "~/server/api";
-import { type PaginationParams, type WithPagination } from "~/types/pagination";
+} from '@tanstack/react-query';
+import { type AxiosRequestConfig } from 'axios';
+import { type GetUserApiResponse } from '~/app/museu/herbario/types/users.types';
+import { api } from '~/server/api';
+import { type PaginationParams, type WithPagination } from '~/types/pagination';
 
 export type PaginatedGetUsersApiResponse = WithPagination<GetUserApiResponse>;
 
@@ -13,7 +13,7 @@ export type GetUsersParams = PaginationParams & {
   name?: string;
 };
 
-export const GET_USERS_QUERY_KEY = "useGetUsers";
+export const GET_USERS_QUERY_KEY = 'useGetUsers';
 
 async function fetchUsers(params?: GetUsersParams) {
   const requestConfig: AxiosRequestConfig = {
@@ -28,7 +28,7 @@ async function fetchUsers(params?: GetUsersParams) {
   };
 
   const { data } = await api.get<PaginatedGetUsersApiResponse>(
-    "dashboard/users",
+    'dashboard/users',
     requestConfig,
   );
 

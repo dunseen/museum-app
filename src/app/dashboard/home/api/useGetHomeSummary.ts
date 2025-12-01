@@ -1,10 +1,10 @@
 import {
   type UndefinedInitialDataOptions,
   useQuery,
-} from "@tanstack/react-query";
-import { api } from "~/server/api";
+} from '@tanstack/react-query';
+import { api } from '~/server/api';
 
-export const GET_HOME_SUMMARY_KEY = "useGetHomeSummary";
+export const GET_HOME_SUMMARY_KEY = 'useGetHomeSummary';
 
 export interface GetHomeSummaryApiResponse {
   characteristicCount: number;
@@ -15,7 +15,7 @@ export interface GetHomeSummaryApiResponse {
 
 export async function fetchSummary() {
   const { data } = await api.get<GetHomeSummaryApiResponse>(
-    "/dashboard/summary/counts",
+    '/dashboard/summary/counts',
   );
 
   return data;

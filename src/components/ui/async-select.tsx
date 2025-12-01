@@ -4,10 +4,10 @@ import {
   type Control,
   type FieldValues,
   type Path,
-} from "react-hook-form";
-import { type GroupBase } from "react-select";
-import CreatableSelect from "react-select/creatable";
-import Select from "react-select";
+} from 'react-hook-form';
+import { type GroupBase } from 'react-select';
+import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 
 interface OptionType {
   label: string;
@@ -31,7 +31,7 @@ export const AsyncSelect = <T extends FieldValues>({
   name,
   control,
   options,
-  placeholder = "Pesquisar...",
+  placeholder = 'Pesquisar...',
   isMulti = false,
   isLoading,
   isDisabled,
@@ -58,8 +58,8 @@ export const AsyncSelect = <T extends FieldValues>({
         isMulti={isMulti}
         placeholder={placeholder}
         onInputChange={onInputChange}
-        noOptionsMessage={() => "Nenhum resultado encontrado"}
-        loadingMessage={() => "Carregando..."}
+        noOptionsMessage={() => 'Nenhum resultado encontrado'}
+        loadingMessage={() => 'Carregando...'}
         getOptionValue={(option) => option.value as Path<T>}
         isLoading={isLoading}
       />
@@ -81,8 +81,8 @@ export const AsyncSelect = <T extends FieldValues>({
       formatCreateLabel={(input) => `Criar ${input}`}
       placeholder={placeholder}
       onInputChange={onInputChange}
-      noOptionsMessage={() => "Nenhum resultado encontrado"}
-      loadingMessage={() => "Carregando..."}
+      noOptionsMessage={() => 'Nenhum resultado encontrado'}
+      loadingMessage={() => 'Carregando...'}
       getOptionValue={(option) => option.value as Path<T>}
       isLoading={isLoading}
     />

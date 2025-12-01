@@ -1,15 +1,15 @@
-import React from "react";
-import { type useForm } from "react-hook-form";
+import React from 'react';
+import { type useForm } from 'react-hook-form';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
-import { Textarea } from "~/components/ui/textarea";
-import { type SpecieFormType } from "../add-specie-dialog";
+} from '~/components/ui/form';
+import { Input } from '~/components/ui/input';
+import { Textarea } from '~/components/ui/textarea';
+import { type SpecieFormType } from '../add-specie-dialog';
 
 type GeneralInfoFormProps = {
   form: ReturnType<typeof useForm<SpecieFormType>>;

@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { DataTable } from "../../../shared/components/data-table";
-import { useTaxonomyTable } from "../use-taxonomy-table";
-import { Input } from "~/components/ui/input";
-import { useState } from "react";
-import { ConfirmationAlert } from "../../../shared/components/confirmation-alert";
-import { AddTaxonomy } from "../add/add-taxonomy";
-import { useDeleteTaxons, useGetTaxons } from "../api";
-import { TablePagination } from "~/app/dashboard/shared/components/table-pagination";
-import { useDebouncedInput } from "~/hooks/use-debounced-input";
-import { toast } from "sonner";
-import { TaxonOperationStatus } from "../types";
+import { DataTable } from '../../../shared/components/data-table';
+import { useTaxonomyTable } from '../use-taxonomy-table';
+import { Input } from '~/components/ui/input';
+import { useState } from 'react';
+import { ConfirmationAlert } from '../../../shared/components/confirmation-alert';
+import { AddTaxonomy } from '../add/add-taxonomy';
+import { useDeleteTaxons, useGetTaxons } from '../api';
+import { TablePagination } from '~/app/dashboard/shared/components/table-pagination';
+import { useDebouncedInput } from '~/hooks/use-debounced-input';
+import { toast } from 'sonner';
+import { TaxonOperationStatus } from '../types';
 
 export default function Taxons() {
   const [curentPage, setCurrentPage] = useState(1);
@@ -34,10 +34,10 @@ export default function Taxons() {
       {
         onSuccess(data) {
           if (data.status === TaxonOperationStatus.COMPLETED) {
-            toast.success("Taxonomia deletada com sucesso");
+            toast.success('Taxonomia deletada com sucesso');
           } else {
             const count = data.affectedSpeciesCount ?? 0;
-            const speciesText = count === 1 ? "espécie" : "espécies";
+            const speciesText = count === 1 ? 'espécie' : 'espécies';
             toast.info(
               `Solicitação enviada para aprovação. Esta taxonomia está sendo usada por ${count} ${speciesText}.`,
             );
@@ -45,7 +45,7 @@ export default function Taxons() {
           resetSelectedTaxonomyId();
         },
         onError() {
-          toast.error("Erro ao deletar taxonomia");
+          toast.error('Erro ao deletar taxonomia');
         },
       },
     );
@@ -67,7 +67,7 @@ export default function Taxons() {
             <Input
               value={inputValue}
               onChange={(e) => onInputChange(e.target.value)}
-              placeholder={"Buscar por nome"}
+              placeholder={'Buscar por nome'}
             />
           </div>
           <AddTaxonomy

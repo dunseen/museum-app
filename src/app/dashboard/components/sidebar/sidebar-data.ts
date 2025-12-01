@@ -1,60 +1,60 @@
-import { BookOpen, FileText, Home, Users } from "lucide-react";
-import { Action } from "~/lib/casl";
+import { BookOpen, FileText, Home, Users } from 'lucide-react';
+import { Action } from '~/lib/casl';
 
 export const sidebarData = {
   navMain: [
     {
-      defaultUrl: "/dashboard",
-      title: "Início",
+      defaultUrl: '/dashboard',
+      title: 'Início',
       icon: Home,
-      entity: "Home",
+      entity: 'Home',
       permissions: [Action.View],
       items: [],
     },
     {
-      title: "Acervo",
+      title: 'Acervo',
       icon: BookOpen,
-      defaultUrl: "#",
-      entity: "Collection",
+      defaultUrl: '#',
+      entity: 'Collection',
       permissions: [Action.View],
       items: [
         {
-          title: "Parâmetros",
-          url: "/dashboard/collection/characteristics",
-          description: "Gerencie os parâmetros das espécies",
+          title: 'Parâmetros',
+          url: '/dashboard/collection/characteristics',
+          description: 'Gerencie os parâmetros das espécies',
         },
         {
-          title: "Taxonomia",
-          url: "/dashboard/collection/taxonomy",
-          description: "Gerencie as características taxonômicas do herbário",
+          title: 'Taxonomia',
+          url: '/dashboard/collection/taxonomy',
+          description: 'Gerencie as características taxonômicas do herbário',
         },
         {
-          title: "Espécies",
-          url: "/dashboard/collection/species",
-          description: "Gerencie as espécies do herbário",
+          title: 'Espécies',
+          url: '/dashboard/collection/species',
+          description: 'Gerencie as espécies do herbário',
         },
       ],
     },
     {
-      defaultUrl: "/dashboard/users",
-      title: "Usuários",
-      description: "Gerencie os usuários do sistema",
+      defaultUrl: '/dashboard/users',
+      title: 'Usuários',
+      description: 'Gerencie os usuários do sistema',
       icon: Users,
-      entity: "User",
+      entity: 'User',
       permissions: [Action.Manage],
       items: [],
     },
     {
-      title: "Sistema",
-      defaultUrl: "#",
+      title: 'Sistema',
+      defaultUrl: '#',
       icon: FileText,
-      entity: "System",
+      entity: 'System',
       permissions: [Action.Manage],
       items: [
         {
-          title: "Atividades recentes",
-          url: "/dashboard/system/activities",
-          description: "Veja as atividades recentes no sistema",
+          title: 'Atividades recentes',
+          url: '/dashboard/system/activities',
+          description: 'Veja as atividades recentes no sistema',
         },
       ],
     },
@@ -62,4 +62,4 @@ export const sidebarData = {
 };
 
 export type NavItem = (typeof sidebarData.navMain)[0];
-export type SubNavItem = (typeof sidebarData.navMain)[0]["items"][0];
+export type SubNavItem = (typeof sidebarData.navMain)[0]['items'][0];

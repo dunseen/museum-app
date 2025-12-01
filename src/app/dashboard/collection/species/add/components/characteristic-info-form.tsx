@@ -1,17 +1,17 @@
-import React from "react";
-import { Controller, type useForm } from "react-hook-form";
+import React from 'react';
+import { Controller, type useForm } from 'react-hook-form';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form";
-import { type SpecieFormType } from "../add-specie-dialog";
-import { useDebouncedInput } from "~/hooks/use-debounced-input";
-import { useGetTaxons } from "../../../taxonomy/api";
-import { useGetCharacteristics } from "../../../characteristics/api";
-import { AsyncSelect } from "~/components/ui/async-select";
+} from '~/components/ui/form';
+import { type SpecieFormType } from '../add-specie-dialog';
+import { useDebouncedInput } from '~/hooks/use-debounced-input';
+import { useGetTaxons } from '../../../taxonomy/api';
+import { useGetCharacteristics } from '../../../characteristics/api';
+import { AsyncSelect } from '~/components/ui/async-select';
 
 type CharacteristicInfoFormProps = {
   form: ReturnType<typeof useForm<SpecieFormType>>;
@@ -53,7 +53,7 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
     <div className="flex flex-1 flex-col gap-2">
       <FormField
         control={form.control}
-        name={"taxonomy"}
+        name={'taxonomy'}
         render={({ field }) => (
           <FormItem>
             <FormLabel>Taxonomia (*)</FormLabel>
@@ -83,7 +83,7 @@ export const CharacteristicInfoForm: React.FC<CharacteristicInfoFormProps> = ({
 
       <FormField
         control={form.control}
-        name={"characteristics"}
+        name={'characteristics'}
         render={({ field }) => (
           <FormItem>
             <FormLabel>Características (*)</FormLabel>

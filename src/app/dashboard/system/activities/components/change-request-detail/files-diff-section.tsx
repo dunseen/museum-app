@@ -1,7 +1,7 @@
-import React from "react";
-import { ImageIcon } from "lucide-react";
-import { type FileTypeApiResponse } from "~/app/museu/herbario/types/file.types";
-import { type FilesDiff } from "../../../types/change-request-detail.types";
+import React from 'react';
+import { ImageIcon } from 'lucide-react';
+import { type FileTypeApiResponse } from '~/app/museu/herbario/types/file.types';
+import { type FilesDiff } from '../../../types/change-request-detail.types';
 
 type FilesDiffSectionProps = {
   files?: FileTypeApiResponse[] | null;
@@ -45,7 +45,11 @@ export function FilesDiffSection({
     </a>
   );
 
-  const renderRemovedFile = (file: { id: string; url: string; path?: string }) => (
+  const renderRemovedFile = (file: {
+    id: string;
+    url: string;
+    path?: string;
+  }) => (
     <div
       key={file.id}
       className="flex items-center gap-2 rounded border border-red-200 bg-red-50 p-2 line-through dark:border-red-800 dark:bg-red-900/20"
@@ -111,9 +115,9 @@ export function FilesDiffSection({
 }
 
 function getFileName(file: { path?: string; url: string }): string {
-  const source = file.path ?? file.url ?? "";
-  const segments = source.split("/");
-  const name = segments[segments.length - 1] ?? "";
+  const source = file.path ?? file.url ?? '';
+  const segments = source.split('/');
+  const name = segments[segments.length - 1] ?? '';
   if (name.length > 0) {
     return name;
   }

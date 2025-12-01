@@ -3,9 +3,9 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "~/components/ui/dialog";
-import { ImageCarousel } from "./image-carousel";
-import { type FileTypeApiResponse } from "../../../types/file.types";
+} from '~/components/ui/dialog';
+import { ImageCarousel } from './image-carousel';
+import { type FileTypeApiResponse } from '../../../types/file.types';
 
 type PostDetailsImageDialogProps = {
   selectedImages: { files: FileTypeApiResponse[]; name: string } | null;

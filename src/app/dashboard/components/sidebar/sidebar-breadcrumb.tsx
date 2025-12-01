@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { usePathname } from "next/navigation";
-import { useMemo } from "react";
+import { usePathname } from 'next/navigation';
+import { useMemo } from 'react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,10 +9,10 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "~/components/ui/breadcrumb";
-import { Separator } from "~/components/ui/separator";
-import { SidebarTrigger } from "~/components/ui/sidebar";
-import { sidebarData } from "./sidebar-data";
+} from '~/components/ui/breadcrumb';
+import { Separator } from '~/components/ui/separator';
+import { SidebarTrigger } from '~/components/ui/sidebar';
+import { sidebarData } from './sidebar-data';
 
 export function SidebarHeader() {
   const pathname = usePathname();

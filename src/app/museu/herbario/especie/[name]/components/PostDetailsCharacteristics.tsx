@@ -1,7 +1,7 @@
-import { Button } from "~/components/ui/button";
-import { ImageIcon, Leaf } from "lucide-react";
-import { type GetCharacteristicApiResponse } from "../../../types/characteristic.types";
-import { type FileTypeApiResponse } from "../../../types/file.types";
+import { Button } from '~/components/ui/button';
+import { ImageIcon, Leaf } from 'lucide-react';
+import { type GetCharacteristicApiResponse } from '../../../types/characteristic.types';
+import { type FileTypeApiResponse } from '../../../types/file.types';
 
 type PostDetailsCharacteristicsProps = {
   characteristics: GetCharacteristicApiResponse[];
@@ -56,15 +56,15 @@ export function PostDetailsCharacteristics({
                       </p>
                     </div>
                     <Button
-                      variant={c.files?.length ? "default" : "outline"}
+                      variant={c.files?.length ? 'default' : 'outline'}
                       size="sm"
                       className="w-full transition-all duration-200"
                       disabled={!c.files?.length}
-                      title={c.files?.length ? "Ver imagem" : "Sem imagem"}
+                      title={c.files?.length ? 'Ver imagem' : 'Sem imagem'}
                       onClick={() => onImageClick(c.name, c.files ?? [])}
                     >
                       <ImageIcon className="mr-2 h-4 w-4" />
-                      {c.files?.length ? "Ver Imagem" : "Sem Imagem"}
+                      {c.files?.length ? 'Ver Imagem' : 'Sem Imagem'}
                     </Button>
                   </div>
                   {/* Decorative gradient overlay on hover */}

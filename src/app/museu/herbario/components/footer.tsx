@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { Leaf, Mail, MapPin, Phone, ExternalLink } from "lucide-react";
-import Image from "next/image";
+import Link from 'next/link';
+import { Leaf, Mail, MapPin, Phone, ExternalLink } from 'lucide-react';
+import Image from 'next/image';
 export default function Footer() {
   return (
     <footer className="relative mt-8 bg-gradient-to-br from-green-800 via-emerald-700 to-green-800 text-white">
@@ -155,7 +155,7 @@ export default function Footer() {
                 Todos os direitos reservados.
               </p>
               <p className="flex items-center gap-1">
-                Desenvolvido com <Leaf className="h-3 w-3 text-green-400" />{" "}
+                Desenvolvido com <Leaf className="h-3 w-3 text-green-400" />{' '}
                 para a Amazônia
               </p>
             </div>

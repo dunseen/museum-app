@@ -1,20 +1,20 @@
 /* eslint-disable jsx-a11y/alt-text */
-"use client";
+'use client';
 
-import { type ColumnDef } from "@tanstack/react-table";
-import { Image, MoreHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
+import { type ColumnDef } from '@tanstack/react-table';
+import { Image, MoreHorizontal } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
-import { Button } from "~/components/ui/button";
+import { Button } from '~/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { type GetCharacteristicApiResponse } from "~/app/museu/herbario/types/characteristic.types";
-import { Can } from "../../context/ability-context";
+} from '~/components/ui/dropdown-menu';
+import { type GetCharacteristicApiResponse } from '~/app/museu/herbario/types/characteristic.types';
+import { Can } from '../../context/ability-context';
 
 export function useCharacteristicTable() {
   const [selectedCharacteristic, setSelectedCharacteristic] =
@@ -40,27 +40,27 @@ export function useCharacteristicTable() {
   const columns = useMemo<ColumnDef<GetCharacteristicApiResponse>[]>(
     () => [
       {
-        header: "Nome",
-        accessorKey: "name",
+        header: 'Nome',
+        accessorKey: 'name',
       },
       {
-        header: "Característica",
+        header: 'Característica',
         cell: ({ row }) => {
           return <p>{row.original.type.name}</p>;
         },
       },
       {
-        header: "Imagens",
-        accessorKey: "images",
+        header: 'Imagens',
+        accessorKey: 'images',
         cell: ({ row }) => {
           return (
             <Button
-              variant={"ghost"}
+              variant={'ghost'}
               disabled={row.original.files.length === 0}
               title={
                 row.original.files.length === 0
-                  ? "Sem imagens"
-                  : "Visualizar imagens"
+                  ? 'Sem imagens'
+                  : 'Visualizar imagens'
               }
               onClick={() =>
                 setSelectedCharacteristicImages({
@@ -75,8 +75,8 @@ export function useCharacteristicTable() {
         },
       },
       {
-        id: "actions",
-        header: "Ações",
+        id: 'actions',
+        header: 'Ações',
         cell: ({ row }) => {
           return (
             <DropdownMenu>

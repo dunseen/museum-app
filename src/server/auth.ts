@@ -3,14 +3,14 @@ import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
-} from "next-auth";
-import { type DefaultJWT } from "next-auth/jwt";
-import { type Status } from "~/interfaces/auth-user.interface";
+} from 'next-auth';
+import { type DefaultJWT } from 'next-auth/jwt';
+import { type Status } from '~/interfaces/auth-user.interface';
 
-import CredentialsProvider from "next-auth/providers/credentials";
-import { z } from "zod";
-import { AuthService } from "~/services/auth.service";
-import { RoleEnum } from "~/types";
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { z } from 'zod';
+import { AuthService } from '~/services/auth.service';
+import { RoleEnum } from '~/types';
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -18,7 +18,7 @@ import { RoleEnum } from "~/types";
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
-declare module "next-auth" {
+declare module 'next-auth' {
   interface Session extends DefaultSession {
     user: User;
   }
@@ -37,7 +37,7 @@ declare module "next-auth" {
   }
 }
 
-declare module "next-auth/jwt" {
+declare module 'next-auth/jwt' {
   interface JWT extends DefaultJWT, DefaultUser {
     token: string;
     id?: string;
@@ -54,21 +54,21 @@ declare module "next-auth/jwt" {
  */
 export const authOptions: NextAuthOptions = {
   pages: {
-    signIn: "/login",
+    signIn: '/login',
   },
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
     maxAge: 1 * 24 * 60 * 60, // 1 day
   },
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
-      name: "Credentials",
-      id: "credentials",
-      type: "credentials",
+      name: 'Credentials',
+      id: 'credentials',
+      type: 'credentials',
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         const parsedCredentials = z
@@ -96,7 +96,7 @@ export const authOptions: NextAuthOptions = {
             tokenExpires: tokenExpires,
           };
         } catch (error) {
-          console.error("Error logging in:", error);
+          console.error('Error logging in:', error);
           return null;
         }
       },
@@ -117,7 +117,7 @@ export const authOptions: NextAuthOptions = {
         token.tokenExpires = user.tokenExpires;
       }
 
-      if (trigger === "update") {
+      if (trigger === 'update') {
         token.token = session?.token;
         token.refreshToken = session?.refreshToken;
         token.tokenExpires = session?.tokenExpires;

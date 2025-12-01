@@ -1,63 +1,63 @@
-import type { Metadata, Viewport } from "next";
-import { Open_Sans } from "next/font/google";
+import type { Metadata, Viewport } from 'next';
+import { Open_Sans } from 'next/font/google';
 
-import Providers from "./providers";
+import Providers from './providers';
 
-import "~/styles/globals.css";
-import { type PropsWithChildren } from "react";
-import { env } from "~/config/env.client";
+import '~/styles/globals.css';
+import { type PropsWithChildren } from 'react';
+import { env } from '~/config/env.client';
 
-const openSans = Open_Sans({ subsets: ["latin"] });
+const openSans = Open_Sans({ subsets: ['latin'] });
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#006633" },
-    { media: "(prefers-color-scheme: dark)", color: "#006633" },
+    { media: '(prefers-color-scheme: light)', color: '#006633' },
+    { media: '(prefers-color-scheme: dark)', color: '#006633' },
   ],
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: {
-    default: "Herbário Virtual FC | UFRA",
-    template: "%s | Herbário Virtual FC",
+    default: 'Herbário Virtual FC | UFRA',
+    template: '%s | Herbário Virtual FC',
   },
   description:
-    "Explore o acervo científico do Herbário Virtual FC da Universidade Federal Rural da Amazônia.",
+    'Explore o acervo científico do Herbário Virtual FC da Universidade Federal Rural da Amazônia.',
   keywords: [
-    "herbário virtual",
-    "UFRA",
-    "coleção botânica",
-    "pesquisa científica",
-    "educação ambiental",
+    'herbário virtual',
+    'UFRA',
+    'coleção botânica',
+    'pesquisa científica',
+    'educação ambiental',
   ],
   openGraph: {
-    type: "website",
-    locale: "pt_BR",
-    siteName: "Herbário Virtual FC",
-    title: "Herbário Virtual FC | UFRA",
+    type: 'website',
+    locale: 'pt_BR',
+    siteName: 'Herbário Virtual FC',
+    title: 'Herbário Virtual FC | UFRA',
     description:
-      "Explore o acervo científico do Herbário Virtual FC da Universidade Federal Rural da Amazônia.",
-    url: new URL("/museu/herbario", env.NEXT_PUBLIC_APP_URL),
+      'Explore o acervo científico do Herbário Virtual FC da Universidade Federal Rural da Amazônia.',
+    url: new URL('/museu/herbario', env.NEXT_PUBLIC_APP_URL),
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Herbário Virtual FC | UFRA",
+    card: 'summary_large_image',
+    title: 'Herbário Virtual FC | UFRA',
     description:
-      "Explore o acervo científico do Herbário Virtual FC da Universidade Federal Rural da Amazônia.",
+      'Explore o acervo científico do Herbário Virtual FC da Universidade Federal Rural da Amazônia.',
   },
   alternates: {
-    canonical: "/museu/herbario",
+    canonical: '/museu/herbario',
   },
   robots: {
     index: true,
     follow: true,
   },
-  applicationName: "Herbário Virtual FC",
+  applicationName: 'Herbário Virtual FC',
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
-    title: "Herbário Virtual FC",
+    statusBarStyle: 'default',
+    title: 'Herbário Virtual FC',
   },
 };
 

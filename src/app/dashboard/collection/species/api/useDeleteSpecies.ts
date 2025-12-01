@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "~/server/api";
-import { GET_SPECIES_QUERY_KEY } from "./useGetSpecies";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '~/server/api';
+import { GET_SPECIES_QUERY_KEY } from './useGetSpecies';
 
 export type DeleteSpeciePayload = {
   id: number;

@@ -7,8 +7,8 @@ export type Characteristic = {
 };
 
 export enum OperationStatus {
-  COMPLETED = "completed",
-  PENDING_APPROVAL = "pending_approval",
+  COMPLETED = 'completed',
+  PENDING_APPROVAL = 'pending_approval',
 }
 
 export interface CharacteristicOperationResult {

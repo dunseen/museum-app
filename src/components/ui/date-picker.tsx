@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import * as React from 'react';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon } from 'lucide-react';
 
-import { cn } from "~/lib/utils";
-import { Button } from "~/components/ui/button";
-import { Calendar } from "~/components/ui/calendar";
+import { cn } from '~/lib/utils';
+import { Button } from '~/components/ui/button';
+import { Calendar } from '~/components/ui/calendar';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "~/components/ui/popover";
+} from '~/components/ui/popover';
 
 type DatePickerProps = {
   value: Date | undefined;
@@ -28,7 +28,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   function formatDate(date: Date) {
-    return format(date, "dd LLL, y", {
+    return format(date, 'dd LLL, y', {
       locale: ptBR,
     });
   }
@@ -42,10 +42,10 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild disabled={isDisabled}>
         <Button
-          variant={"outline"}
+          variant={'outline'}
           className={cn(
-            "min-w-full justify-start text-left font-normal",
-            !value && "text-muted-foreground",
+            'min-w-full justify-start text-left font-normal',
+            !value && 'text-muted-foreground',
           )}
         >
           <CalendarIcon />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 export function useStepper(totalSteps: number) {
   const [step, setStep] = useState(0);

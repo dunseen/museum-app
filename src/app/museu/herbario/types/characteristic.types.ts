@@ -1,4 +1,4 @@
-import { type FileTypeApiResponse } from "./file.types";
+import { type FileTypeApiResponse } from './file.types';
 
 export interface GetCharacteristicApiResponse {
   id: number;

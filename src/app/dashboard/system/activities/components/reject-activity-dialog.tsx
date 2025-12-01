@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "~/components/ui/button";
+import { useState } from 'react';
+import { Button } from '~/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogTitle,
-} from "~/components/ui/dialog";
-import { Label } from "~/components/ui/label";
-import { Textarea } from "~/components/ui/textarea";
+} from '~/components/ui/dialog';
+import { Label } from '~/components/ui/label';
+import { Textarea } from '~/components/ui/textarea';
 
 type RejectActivityDialogProps = {
   isOpen: boolean;
@@ -23,7 +23,7 @@ export default function RejectActivityDialog({
   onReject,
   isLoading,
 }: RejectActivityDialogProps) {
-  const [reason, setReason] = useState("");
+  const [reason, setReason] = useState('');
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -31,7 +31,7 @@ export default function RejectActivityDialog({
         <DialogTitle>Rejeitar solicitação</DialogTitle>
         <Label htmlFor="reason">Motivo:</Label>
         <Textarea
-          id={"reason"}
+          id={'reason'}
           title="Motivo"
           value={reason}
           onChange={(e) => setReason(e.target.value)}

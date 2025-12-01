@@ -1,7 +1,7 @@
-import { type UndefinedInitialDataOptions } from "@tanstack/react-query";
-import { api } from "~/server/api";
+import { type UndefinedInitialDataOptions } from '@tanstack/react-query';
+import { api } from '~/server/api';
 
-export const GET_DRAFT_DETAIL_QUERY_KEY = "useGetDraftDetail";
+export const GET_DRAFT_DETAIL_QUERY_KEY = 'useGetDraftDetail';
 
 async function fetchChangeRequestDetail(
   draftId: number,

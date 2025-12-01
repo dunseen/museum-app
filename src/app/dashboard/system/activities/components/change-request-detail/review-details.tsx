@@ -1,6 +1,6 @@
-import React from "react";
-import { type PersonName } from "../../../types/change-request-detail.types";
-import { formatFullName } from "./utils";
+import React from 'react';
+import { type PersonName } from '../../../types/change-request-detail.types';
+import { formatFullName } from './utils';
 
 type ReviewDetailsProps = {
   reviewedBy: PersonName;
@@ -35,7 +35,7 @@ export function ReviewDetails({
             Data da Decisão
           </label>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            {decidedAt ? new Date(decidedAt).toLocaleString("pt-BR") : "-"}
+            {decidedAt ? new Date(decidedAt).toLocaleString('pt-BR') : '-'}
           </p>
         </div>
         {reviewerNote && (

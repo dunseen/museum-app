@@ -1,17 +1,17 @@
 import {
   type UndefinedInitialDataOptions,
   useQuery,
-} from "@tanstack/react-query";
-import { type AxiosRequestConfig } from "axios";
-import { type GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
-import { api } from "~/server/api";
-import { type PaginationParams } from "~/types/pagination";
+} from '@tanstack/react-query';
+import { type AxiosRequestConfig } from 'axios';
+import { type GetTaxonsApiResponse } from '~/app/museu/herbario/types/taxonomy.types';
+import { api } from '~/server/api';
+import { type PaginationParams } from '~/types/pagination';
 
 export type GetHierarchyParams = PaginationParams & {
   name?: string;
 };
 
-export const GET_HIERARCHIES_QUERY_KEY = "useGetHierarchies";
+export const GET_HIERARCHIES_QUERY_KEY = 'useGetHierarchies';
 
 async function fetchHierarchies(params?: GetHierarchyParams) {
   const requestConfig: AxiosRequestConfig = {
@@ -23,7 +23,7 @@ async function fetchHierarchies(params?: GetHierarchyParams) {
   };
 
   const { data } = await api.get<GetTaxonsApiResponse[]>(
-    "hierarchies",
+    'hierarchies',
     requestConfig,
   );
 

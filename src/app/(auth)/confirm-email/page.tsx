@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/await-thenable */
-import { XCircle } from "lucide-react";
-import SetPasswordForm from "./components/set-password-form";
-import Link from "next/link";
-import { Button } from "~/components/ui/button";
+import { XCircle } from 'lucide-react';
+import SetPasswordForm from './components/set-password-form';
+import Link from 'next/link';
+import { Button } from '~/components/ui/button';
 import {
   Card,
   CardContent,
@@ -10,9 +10,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "~/components/ui/card";
-import { AuthService } from "~/services/auth.service";
-import { HttpStatusCode, isAxiosError } from "axios";
+} from '~/components/ui/card';
+import { AuthService } from '~/services/auth.service';
+import { HttpStatusCode, isAxiosError } from 'axios';
 
 type ConfirmEmailPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -21,11 +21,11 @@ export default async function Page({ searchParams }: ConfirmEmailPageProps) {
   let isError = false;
   let isExpired = false;
   const params = await searchParams;
-  const hash = (params.hash as string) ?? "";
+  const hash = (params.hash as string) ?? '';
 
   try {
     if (!hash) {
-      throw new Error("invalid hash");
+      throw new Error('invalid hash');
     }
 
     await AuthService.confirmEmail(hash);
@@ -41,10 +41,10 @@ export default async function Page({ searchParams }: ConfirmEmailPageProps) {
 
   const getErrorMessage = () => {
     if (isExpired) {
-      return "O link de confirmação expirou ou foi resgatado. Por favor, solicite um novo link.";
+      return 'O link de confirmação expirou ou foi resgatado. Por favor, solicite um novo link.';
     }
 
-    return "Não foi possível confirmar seu email. Por favor, tente novamente mais tarde.";
+    return 'Não foi possível confirmar seu email. Por favor, tente novamente mais tarde.';
   };
 
   return (

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckCircle2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "~/components/ui/button";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CheckCircle2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '~/components/ui/button';
 import {
   Card,
   CardContent,
@@ -13,11 +13,11 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import { toast } from "sonner";
-import { useResetPassword } from "../../password-change/api/useResetPassword";
+} from '~/components/ui/card';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
+import { toast } from 'sonner';
+import { useResetPassword } from '../../password-change/api/useResetPassword';
 
 type SetPasswordFormProps = {
   hash: string;
@@ -25,19 +25,21 @@ type SetPasswordFormProps = {
 
 const schema = z
   .object({
-    password: z.string().min(8, "Senha muito curta"),
-    passwordConfirmation: z.string().min(8, "Senha muito curta"),
+    password: z.string().min(8, 'Senha muito curta'),
+    passwordConfirmation: z.string().min(8, 'Senha muito curta'),
   })
   .refine((data) => data.password === data.passwordConfirmation, {
-    message: "As senhas não correspondem",
-    path: ["passwordConfirmation"],
+    message: 'As senhas não correspondem',
+    path: ['passwordConfirmation'],
   });
 
 export function SetPasswordForm({ hash }: SetPasswordFormProps) {
   const router = useRouter();
-  const { register, handleSubmit, formState } = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-  });
+  const { register, handleSubmit, formState } = useForm<z.infer<typeof schema>>(
+    {
+      resolver: zodResolver(schema),
+    },
+  );
 
   const resetPassword = useResetPassword();
 
@@ -46,11 +48,11 @@ export function SetPasswordForm({ hash }: SetPasswordFormProps) {
       { hash, password: values.password },
       {
         onSuccess: () => {
-          toast.success("Senha definida com sucesso");
-          router.push("/login");
+          toast.success('Senha definida com sucesso');
+          router.push('/login');
         },
         onError: () => {
-          toast.error("Erro ao definir senha");
+          toast.error('Erro ao definir senha');
         },
       },
     );
@@ -80,7 +82,7 @@ export function SetPasswordForm({ hash }: SetPasswordFormProps) {
                 placeholder="********"
                 required
                 className="border-green-200 focus:border-green-500 focus:ring-green-500"
-                {...register("password")}
+                {...register('password')}
               />
             </div>
             <div className="grid gap-2">
@@ -93,7 +95,7 @@ export function SetPasswordForm({ hash }: SetPasswordFormProps) {
                 placeholder="********"
                 required
                 className="border-green-200 focus:border-green-500 focus:ring-green-500"
-                {...register("passwordConfirmation")}
+                {...register('passwordConfirmation')}
               />
             </div>
           </CardContent>

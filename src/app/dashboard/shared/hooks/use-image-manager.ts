@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { type ImageType } from "../components/image-manager";
+import { useEffect, useRef, useState } from 'react';
+import { type ImageType } from '../components/image-manager';
 
 type ImageManagerProps = {
   existingImages: ImageType[];
@@ -25,7 +25,7 @@ export function useImageManager({
       setImages(updatedImages);
       onImagesChange(updatedImages);
     }
-    event.target.value = "";
+    event.target.value = '';
   };
 
   const handleRemoveImage = (index: number) => {

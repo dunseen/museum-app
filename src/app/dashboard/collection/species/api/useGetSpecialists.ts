@@ -1,21 +1,21 @@
 import {
   type UndefinedInitialDataOptions,
   useQuery,
-} from "@tanstack/react-query";
-import { type AxiosRequestConfig } from "axios";
-import { type SpecialistApiResponse } from "~/app/museu/herbario/types/specialist.types";
-import { api } from "~/server/api";
-import { type PaginationParams, type WithPagination } from "~/types/pagination";
+} from '@tanstack/react-query';
+import { type AxiosRequestConfig } from 'axios';
+import { type SpecialistApiResponse } from '~/app/museu/herbario/types/specialist.types';
+import { api } from '~/server/api';
+import { type PaginationParams, type WithPagination } from '~/types/pagination';
 
 export type PaginatedGetSpecialistsApiResponse =
   WithPagination<SpecialistApiResponse>;
 
 export type GetSpecialistsParams = PaginationParams & {
   name?: string;
-  type?: "collector" | "determinator";
+  type?: 'collector' | 'determinator';
 };
 
-export const GET_SPECIALISTS_QUERY_KEY = "useGetSpecialists";
+export const GET_SPECIALISTS_QUERY_KEY = 'useGetSpecialists';
 
 async function fetchSpecialists(params?: GetSpecialistsParams) {
   const requestConfig: AxiosRequestConfig = {
@@ -28,7 +28,7 @@ async function fetchSpecialists(params?: GetSpecialistsParams) {
   };
 
   const { data } = await api.get<PaginatedGetSpecialistsApiResponse>(
-    "dashboard/specialists",
+    'dashboard/specialists',
     requestConfig,
   );
 

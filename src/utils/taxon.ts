@@ -1,4 +1,4 @@
-import { type GetHierarchyApiResponse } from "~/app/museu/herbario/types/hierarchy";
+import { type GetHierarchyApiResponse } from '~/app/museu/herbario/types/hierarchy';
 
 export const getTaxonOfHierarchy = (
   name: string,

@@ -1,14 +1,14 @@
-import { Leaf } from "lucide-react";
+import { Leaf } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
+} from '~/components/ui/dropdown-menu';
 import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "~/components/ui/sidebar";
+} from '~/components/ui/sidebar';
 
 export function DashboardSideBarHeader() {
   return (

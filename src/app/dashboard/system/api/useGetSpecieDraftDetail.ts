@@ -1,11 +1,11 @@
 import {
   type UndefinedInitialDataOptions,
   useQuery,
-} from "@tanstack/react-query";
-import { api } from "~/server/api";
-import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
+} from '@tanstack/react-query';
+import { api } from '~/server/api';
+import { type GetSpecieApiResponse } from '~/app/museu/herbario/types/specie.types';
 
-export const GET_SPECIE_DRAFT_DETAIL_KEY = "useGetSpecieDraftDetail";
+export const GET_SPECIE_DRAFT_DETAIL_KEY = 'useGetSpecieDraftDetail';
 
 async function fetchSpecieDraftDetail(id: number) {
   const { data } = await api.get<GetSpecieApiResponse>(
@@ -23,7 +23,7 @@ export const getSpecieDraftDetailConfig = (
   (string | number)[]
 > => {
   return {
-    queryKey: [GET_SPECIE_DRAFT_DETAIL_KEY, id ?? ""],
+    queryKey: [GET_SPECIE_DRAFT_DETAIL_KEY, id ?? ''],
     queryFn: () => fetchSpecieDraftDetail(Number(id)),
     enabled: !!id,
   };

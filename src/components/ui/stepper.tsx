@@ -1,9 +1,9 @@
-import React from "react";
-import { cn } from "~/lib/utils";
+import React from 'react';
+import { cn } from '~/lib/utils';
 
-import { Check, AlertTriangle } from "lucide-react";
+import { Check, AlertTriangle } from 'lucide-react';
 
-export type StepStatus = "default" | "complete" | "error";
+export type StepStatus = 'default' | 'complete' | 'error';
 
 type StepperProps = {
   steps: string[];
@@ -19,30 +19,30 @@ export const Stepper: React.FC<StepperProps> = ({
   return (
     <ol className="mb-4 flex w-full items-center justify-between gap-2">
       {steps.map((step, index) => {
-        const status = statuses?.[index] ?? "default";
+        const status = statuses?.[index] ?? 'default';
         const isCurrent = index === currentStep;
 
         return (
           <li key={index} className="flex flex-1 flex-col items-center">
             <div
               className={cn(
-                "flex h-8 w-8 items-center justify-center rounded-full border text-sm",
+                'flex h-8 w-8 items-center justify-center rounded-full border text-sm',
                 isCurrent
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground",
-                status === "complete" &&
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground',
+                status === 'complete' &&
                   !isCurrent &&
-                  "border-green-500 bg-green-500 text-white",
-                status === "error" &&
+                  'border-green-500 bg-green-500 text-white',
+                status === 'error' &&
                   !isCurrent &&
-                  "border-destructive text-destructive",
+                  'border-destructive text-destructive',
               )}
             >
               {isCurrent ? (
                 index + 1
-              ) : status === "complete" ? (
+              ) : status === 'complete' ? (
                 <Check className="h-4 w-4" />
-              ) : status === "error" ? (
+              ) : status === 'error' ? (
                 <AlertTriangle className="h-4 w-4" />
               ) : (
                 index + 1

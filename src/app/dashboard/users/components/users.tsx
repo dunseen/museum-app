@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { Button } from "~/components/ui/button";
-import { MoreHorizontal, PlusIcon } from "lucide-react";
-import { Input } from "~/components/ui/input";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { DataTable } from "../../shared/components/data-table";
-import { ConfirmationAlert } from "../../shared/components/confirmation-alert";
+import { Button } from '~/components/ui/button';
+import { MoreHorizontal, PlusIcon } from 'lucide-react';
+import { Input } from '~/components/ui/input';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { DataTable } from '../../shared/components/data-table';
+import { ConfirmationAlert } from '../../shared/components/confirmation-alert';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import type { ColumnDef } from "@tanstack/react-table";
-import { useDisclosure } from "~/hooks/use-disclosure";
+} from '~/components/ui/dropdown-menu';
+import type { ColumnDef } from '@tanstack/react-table';
+import { useDisclosure } from '~/hooks/use-disclosure';
 import {
   Dialog,
   DialogContent,
@@ -22,10 +22,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "~/components/ui/dialog";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+} from '~/components/ui/dialog';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
@@ -33,45 +33,45 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form";
-import Select from "react-select";
-import { useDeleteUsers, useGetUsers, usePostUsers, usePutUsers } from "../api";
-import { useDebouncedInput } from "~/hooks/use-debounced-input";
-import { type GetUserApiResponse } from "~/app/museu/herbario/types/users.types";
-import { RoleEnum } from "~/types";
-import { parseRole, parseRoleToNumber } from "~/utils/role";
-import { TablePagination } from "../../shared/components/table-pagination";
-import { toast } from "sonner";
+} from '~/components/ui/form';
+import Select from 'react-select';
+import { useDeleteUsers, useGetUsers, usePostUsers, usePutUsers } from '../api';
+import { useDebouncedInput } from '~/hooks/use-debounced-input';
+import { type GetUserApiResponse } from '~/app/museu/herbario/types/users.types';
+import { RoleEnum } from '~/types';
+import { parseRole, parseRoleToNumber } from '~/utils/role';
+import { TablePagination } from '../../shared/components/table-pagination';
+import { toast } from 'sonner';
 
 const roleParser = {
-  ADMIN: "Administrador",
-  EDITOR: "Editor",
-  OPERATOR: "Operador",
+  ADMIN: 'Administrador',
+  EDITOR: 'Editor',
+  OPERATOR: 'Operador',
 };
 const editUserSchema = z.object({
   firstName: z.string({
-    required_error: "Campo obrigatório",
+    required_error: 'Campo obrigatório',
   }),
   lastName: z.string({
-    required_error: "Campo obrigatório",
+    required_error: 'Campo obrigatório',
   }),
   email: z
     .string({
-      required_error: "Campo obrigatório",
+      required_error: 'Campo obrigatório',
     })
     .email({
-      message: "Email inválido",
+      message: 'Email inválido',
     }),
   phone: z
     .string({
-      required_error: "Campo obrigatório",
-      invalid_type_error: "Campo deve ser um número",
+      required_error: 'Campo obrigatório',
+      invalid_type_error: 'Campo deve ser um número',
     })
     .min(10, {
-      message: "Campo deve ter no mínimo 10 dígitos",
+      message: 'Campo deve ter no mínimo 10 dígitos',
     })
     .max(11, {
-      message: "Campo deve ter no máximo 11 dígitos",
+      message: 'Campo deve ter no máximo 11 dígitos',
     }),
 
   role: z.object(
@@ -80,7 +80,7 @@ const editUserSchema = z.object({
       label: z.string(),
     },
     {
-      required_error: "Campo obrigatório",
+      required_error: 'Campo obrigatório',
     },
   ),
 });
@@ -128,10 +128,10 @@ export function Users() {
         {
           onSuccess() {
             addUserDialog.onClose();
-            toast.success("Usuário editado com sucesso");
+            toast.success('Usuário editado com sucesso');
           },
           onError() {
-            toast.error("Erro ao editar usuário");
+            toast.error('Erro ao editar usuário');
           },
         },
       );
@@ -152,10 +152,10 @@ export function Users() {
       {
         onSuccess() {
           addUserDialog.onClose();
-          toast.success("Usuário adicionado com sucesso");
+          toast.success('Usuário adicionado com sucesso');
         },
         onError() {
-          toast.error("Erro ao adicionar usuário");
+          toast.error('Erro ao adicionar usuário');
         },
       },
     );
@@ -176,11 +176,11 @@ export function Users() {
       { id: selectedUserId },
       {
         onSuccess() {
-          toast.success("Usuário deletado com sucesso");
+          toast.success('Usuário deletado com sucesso');
           deleteUserDialog.onClose();
         },
         onError() {
-          toast.error("Erro ao deletar usuário");
+          toast.error('Erro ao deletar usuário');
         },
       },
     );
@@ -208,7 +208,7 @@ export function Users() {
   const columns = useMemo<ColumnDef<GetUserApiResponse>[]>(
     () => [
       {
-        header: "Nome",
+        header: 'Nome',
         cell: ({ row }) => (
           <p className="max-w-96 truncate">
             {row.original.firstName} {row.original.lastName}
@@ -216,15 +216,15 @@ export function Users() {
         ),
       },
       {
-        header: "Email",
-        accessorKey: "email",
+        header: 'Email',
+        accessorKey: 'email',
       },
       {
-        header: "Telefone",
-        accessorKey: "phone",
+        header: 'Telefone',
+        accessorKey: 'phone',
       },
       {
-        header: "Permissão",
+        header: 'Permissão',
         cell: ({ row }) => {
           const role = row.original.role;
           return (
@@ -235,8 +235,8 @@ export function Users() {
         },
       },
       {
-        id: "actions",
-        header: "Ações",
+        id: 'actions',
+        header: 'Ações',
         cell: ({ row }) => {
           return (
             <DropdownMenu>
@@ -265,7 +265,7 @@ export function Users() {
     [onDeleteAlertOpen, onEditUser],
   );
 
-  const dialogActionTitle = selectedUser ? "Editar" : "Adicionar";
+  const dialogActionTitle = selectedUser ? 'Editar' : 'Adicionar';
 
   const roleOptions = Object.entries(RoleEnum).map(([key, value]) => ({
     label: parseRole(key as RoleEnum),
@@ -274,12 +274,12 @@ export function Users() {
 
   useEffect(() => {
     if (selectedUser) {
-      form.setValue("firstName", selectedUser.firstName);
-      form.setValue("lastName", selectedUser.lastName);
-      form.setValue("email", selectedUser.email);
-      form.setValue("phone", selectedUser.phone);
+      form.setValue('firstName', selectedUser.firstName);
+      form.setValue('lastName', selectedUser.lastName);
+      form.setValue('email', selectedUser.email);
+      form.setValue('phone', selectedUser.phone);
 
-      form.setValue("role", {
+      form.setValue('role', {
         label: roleParser[selectedUser.role.name as keyof typeof roleParser],
         value: selectedUser.role.name,
       });
@@ -294,7 +294,7 @@ export function Users() {
             <Input
               value={userHook.inputValue}
               onChange={(e) => userHook.onInputChange(e.target.value)}
-              placeholder={"Busca por nome ou email"}
+              placeholder={'Busca por nome ou email'}
             />
           </div>
           <Button onClick={addUserDialog.onOpen}>
@@ -441,7 +441,7 @@ export function Users() {
 
               <DialogFooter>
                 <Button
-                  variant={"secondary"}
+                  variant={'secondary'}
                   type="button"
                   onClick={onCloseAddDialog}
                   disabled={postUsers.isPending || putUsers.isPending}

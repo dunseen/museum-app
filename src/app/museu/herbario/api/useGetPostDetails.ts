@@ -1,11 +1,11 @@
 import {
   type UndefinedInitialDataOptions,
   useQuery,
-} from "@tanstack/react-query";
-import { publicApi } from "~/server/api";
-import { type GetPostDetailsApiResponse } from "../types/post.types";
+} from '@tanstack/react-query';
+import { publicApi } from '~/server/api';
+import { type GetPostDetailsApiResponse } from '../types/post.types';
 
-const GET_POST_DETAILS_KEY = "useGetPostDetails";
+const GET_POST_DETAILS_KEY = 'useGetPostDetails';
 
 export async function fetchPostDetails(name: string) {
   const { data } = await publicApi.get<GetPostDetailsApiResponse>(

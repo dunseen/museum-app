@@ -1,31 +1,31 @@
-"use client";
+'use client';
 
-import React, { useMemo } from "react";
+import React, { useMemo } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "~/components/ui/dialog";
-import { Badge } from "~/components/ui/badge";
-import { EntityType } from "~/types";
+} from '~/components/ui/dialog';
+import { Badge } from '~/components/ui/badge';
+import { EntityType } from '~/types';
 import {
   type PersonName,
   type GetCharacteristicDraftDetailApiResponse,
   type GetTaxonDraftDetailApiResponse,
-} from "../../types/change-request-detail.types";
-import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
-import { formatFullName } from "./change-request-detail/utils";
-import { SpecieChangeRequestContent } from "./change-request-detail/specie-change-request-content";
-import { CharacteristicChangeRequestContent } from "./change-request-detail/characteristic-change-request-content";
-import { TaxonChangeRequestContent } from "./change-request-detail/taxon-change-request-content";
-import { ReviewDetails } from "./change-request-detail/review-details";
+} from '../../types/change-request-detail.types';
+import { type GetSpecieApiResponse } from '~/app/museu/herbario/types/specie.types';
+import { formatFullName } from './change-request-detail/utils';
+import { SpecieChangeRequestContent } from './change-request-detail/specie-change-request-content';
+import { CharacteristicChangeRequestContent } from './change-request-detail/characteristic-change-request-content';
+import { TaxonChangeRequestContent } from './change-request-detail/taxon-change-request-content';
+import { ReviewDetails } from './change-request-detail/review-details';
 
 type BaseProps = {
   isOpen: boolean;
   onClose: () => void;
-  action: "create" | "update" | "delete";
+  action: 'create' | 'update' | 'delete';
   status: string;
   proposedBy: PersonName;
   proposedAt: string;
@@ -48,16 +48,16 @@ export type ChangeRequestDetailDialogProps = BaseProps & {
 };
 
 const ACTION_LABELS = {
-  create: "Criação",
-  update: "Atualização",
-  delete: "Remoção",
+  create: 'Criação',
+  update: 'Atualização',
+  delete: 'Remoção',
 } as const;
 
 const STATUS_LABELS = {
-  pending: "Pendente",
-  approved: "Aprovado",
-  rejected: "Rejeitado",
-  withdrawn: "Retirado",
+  pending: 'Pendente',
+  approved: 'Aprovado',
+  rejected: 'Rejeitado',
+  withdrawn: 'Retirado',
 } as const;
 
 /**
@@ -82,7 +82,7 @@ export function ChangeRequestDetailDialog(
     STATUS_LABELS[status as keyof typeof STATUS_LABELS] ?? status;
   const actionLabel = ACTION_LABELS[action];
   const proposerName = formatFullName(proposedBy);
-  const proposedDate = new Date(proposedAt).toLocaleString("pt-BR");
+  const proposedDate = new Date(proposedAt).toLocaleString('pt-BR');
 
   const renderContent = useMemo(() => {
     if (props.entityType === EntityType.SPECIE) {
@@ -124,7 +124,7 @@ export function ChangeRequestDetailDialog(
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <span>Detalhes da Solicitação</span>
-            <Badge variant={status === "pending" ? "default" : "secondary"}>
+            <Badge variant={status === 'pending' ? 'default' : 'secondary'}>
               {statusLabel}
             </Badge>
             <Badge variant="outline">{actionLabel}</Badge>

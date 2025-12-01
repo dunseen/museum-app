@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { usePathname } from "next/navigation";
-import { useCallback } from "react";
+import { usePathname } from 'next/navigation';
+import { useCallback } from 'react';
 import {
   SidebarContent as SidebarContentUI,
   SidebarGroup,
   SidebarMenu,
-} from "~/components/ui/sidebar";
-import { useAbility } from "../../context/ability-context";
-import { type Entities } from "~/lib/casl";
-import { sidebarData } from "./sidebar-data";
-import { SidebarNavItem } from "./sidebar-nav-item";
+} from '~/components/ui/sidebar';
+import { useAbility } from '../../context/ability-context';
+import { type Entities } from '~/lib/casl';
+import { sidebarData } from './sidebar-data';
+import { SidebarNavItem } from './sidebar-nav-item';
 
 export function SidebarContentComponent() {
   const ability = useAbility();
@@ -19,7 +19,7 @@ export function SidebarContentComponent() {
   // Prevent navigation if already on the same page
   const handleNavigation = useCallback(
     (url: string, e: React.MouseEvent) => {
-      if (url === pathname || url === "#") {
+      if (url === pathname || url === '#') {
         e.preventDefault();
       }
     },

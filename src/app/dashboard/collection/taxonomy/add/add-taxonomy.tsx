@@ -1,10 +1,10 @@
-import React from "react";
-import { useDisclosure } from "~/hooks/use-disclosure";
-import { AddTaxonomyDialog } from "./add-taxonomy-dialog";
-import { Button } from "~/components/ui/button";
-import { PlusIcon } from "lucide-react";
-import { type Nullable } from "~/types";
-import { type GetTaxonsApiResponse } from "~/app/museu/herbario/types/taxonomy.types";
+import React from 'react';
+import { useDisclosure } from '~/hooks/use-disclosure';
+import { AddTaxonomyDialog } from './add-taxonomy-dialog';
+import { Button } from '~/components/ui/button';
+import { PlusIcon } from 'lucide-react';
+import { type Nullable } from '~/types';
+import { type GetTaxonsApiResponse } from '~/app/museu/herbario/types/taxonomy.types';
 
 type AddTaxonomyProps = {
   data?: Nullable<GetTaxonsApiResponse>;
@@ -32,7 +32,7 @@ export const AddTaxonomy: React.FC<AddTaxonomyProps> = ({
       </Button>
 
       <AddTaxonomyDialog
-        dialogActionTitle={data ? "Editar" : "Adicionar"}
+        dialogActionTitle={data ? 'Editar' : 'Adicionar'}
         isOpen={addDialog.isOpen || !!data}
         onClose={onCloseAddDialog}
         data={data}

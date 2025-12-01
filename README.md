@@ -217,9 +217,19 @@ The application implements a strict CSP with configurable sources in `next.confi
 ```javascript
 const CSP_SOURCES = {
   default: ["'self'"],
-  script: ["'self'", "'unsafe-eval'", "'unsafe-inline'", "https://static.cloudflareinsights.com"],
-  style: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-  img: ["'self'", "data:", "blob:", "https://herb-storage-api.dlima-consulting.com"],
+  script: [
+    "'self'",
+    "'unsafe-eval'",
+    "'unsafe-inline'",
+    'https://static.cloudflareinsights.com',
+  ],
+  style: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+  img: [
+    "'self'",
+    'data:',
+    'blob:',
+    'https://herb-storage-api.dlima-consulting.com',
+  ],
   // ... more directives
 };
 ```
@@ -243,19 +253,19 @@ const CSP_SOURCES = {
 
 ## 📦 Key Dependencies
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| next | 15.4.7 | React framework |
-| react | 19.2.0 | UI library |
+| Package               | Version | Purpose                 |
+| --------------------- | ------- | ----------------------- |
+| next                  | 15.4.7  | React framework         |
+| react                 | 19.2.0  | UI library              |
 | @tanstack/react-query | 5.90.11 | Server state management |
-| next-auth | 4.24.13 | Authentication |
-| axios | 1.13.2 | HTTP client |
-| react-hook-form | 7.67.0 | Form management |
-| zod | 3.25.76 | Schema validation |
-| @casl/ability | 6.7.3 | Authorization |
-| tailwindcss | 3.4.18 | CSS framework |
-| leaflet | 1.9.4 | Maps |
-| @grafana/faro-web-sdk | 1.19.0 | Monitoring |
+| next-auth             | 4.24.13 | Authentication          |
+| axios                 | 1.13.2  | HTTP client             |
+| react-hook-form       | 7.67.0  | Form management         |
+| zod                   | 3.25.76 | Schema validation       |
+| @casl/ability         | 6.7.3   | Authorization           |
+| tailwindcss           | 3.4.18  | CSS framework           |
+| leaflet               | 1.9.4   | Maps                    |
+| @grafana/faro-web-sdk | 1.19.0  | Monitoring              |
 
 ---
 

@@ -1,7 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "~/server/api";
-import { GET_CHARACTERISTICS_QUERY_KEY } from "./useGetCharacteristics";
-import { type CharacteristicOperationResult } from "../types";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '~/server/api';
+import { GET_CHARACTERISTICS_QUERY_KEY } from './useGetCharacteristics';
+import { type CharacteristicOperationResult } from '../types';
 
 export type DeleteCharacteristicPayload = {
   id: number;

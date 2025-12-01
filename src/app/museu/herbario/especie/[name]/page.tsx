@@ -1,18 +1,18 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import type { Metadata } from "next";
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import type { Metadata } from 'next';
 
-import { PostDetails } from "./components/post-details";
-import getCachedQueryClient from "~/lib/react-query";
+import { PostDetails } from './components/post-details';
+import getCachedQueryClient from '~/lib/react-query';
 import {
   fetchPostDetails,
   fetchPosts,
   getPostDetailsQueryConfig,
-} from "../../api";
+} from '../../api';
 import {
   generateSpecieDetailsLdJson,
   generateSpecieDetailsMetadata,
-} from "../../metadata/specie-details.metadata";
-import { LdJsonScript } from "~/components/scripts/ld-json.script";
+} from '../../metadata/specie-details.metadata';
+import { LdJsonScript } from '~/components/scripts/ld-json.script';
 
 type PlantPageParams = {
   params: Promise<{ name: string }>;
@@ -26,7 +26,7 @@ export async function generateStaticParams() {
       name: post.specie.scientificName.toLowerCase(),
     }));
   } catch (error) {
-    console.error("Error on generate static params", error);
+    console.error('Error on generate static params', error);
     return [];
   }
 }
@@ -45,12 +45,12 @@ export async function generateMetadata({
     const fallbackCanonical = `/museu/herbario/especie/${encodeURIComponent(decodedName)}`;
     const fallbackTitle = `Espécie - ${decodedName}`;
 
-    console.error("Error on generating metadata:", error);
+    console.error('Error on generating metadata:', error);
 
     return {
       title: fallbackTitle,
       description:
-        "Detalhes sobre esta espécie do Herbário Virtual FC da UFRA.",
+        'Detalhes sobre esta espécie do Herbário Virtual FC da UFRA.',
       alternates: {
         canonical: fallbackCanonical,
       },

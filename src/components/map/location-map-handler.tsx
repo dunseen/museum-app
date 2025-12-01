@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
 const LocationMap = dynamic(
-  () => import("./location-map").then((mod) => mod.LocationMap),
+  () => import('./location-map').then((mod) => mod.LocationMap),
   {
     ssr: false,
     loading: () => (
@@ -28,8 +28,8 @@ export function LocationMapHandler({
   lng,
   title,
   zoom = 15,
-  height = "400px",
-  className = "",
+  height = '400px',
+  className = '',
 }: LocationMapHandlerProps) {
   return (
     <LocationMap

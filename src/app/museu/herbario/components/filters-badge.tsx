@@ -1,8 +1,8 @@
-import { XCircle } from "lucide-react";
-import React from "react";
-import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
-import { type PostSearchParams } from "../api";
+import { XCircle } from 'lucide-react';
+import React from 'react';
+import { Badge } from '~/components/ui/badge';
+import { Button } from '~/components/ui/button';
+import { type PostSearchParams } from '../api';
 
 type FiltersBadgeProps = {
   search: PostSearchParams;
@@ -37,12 +37,12 @@ export const FiltersBadge: React.FC<Readonly<FiltersBadgeProps>> = ({
         className="cursor-pointer"
         variant="default"
       >
-        {count} {count > 1 ? "Filtros aplicados" : "Filtro aplicado"}
+        {count} {count > 1 ? 'Filtros aplicados' : 'Filtro aplicado'}
       </Badge>
       <Button
         title="Limpar filtros"
-        size={"icon"}
-        variant={"ghost"}
+        size={'icon'}
+        variant={'ghost'}
         className="h-4 w-4"
         onClick={handleClearAllFilters}
       >

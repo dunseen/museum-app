@@ -1,8 +1,8 @@
-import React from "react";
-import { LocationMapHandler } from "~/components/map";
-import { BotanicalLayout } from "~/components/layouts";
-import { Card, CardContent } from "~/components/ui/card";
-import { Badge } from "~/components/ui/badge";
+import React from 'react';
+import { LocationMapHandler } from '~/components/map';
+import { BotanicalLayout } from '~/components/layouts';
+import { Card, CardContent } from '~/components/ui/card';
+import { Badge } from '~/components/ui/badge';
 import {
   BookOpen,
   Leaf,
@@ -10,7 +10,7 @@ import {
   Users,
   GraduationCap,
   TreePine,
-} from "lucide-react";
+} from 'lucide-react';
 
 const Page: React.FC = () => {
   return (
@@ -84,7 +84,7 @@ const Page: React.FC = () => {
                 </h2>
               </div>
               <p className="mb-4 leading-relaxed text-muted-foreground">
-                O{" "}
+                O{' '}
                 <strong className="text-foreground">
                   Herbário Dr. Felisberto Camargo (FC)
                 </strong>
@@ -95,7 +95,7 @@ const Page: React.FC = () => {
                 importantes do planeta.
               </p>
               <p className="leading-relaxed text-muted-foreground">
-                Vinculado à{" "}
+                Vinculado à{' '}
                 <strong className="text-foreground">
                   Universidade Federal Rural da Amazônia (UFRA)
                 </strong>
@@ -157,7 +157,7 @@ const Page: React.FC = () => {
               </div>
               <div className="mt-4 rounded-lg bg-muted/50 p-4">
                 <p className="text-sm text-muted-foreground">
-                  <strong className="text-foreground">Endereço:</strong>{" "}
+                  <strong className="text-foreground">Endereço:</strong>{' '}
                   Universidade Federal Rural da Amazônia - Campus Belém
                 </p>
                 <p className="text-sm text-muted-foreground">

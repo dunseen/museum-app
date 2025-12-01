@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { KeyRoundIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "~/components/ui/button";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { KeyRoundIcon } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '~/components/ui/button';
 import {
   Card,
   CardContent,
@@ -12,26 +12,26 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import { useResetPassword } from "../api/useResetPassword";
-import { toast } from "sonner";
-import { useRouter, useSearchParams } from "next/navigation";
+} from '~/components/ui/card';
+import { Input } from '~/components/ui/input';
+import { Label } from '~/components/ui/label';
+import { useResetPassword } from '../api/useResetPassword';
+import { toast } from 'sonner';
+import { useRouter, useSearchParams } from 'next/navigation';
 const schema = z
   .object({
-    password: z.string().min(8, "Senha muito curta"),
-    passwordConfirmation: z.string().min(8, "Senha muito curta"),
+    password: z.string().min(8, 'Senha muito curta'),
+    passwordConfirmation: z.string().min(8, 'Senha muito curta'),
   })
   .refine((data) => data.password === data.passwordConfirmation, {
-    message: "As senhas não correspondem",
-    path: ["passwordConfirmation"],
+    message: 'As senhas não correspondem',
+    path: ['passwordConfirmation'],
   });
 
 export function PasswordChangeForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const hash = searchParams.get("hash") ?? "";
+  const hash = searchParams.get('hash') ?? '';
 
   const { register, handleSubmit, formState } = useForm<z.infer<typeof schema>>(
     {
@@ -46,11 +46,11 @@ export function PasswordChangeForm() {
       { hash, password: values.password },
       {
         onSuccess: () => {
-          toast.success("Senha redefinida com sucesso");
-          router.push("/login");
+          toast.success('Senha redefinida com sucesso');
+          router.push('/login');
         },
         onError: () => {
-          toast.error("Erro ao redefinir senha");
+          toast.error('Erro ao redefinir senha');
         },
       },
     );
@@ -81,7 +81,7 @@ export function PasswordChangeForm() {
                 placeholder="********"
                 required
                 className="border-green-200 focus:border-green-500 focus:ring-green-500"
-                {...register("password")}
+                {...register('password')}
               />
             </div>
             <div className="grid gap-2">
@@ -94,7 +94,7 @@ export function PasswordChangeForm() {
                 placeholder="********"
                 required
                 className="border-green-200 focus:border-green-500 focus:ring-green-500"
-                {...register("passwordConfirmation")}
+                {...register('passwordConfirmation')}
               />
             </div>
           </CardContent>

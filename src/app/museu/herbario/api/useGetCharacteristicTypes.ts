@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import { publicApi } from "~/server/api";
-import { type PaginationParams, type WithPagination } from "~/types/pagination";
+import { useQuery } from '@tanstack/react-query';
+import { publicApi } from '~/server/api';
+import { type PaginationParams, type WithPagination } from '~/types/pagination';
 
 export type GetCharacteristicTypesApiResponse = {
   id: number;
@@ -13,7 +13,7 @@ export type CharacteristicTypeParams = PaginationParams & {
   name?: string;
 };
 
-export const GET_CHARACTERISTIC_TYPES_KEY = "characteristic-types";
+export const GET_CHARACTERISTIC_TYPES_KEY = 'characteristic-types';
 
 async function fetchCharacteristicTypes(
   params?: CharacteristicTypeParams,
@@ -21,7 +21,7 @@ async function fetchCharacteristicTypes(
 ) {
   const { data } =
     await publicApi.get<PaginatedGetCharacteristicTypesApiResponse>(
-      "/characteristic-types",
+      '/characteristic-types',
       {
         params: {
           ...(params?.name ? { name: params.name } : {}),

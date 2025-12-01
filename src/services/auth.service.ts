@@ -1,5 +1,5 @@
-import { type AuthUser } from "~/interfaces/auth-user.interface";
-import { api, publicApi } from "~/server/api";
+import { type AuthUser } from '~/interfaces/auth-user.interface';
+import { api, publicApi } from '~/server/api';
 
 export interface LoginApiResponse {
   token: string;
@@ -16,7 +16,7 @@ export type LoginPayload = {
 export class AuthService {
   static async login(payload: LoginPayload) {
     const { data } = await publicApi.post<LoginApiResponse>(
-      "/auth/email/login",
+      '/auth/email/login',
       payload,
     );
 
@@ -24,24 +24,24 @@ export class AuthService {
   }
 
   static async forgotPassword(email: string) {
-    await publicApi.post("/auth/forgot/password", { email });
+    await publicApi.post('/auth/forgot/password', { email });
   }
 
   static async resetPassword(payload: { hash: string; password: string }) {
-    await publicApi.post("/auth/reset/password", payload);
+    await publicApi.post('/auth/reset/password', payload);
   }
 
   static async confirmEmail(hash: string) {
-    await publicApi.post("/auth/email/confirm", { hash });
+    await publicApi.post('/auth/email/confirm', { hash });
   }
 
   static async logout() {
-    await api.post("/auth/logout");
+    await api.post('/auth/logout');
   }
 
   static async refreshToken(refreshToken: string) {
     const { data } = await publicApi.post<LoginApiResponse>(
-      "/auth/refresh",
+      '/auth/refresh',
       {},
       {
         headers: {

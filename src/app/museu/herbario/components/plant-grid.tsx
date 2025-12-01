@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Badge } from "~/components/ui/badge";
-import { useGetPosts } from "../api";
-import Image from "next/image";
-import { usePost } from "../context/post-context";
-import LoadingErrorWrapper from "~/components/ui/loading-error-wrapper";
-import { type GetTaxonApiResponse } from "../types/taxonomy.types";
-import dynamic from "next/dynamic";
-import { GridLoading } from "./grid-loading";
+import Link from 'next/link';
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { Badge } from '~/components/ui/badge';
+import { useGetPosts } from '../api';
+import Image from 'next/image';
+import { usePost } from '../context/post-context';
+import LoadingErrorWrapper from '~/components/ui/loading-error-wrapper';
+import { type GetTaxonApiResponse } from '../types/taxonomy.types';
+import dynamic from 'next/dynamic';
+import { GridLoading } from './grid-loading';
 
 const InfiniteScroll = dynamic(
-  () => import("react-infinite-scroll-component"),
+  () => import('react-infinite-scroll-component'),
   {
     ssr: false,
     loading: () => <GridLoading />,
@@ -27,7 +27,7 @@ export default function PlantGrid() {
 
   const getFamilyFromTaxons = (taxons: GetTaxonApiResponse[]) => {
     const family = taxons.find(
-      (taxon) => taxon?.hierarchy?.name?.toLowerCase() === "família",
+      (taxon) => taxon?.hierarchy?.name?.toLowerCase() === 'família',
     );
 
     if (family) {
@@ -61,7 +61,7 @@ export default function PlantGrid() {
                 <Image
                   title={post.specie.scientificName}
                   src={
-                    post.specie.files?.[0]?.url ?? "/default-fallback-image.png"
+                    post.specie.files?.[0]?.url ?? '/default-fallback-image.png'
                   }
                   alt={`image-of-${post.specie.scientificName}`}
                   width={200}

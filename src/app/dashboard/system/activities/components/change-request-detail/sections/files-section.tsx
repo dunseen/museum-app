@@ -1,17 +1,17 @@
-import React from "react";
+import React from 'react';
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "~/components/ui/accordion";
-import { FileIcon } from "lucide-react";
-import { FilesDiffSection } from "../files-diff-section";
-import { type ChangeRequestDiff } from "../../../../types/change-request-detail.types";
-import { type FileTypeApiResponse } from "~/app/museu/herbario/types/file.types";
+} from '~/components/ui/accordion';
+import { FileIcon } from 'lucide-react';
+import { FilesDiffSection } from '../files-diff-section';
+import { type ChangeRequestDiff } from '../../../../types/change-request-detail.types';
+import { type FileTypeApiResponse } from '~/app/museu/herbario/types/file.types';
 
 type FilesSectionProps = {
   files: FileTypeApiResponse[];
-  filesDiff: ChangeRequestDiff["files"];
+  filesDiff: ChangeRequestDiff['files'];
 };
 
 export function FilesSection({

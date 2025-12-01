@@ -1,13 +1,13 @@
-import Image from "next/image";
-import React from "react";
-import { type FileTypeApiResponse } from "../../../types/file.types";
+import Image from 'next/image';
+import React from 'react';
+import { type FileTypeApiResponse } from '../../../types/file.types';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "~/components/ui/carousel";
+} from '~/components/ui/carousel';
 
 type ImageCarouselProps = {
   files?: FileTypeApiResponse[];

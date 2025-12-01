@@ -1,14 +1,14 @@
 import {
   type ChangeRequestDiff,
   type PersonName,
-} from "../../../types/change-request-detail.types";
+} from '../../../types/change-request-detail.types';
 
 export function formatFullName(person?: PersonName | null): string {
-  if (!person) return "-";
-  const first = person.firstName?.trim() ?? "";
-  const last = person.lastName?.trim() ?? "";
+  if (!person) return '-';
+  const first = person.firstName?.trim() ?? '';
+  const last = person.lastName?.trim() ?? '';
   const fullName = `${first} ${last}`.trim();
-  return fullName || "-";
+  return fullName || '-';
 }
 
 export function getOldValueFromDiff<T>(

@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-"use client";
+'use client';
 
-import { Button } from "~/components/ui/button";
-import { Card, CardContent } from "~/components/ui/card";
-import { Trash2, Plus } from "lucide-react";
-import { useImageManager } from "../hooks/use-image-manager";
-import Image from "next/image";
-import { useMemo } from "react";
+import { Button } from '~/components/ui/button';
+import { Card, CardContent } from '~/components/ui/card';
+import { Trash2, Plus } from 'lucide-react';
+import { useImageManager } from '../hooks/use-image-manager';
+import Image from 'next/image';
+import { useMemo } from 'react';
 
 export type ImageType = {
   id: string;
@@ -47,7 +47,7 @@ export default function ImageManager({
       {!isReadOnly && (
         <div className="flex items-center gap-2">
           <Button
-            size={"icon"}
+            size={'icon'}
             type="button"
             onClick={handleAddImageClick}
             title="Adicionar imagens"

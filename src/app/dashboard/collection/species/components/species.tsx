@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { ConfirmationAlert } from "~/app/dashboard/shared/components/confirmation-alert";
-import { DataTable } from "~/app/dashboard/shared/components/data-table";
-import { ImageCarousel } from "~/app/dashboard/shared/components/image-carousel";
+import { ConfirmationAlert } from '~/app/dashboard/shared/components/confirmation-alert';
+import { DataTable } from '~/app/dashboard/shared/components/data-table';
+import { ImageCarousel } from '~/app/dashboard/shared/components/image-carousel';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "~/components/ui/dialog";
-import { AddSpecie } from "../add/add-specie";
-import { useSpecieTable } from "../use-specie-table";
-import { useDeleteSpecie, useGetSpecies } from "../api";
-import { TablePagination } from "~/app/dashboard/shared/components/table-pagination";
-import { useState } from "react";
-import { Input } from "~/components/ui/input";
-import { useDebouncedInput } from "~/hooks/use-debounced-input";
-import { toast } from "sonner";
+} from '~/components/ui/dialog';
+import { AddSpecie } from '../add/add-specie';
+import { useSpecieTable } from '../use-specie-table';
+import { useDeleteSpecie, useGetSpecies } from '../api';
+import { TablePagination } from '~/app/dashboard/shared/components/table-pagination';
+import { useState } from 'react';
+import { Input } from '~/components/ui/input';
+import { useDebouncedInput } from '~/hooks/use-debounced-input';
+import { toast } from 'sonner';
 
 export default function Species() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,11 +41,11 @@ export default function Species() {
       { id: selectedSpecieId },
       {
         onSuccess() {
-          toast.warning("Solicitação de exclusão enviada para revisão.");
+          toast.warning('Solicitação de exclusão enviada para revisão.');
           resetSelectedSpecieId();
         },
         onError() {
-          toast.error("Erro ao enviar solicitação de exclusão para revisão.");
+          toast.error('Erro ao enviar solicitação de exclusão para revisão.');
         },
       },
     );
@@ -68,7 +68,7 @@ export default function Species() {
               <Input
                 value={inputValue}
                 onChange={(e) => onInputChange(e.target.value)}
-                placeholder={"Busca por nome científico ou popular"}
+                placeholder={'Busca por nome científico ou popular'}
               />
             </div>
           </div>

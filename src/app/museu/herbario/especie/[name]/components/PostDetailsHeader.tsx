@@ -1,5 +1,5 @@
-import { Badge } from "~/components/ui/badge";
-import { type GetSpecieApiResponse } from "../../../types/specie.types";
+import { Badge } from '~/components/ui/badge';
+import { type GetSpecieApiResponse } from '../../../types/specie.types';
 
 type PostDetailsHeaderProps = {
   specie: GetSpecieApiResponse;
@@ -8,7 +8,7 @@ export function PostDetailsHeader({
   specie,
 }: Readonly<PostDetailsHeaderProps>) {
   const title = specie?.commonName ?? specie?.scientificName;
-  const subtitle = specie?.commonName ? specie.scientificName : "-";
+  const subtitle = specie?.commonName ? specie.scientificName : '-';
   const taxons = specie?.taxons;
 
   return (

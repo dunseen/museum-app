@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
-import React from "react";
-import { useGetPostDetails } from "../../../api";
-import { ImageCarousel } from "./image-carousel";
-import { PostDetailsHeader } from "./PostDetailsHeader";
-import { PostDetailsTechnicalData } from "./PostDetailsTechnicalData";
-import { PostDetailsCharacteristics } from "./PostDetailsCharacteristics";
-import { PostDetailsImageDialog } from "./PostDetailsImageDialog";
-import { BotanicalLayout } from "~/components/layouts";
-import { type FileTypeApiResponse } from "../../../types/file.types";
-import dynamic from "next/dynamic";
+import { ChevronLeft } from 'lucide-react';
+import Link from 'next/link';
+import React from 'react';
+import { useGetPostDetails } from '../../../api';
+import { ImageCarousel } from './image-carousel';
+import { PostDetailsHeader } from './PostDetailsHeader';
+import { PostDetailsTechnicalData } from './PostDetailsTechnicalData';
+import { PostDetailsCharacteristics } from './PostDetailsCharacteristics';
+import { PostDetailsImageDialog } from './PostDetailsImageDialog';
+import { BotanicalLayout } from '~/components/layouts';
+import { type FileTypeApiResponse } from '../../../types/file.types';
+import dynamic from 'next/dynamic';
 
 const PostDetailsLocationMap = dynamic(
   () =>
-    import("./PostDetailsLocationMap").then(
+    import('./PostDetailsLocationMap').then(
       (mod) => mod.PostDetailsLocationMap,
     ),
   { ssr: false },
@@ -29,7 +29,7 @@ type SelectedFilesProps = {
   name: string;
 };
 export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
-  const { data, isLoading, isError, isSuccess } = useGetPostDetails(name ?? "");
+  const { data, isLoading, isError, isSuccess } = useGetPostDetails(name ?? '');
   const [selectedImages, setSelectedImages] =
     React.useState<SelectedFilesProps | null>(null);
 
@@ -65,7 +65,7 @@ export const PostDetails: React.FC<Readonly<PostDetailsProps>> = ({ name }) => {
             <div className="grid grid-cols-1 gap-10 md:grid-cols-[minmax(280px,500px)_1fr]">
               <ImageCarousel
                 files={data?.specie.files ?? []}
-                specieName={data?.specie.scientificName ?? ""}
+                specieName={data?.specie.scientificName ?? ''}
               />
               <div className="flex flex-col gap-6">
                 <PostDetailsHeader specie={data?.specie} />

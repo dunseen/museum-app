@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { type PropsWithChildren } from "react";
+import { type PropsWithChildren } from 'react';
 import {
   Sidebar,
   SidebarInset,
   SidebarProvider,
   SidebarRail,
-} from "~/components/ui/sidebar";
-import { type Session } from "next-auth";
-import { DashboardSideBarHeader } from "./sidebar-header";
-import { DashboardSideBarFooter } from "./sidebar-footer";
-import { SidebarContentComponent } from "./sidebar-content";
-import { SidebarHeader } from "./sidebar-breadcrumb";
+} from '~/components/ui/sidebar';
+import { type Session } from 'next-auth';
+import { DashboardSideBarHeader } from './sidebar-header';
+import { DashboardSideBarFooter } from './sidebar-footer';
+import { SidebarContentComponent } from './sidebar-content';
+import { SidebarHeader } from './sidebar-breadcrumb';
 
 type DashboardSidebarProps = PropsWithChildren<{
   session: Session | null;

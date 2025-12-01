@@ -1,9 +1,9 @@
-import axios, { HttpStatusCode, type AxiosRequestConfig } from "axios";
-import { env } from "~/config/env.client";
-import { getCsrfToken, getSession } from "next-auth/react";
-import { isTokenExpired } from "~/utils/token";
-import type { Session } from "next-auth";
-import { AuthService } from "~/services/auth.service";
+import axios, { HttpStatusCode, type AxiosRequestConfig } from 'axios';
+import { env } from '~/config/env.client';
+import { getCsrfToken, getSession } from 'next-auth/react';
+import { isTokenExpired } from '~/utils/token';
+import type { Session } from 'next-auth';
+import { AuthService } from '~/services/auth.service';
 
 /* ----------------------- CACHE & STATE ----------------------- */
 let cachedSession: Session | null = null;
@@ -45,16 +45,16 @@ api.interceptors.request.use(async (config) => {
 /* ----------------------- ERROR HANDLER ----------------------- */
 const normalizeError = (err: unknown): Error => {
   if (err instanceof Error) return err;
-  if (typeof err === "string") return new Error(err);
+  if (typeof err === 'string') return new Error(err);
   if (
     err &&
-    typeof err === "object" &&
-    "message" in err &&
-    typeof err.message === "string"
+    typeof err === 'object' &&
+    'message' in err &&
+    typeof err.message === 'string'
   ) {
     return new Error(err.message);
   }
-  return new Error("Unauthorized");
+  return new Error('Unauthorized');
 };
 
 /* ----------------------- REFRESH LOGIC ----------------------- */
@@ -79,16 +79,16 @@ const performRefresh = async (): Promise<string> => {
 
   try {
     const refreshToken = cachedSession?.user?.refreshToken;
-    if (!refreshToken) throw new Error("Missing refresh token");
+    if (!refreshToken) throw new Error('Missing refresh token');
 
     // Call backend AuthService
     const refreshed = await AuthService.refreshToken(refreshToken);
 
     // Persist new session in NextAuth
     const csrfToken = await getCsrfToken();
-    const updateResponse = await fetch("/api/auth/session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const updateResponse = await fetch('/api/auth/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         csrfToken,
         data: {
@@ -100,7 +100,7 @@ const performRefresh = async (): Promise<string> => {
     });
 
     if (!updateResponse.ok)
-      throw new Error("Failed to update session after token refresh");
+      throw new Error('Failed to update session after token refresh');
 
     // Update local cache
     cachedSession = await getSession();
@@ -136,7 +136,7 @@ api.interceptors.response.use(
 
       try {
         const newToken = await performRefresh();
-        if (typeof newToken === "string") {
+        if (typeof newToken === 'string') {
           originalRequest.headers = {
             ...originalRequest.headers,
             Authorization: `Bearer ${newToken}`,

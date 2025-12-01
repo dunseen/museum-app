@@ -1,5 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
-import { AuthService } from "~/services/auth.service";
+import { useMutation } from '@tanstack/react-query';
+import { AuthService } from '~/services/auth.service';
 
 export type ResetPasswordPayload = { hash: string; password: string };
 

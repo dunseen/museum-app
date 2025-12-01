@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "~/server/api";
-import { GET_CHARACTERISTICS_QUERY_KEY } from "./useGetCharacteristics";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '~/server/api';
+import { GET_CHARACTERISTICS_QUERY_KEY } from './useGetCharacteristics';
 
 type PostCharacteristicsApiResponse = {
   id: number;
@@ -11,11 +11,11 @@ type PostCharacteristicsApiResponse = {
 
 async function postCharacteristics(payload: FormData) {
   const { data } = await api.post<PostCharacteristicsApiResponse>(
-    "/dashboard/characteristics",
+    '/dashboard/characteristics',
     payload,
     {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
     },
   );

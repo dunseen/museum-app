@@ -1,6 +1,6 @@
-import { CheckCircle2 } from "lucide-react";
-import Link from "next/link";
-import { Button } from "~/components/ui/button";
+import { CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '~/components/ui/button';
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "~/components/ui/card";
+} from '~/components/ui/card';
 
 export default function Page() {
   return (

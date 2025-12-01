@@ -1,11 +1,11 @@
 import {
   type UndefinedInitialDataOptions,
   useQuery,
-} from "@tanstack/react-query";
-import { type AxiosRequestConfig } from "axios";
-import { type GetSpecieApiResponse } from "~/app/museu/herbario/types/specie.types";
-import { api } from "~/server/api";
-import { type PaginationParams, type WithPagination } from "~/types/pagination";
+} from '@tanstack/react-query';
+import { type AxiosRequestConfig } from 'axios';
+import { type GetSpecieApiResponse } from '~/app/museu/herbario/types/specie.types';
+import { api } from '~/server/api';
+import { type PaginationParams, type WithPagination } from '~/types/pagination';
 
 export type PaginatedGetSpeciesApiResponse =
   WithPagination<GetSpecieApiResponse>;
@@ -14,7 +14,7 @@ export type GetSpeciesParams = PaginationParams & {
   name?: string;
 };
 
-export const GET_SPECIES_QUERY_KEY = "useGetSpecies";
+export const GET_SPECIES_QUERY_KEY = 'useGetSpecies';
 
 async function fetchSpecies(params?: GetSpeciesParams) {
   const requestConfig: AxiosRequestConfig = {
@@ -26,7 +26,7 @@ async function fetchSpecies(params?: GetSpeciesParams) {
   };
 
   const { data } = await api.get<PaginatedGetSpeciesApiResponse>(
-    "dashboard/species",
+    'dashboard/species',
     requestConfig,
   );
 
