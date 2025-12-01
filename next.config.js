@@ -102,7 +102,7 @@ const config = {
     return [
       {
         source: '/',
-        destination: 'app/museu/herbario',
+        destination: '/museu/herbario',
       },
     ];
   },
