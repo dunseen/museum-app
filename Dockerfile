@@ -60,4 +60,4 @@ RUN mkdir -p /app/.next/cache && chown -R nextjs:nodejs /app/.next
 
 USER nextjs
 
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "exec node server.js --port \"$PORT\" --hostname \"$HOST\""]
