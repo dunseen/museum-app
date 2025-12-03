@@ -46,8 +46,6 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 ENV NEXT_PUBLIC_ENV=$NEXT_PUBLIC_ENV
 ENV NODE_ENV=production
-ENV PORT=4000
-ENV HOST=0.0.0.0
 
 # create a non-root user
 RUN groupadd -g 1001 nodejs && useradd -m -u 1001 -g nodejs nextjs
@@ -61,5 +59,10 @@ RUN mkdir -p /app/.next/cache && chown -R nextjs:nodejs /app/.next
 
 USER nextjs
 
+EXPOSE 3000
+
+ENV PORT=3000
+
+ENV HOSTNAME=0.0.0.0
 
 CMD ["node", "server.js"]
