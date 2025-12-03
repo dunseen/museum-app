@@ -61,7 +61,8 @@ export default function PlantGrid() {
                 <Image
                   title={post.specie.scientificName}
                   src={
-                    post.specie.files?.[0]?.url ?? '/default-fallback-image.png'
+                    post.specie.files?.[0]?.url ??
+                    '/app/default-fallback-image.png'
                   }
                   alt={`image-of-${post.specie.scientificName}`}
                   width={200}

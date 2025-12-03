@@ -6,8 +6,8 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: 'Herbário UFRA',
     description:
       'Explore o acervo científico do Herbário Virtual FC da Universidade Federal Rural da Amazônia.',
-    id: '/museu/herbario/',
-    start_url: '/museu/herbario',
+    id: '/app/museu/herbario/',
+    start_url: '/app/museu/herbario',
     scope: '/',
     display: 'standalone',
     background_color: '#ffffff',
@@ -18,13 +18,13 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: 'portrait-primary',
     icons: [
       {
-        src: '/icons/icon-192x192.png',
+        src: '/app/icons/icon-192x192.png',
         sizes: '192x192',
         type: 'image/png',
         purpose: 'any',
       },
       {
-        src: '/icons/icon-512x512.png',
+        src: '/app/icons/icon-512x512.png',
         sizes: '512x512',
         type: 'image/png',
         purpose: 'any',

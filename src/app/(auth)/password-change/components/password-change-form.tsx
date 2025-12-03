@@ -47,7 +47,7 @@ export function PasswordChangeForm() {
       {
         onSuccess: () => {
           toast.success('Senha redefinida com sucesso');
-          router.push('/login');
+          router.push('/app/login');
         },
         onError: () => {
           toast.error('Erro ao redefinir senha');

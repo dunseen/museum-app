@@ -37,7 +37,7 @@ export default function Page() {
   async function onSubmit(values: z.infer<typeof schema>) {
     try {
       await forgotPassword.mutateAsync({ email: values.email });
-      router.push('/forgot-password/confirmation');
+      router.push('/app/forgot-password/confirmation');
     } catch {
       toast.error('Erro ao solicitar recuperação de senha');
     }

@@ -86,7 +86,7 @@ const performRefresh = async (): Promise<string> => {
 
     // Persist new session in NextAuth
     const csrfToken = await getCsrfToken();
-    const updateResponse = await fetch('/api/auth/session', {
+    const updateResponse = await fetch('/app/api/auth/session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

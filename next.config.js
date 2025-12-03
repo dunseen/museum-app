@@ -12,7 +12,7 @@ const CSP_SOURCES = {
     "'self'",
     'data:',
     'blob:',
-    'https://museum.dlima-consulting.com/storage/*',
+    'https://museum.dlima-consulting.com',
     'https://*.tile.openstreetmap.org',
     'http://127.0.0.1:9000',
     'http://localhost:9000',
@@ -21,8 +21,7 @@ const CSP_SOURCES = {
   connect: [
     "'self'",
     'https://*.tile.openstreetmap.org',
-    'https://museum.dlima-consulting.com/api/*',
-    'https://museum.dlima-consulting.com/storage/*',
+    'https://museum.dlima-consulting.com',
     'https://cloudflareinsights.com',
     'https://faro-collector-prod-sa-east-1.grafana.net', // Grafana Faro
     'http://127.0.0.1:9000',
@@ -95,14 +94,6 @@ const config = {
               'camera=(), microphone=(), geolocation=(), browsing-topics=()',
           },
         ],
-      },
-    ];
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/',
-        destination: '/museu/herbario',
       },
     ];
   },

@@ -1,5 +1,8 @@
-import { LoginForm } from './components/login-form';
+import { LoginWrapper } from './components/login-wrapper';
+import { auth } from '~/server/auth';
 
-export default function Page() {
-  return <LoginForm />;
+export default async function Page() {
+  const session = await auth();
+
+  return <LoginWrapper session={session} />;
 }

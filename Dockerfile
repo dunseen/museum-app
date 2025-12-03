@@ -22,6 +22,7 @@ ENV NEXT_PUBLIC_ENV=$NEXT_PUBLIC_ENV
 # Pass `--build-arg SKIP_NEXT_CHECKS=true` to enable skipping only inside the image.
 ARG SKIP_NEXT_CHECKS=false
 ENV SKIP_NEXT_CHECKS=${SKIP_NEXT_CHECKS}
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN yarn build
 

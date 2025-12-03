@@ -63,7 +63,7 @@ export default async function Page({ searchParams }: ConfirmEmailPageProps) {
             </CardHeader>
             <CardContent />
             <CardFooter>
-              <Link href="/login" passHref className="w-full">
+              <Link href="/app/login" passHref className="w-full">
                 <Button className="w-full bg-green-600 text-white hover:bg-green-700">
                   Ir para login
                 </Button>

@@ -16,7 +16,11 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = ({
   session,
 }) => {
   return (
-    <SessionProvider session={session} refetchOnWindowFocus={false}>
+    <SessionProvider
+      session={session}
+      refetchOnWindowFocus={false}
+      basePath="/app/api/auth"
+    >
       <AbilityProvider ability={defineAbilityFor(session?.user)}>
         {children}
       </AbilityProvider>

@@ -8,13 +8,13 @@ export default withAuth(
 
     // 1️⃣ If the user is authenticated and tries to access /login → redirect to /dashboard
     if (isLoginPage && isAuthenticated) {
-      return Response.redirect(new URL('/dashboard', req.url));
+      return Response.redirect(new URL('/app/dashboard', req.url));
     }
 
     // 2️⃣ If the user is not authenticated and tries to access /dashboard → redirect to /login
-    const isDashboardPage = nextUrl.pathname.startsWith('/dashboard');
+    const isDashboardPage = nextUrl.pathname.includes('/dashboard');
     if (isDashboardPage && !isAuthenticated) {
-      return Response.redirect(new URL('/login', req.url));
+      return Response.redirect(new URL('/app/login', req.url));
     }
 
     // 3️⃣ Otherwise, allow access

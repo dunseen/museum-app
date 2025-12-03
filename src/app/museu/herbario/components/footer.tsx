@@ -116,7 +116,7 @@ export default function Footer() {
                       className="group flex items-center gap-2 text-green-100 transition-colors hover:text-white"
                     >
                       <Image
-                        src="/icons/github.svg"
+                        src="/app/icons/github.svg"
                         alt="GitHub Logo"
                         width={14}
                         height={14}
@@ -131,7 +131,7 @@ export default function Footer() {
                       className="group flex items-center gap-2 text-green-100 transition-colors hover:text-white"
                     >
                       <Image
-                        src="/icons/github.svg"
+                        src="/app/icons/github.svg"
                         alt="GitHub Logo"
                         width={14}
                         height={14}

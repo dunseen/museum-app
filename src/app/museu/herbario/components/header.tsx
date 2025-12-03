@@ -17,7 +17,7 @@ export default function Header({ showNavMenu }: Readonly<HeaderProps>) {
           >
             <div className="rounded-lg border border-green-100 bg-gradient-to-br from-green-50 to-emerald-50 p-2 transition-all duration-200 group-hover:border-green-300 group-hover:shadow-md">
               <Image
-                src="/ufra-logo.png"
+                src="/app/ufra-logo.png"
                 alt="UFRA Logo"
                 width={45}
                 height={45}

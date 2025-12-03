@@ -33,7 +33,7 @@ export const PdfExport = React.forwardRef<
       <div className="space-y-2 text-center">
         <div className="relative mx-auto h-20 w-20">
           <Image
-            src="/ufra-logo.png"
+            src="/app/ufra-logo.png"
             alt="UFRA Logo"
             width={80}
             height={80}

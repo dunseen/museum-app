@@ -20,6 +20,7 @@ const appOrigin = appUrl ? new URL(appUrl).origin : self.location.origin;
 
 const PRECACHE_ASSETS = [
   '/',
+  '/app',
   '/museu/herbario',
   OFFLINE_URL,
   '/favicon.ico',
@@ -59,8 +60,8 @@ function isImageAsset(url) {
 function isMapTileRequest(url) {
   // Bypass OpenStreetMap and other map tile providers
   return (
-    url.hostname.includes('tile.openstreetmap.org') ||
-    url.hostname.includes('tile.osm.org') ||
+    url.hostname.includes('tile.openstreetmap.org') ??
+    url.hostname.includes('tile.osm.org') ??
     url.hostname.includes('tiles.openstreetmap.org')
   );
 }
@@ -232,7 +233,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
+  if (event.data?.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
 });
