@@ -38,7 +38,6 @@ const api = axios.create({ baseURL: env.NEXT_PUBLIC_API_URL });
 
 api.interceptors.request.use(async (config) => {
   const token = await getAccessToken();
-  console.info('Performing request to:', config.url);
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
