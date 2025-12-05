@@ -143,5 +143,10 @@ export const authOptions: NextAuthOptions = {
 };
 
 export async function auth() {
-  return getServerSession(authOptions);
+  try {
+    return getServerSession(authOptions);
+  } catch (error) {
+    console.error('Error getting server session:', error);
+    return null;
+  }
 }
