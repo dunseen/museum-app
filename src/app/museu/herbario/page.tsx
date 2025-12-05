@@ -3,9 +3,12 @@ import type { Metadata } from 'next';
 
 import HerbariumHero from './components/herbarium-hero';
 import getCachedQueryClient from '~/lib/react-query';
-import { getCharacteristicFilters, getPostQueryConfig } from './api';
+import {
+  getCharacteristicFilters,
+  getHierarchies,
+  getPostQueryConfig,
+} from './api';
 import { PostProvider } from './context/post-context';
-import { getHierarchiesConfig } from '~/app/dashboard/collection/taxonomy/api';
 import { env } from '~/config/env.client';
 import PlantSearch from './components/plant-search';
 import PlantGrid from './components/plant-grid';
@@ -41,7 +44,7 @@ export default async function Page() {
   const client = getCachedQueryClient();
   await Promise.all([
     client.prefetchInfiniteQuery(getPostQueryConfig()),
-    client.prefetchQuery(getHierarchiesConfig()),
+    client.prefetchQuery(getHierarchies()),
     client.prefetchQuery(getCharacteristicFilters()),
   ]);
 

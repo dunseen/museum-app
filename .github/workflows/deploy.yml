@@ -87,6 +87,7 @@ jobs:
           NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
           NEXT_PUBLIC_ENV: production
           NEXT_PUBLIC_FARO_COLLECTOR_URL: ${{ vars.NEXT_PUBLIC_FARO_COLLECTOR_URL || '' }}
+          NEXT_TELEMETRY_DISABLED: 1
         run: yarn build
 
   # Job 4: Build and push Docker image (only on push to master)
