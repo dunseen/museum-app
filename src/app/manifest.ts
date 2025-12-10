@@ -8,7 +8,7 @@ export default function manifest(): MetadataRoute.Manifest {
       'Explore o acervo científico do Herbário Virtual FC da Universidade Federal Rural da Amazônia.',
     id: '/app/museu/herbario/',
     start_url: '/app/museu/herbario',
-    scope: '/',
+    scope: '/app',
     display: 'standalone',
     background_color: '#ffffff',
     theme_color: '#006633',

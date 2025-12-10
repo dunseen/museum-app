@@ -22,7 +22,7 @@ export function useInitServiceWorker() {
     const registerServiceWorker = async () => {
       try {
         const registration = await navigator.serviceWorker.register(
-          `/service-worker.js?${params.toString()}`,
+          `${env.NEXT_PUBLIC_APP_URL}/service-worker.js?${params.toString()}`,
         );
 
         registration.onupdatefound = () => {
