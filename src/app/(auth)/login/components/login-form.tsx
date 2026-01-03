@@ -16,14 +16,12 @@ import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { signIn } from 'next-auth/react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 
 type LoginData = {
   email: string;
   password: string;
 };
 export function LoginForm() {
-  const router = useRouter();
   const { register, handleSubmit, formState, setError } =
     useForm<Readonly<LoginData>>();
 
@@ -31,7 +29,8 @@ export function LoginForm() {
     const result = await signIn('credentials', {
       email: data.email,
       password: data.password,
-      redirect: false,
+      redirect: true,
+      callbackUrl: '/app/dashboard',
     });
 
     if (result?.status && result?.status === 401) {
@@ -46,8 +45,6 @@ export function LoginForm() {
 
       return;
     }
-
-    router.push('/app/dashboard');
   };
 
   return (

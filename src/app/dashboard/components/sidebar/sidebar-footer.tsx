@@ -34,10 +34,13 @@ export function DashboardSideBarFooter({ user }: DashboardSideBarFooterProps) {
   const initials = firstName.charAt(0) + lastName.charAt?.(0);
 
   const handleLogout = async () => {
-    await Promise.all([
-      signOut({ callbackUrl: '/login' }),
-      AuthService.logout(),
-    ]);
+    try {
+      await AuthService.logout();
+    } catch (error) {
+      console.error('Backend logout failed:', error);
+    } finally {
+      await signOut({ callbackUrl: '/app/login', redirect: true });
+    }
   };
 
   return (
@@ -93,12 +96,10 @@ export function DashboardSideBarFooter({ user }: DashboardSideBarFooterProps) {
                 </Link>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <Link href="/login">
-                <DropdownMenuItem onClick={handleLogout}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sair</span>
-                </DropdownMenuItem>
-              </Link>
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Sair</span>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>

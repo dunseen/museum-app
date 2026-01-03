@@ -1,43 +1,29 @@
-import { withAuth } from 'next-auth/middleware';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-export default withAuth(
-  (req) => {
-    const { nextUrl, nextauth } = req;
-    const isLoginPage = nextUrl.pathname === '/login';
-    const isAuthenticated = !!nextauth?.token;
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-    // 1️⃣ If the user is authenticated and tries to access /login → redirect to /dashboard
-    if (isLoginPage && isAuthenticated) {
-      return Response.redirect(new URL('/app/dashboard', req.url));
-    }
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const isAuthenticated = !!token;
 
-    // 2️⃣ If the user is not authenticated and tries to access /dashboard → redirect to /login
-    const isDashboardPage = nextUrl.pathname.includes('/dashboard');
-    if (isDashboardPage && !isAuthenticated) {
-      return Response.redirect(new URL('/app/login', req.url));
-    }
+  const isLoginPage = pathname === '/login';
+  const isDashboardPage = pathname.startsWith('/dashboard');
 
-    // 3️⃣ Otherwise, allow access
-    return null;
-  },
-  {
-    callbacks: {
-      // Let middleware have access to the token (required for checks)
-      authorized: () => true,
-    },
-  },
-);
+  // 1️⃣ If authenticated and trying to access /login → redirect to /dashboard
+  if (isLoginPage && isAuthenticated) {
+    return NextResponse.redirect(new URL('/app/dashboard', req.url));
+  }
+
+  // 2️⃣ If not authenticated and trying to access /dashboard → redirect to /app/login
+  if (isDashboardPage && !isAuthenticated) {
+    return NextResponse.redirect(new URL('/app/login', req.url));
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
-     * - museu (public museum routes - no auth needed)
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|museu).*)',
-  ],
+  matcher: ['/dashboard/:path*', '/login'],
 };

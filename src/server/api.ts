@@ -23,8 +23,16 @@ const pendingRequests = new Set<{
 /* ----------------------- TOKEN HELPERS ----------------------- */
 const getAccessToken = async (): Promise<string | undefined> => {
   const tokenExpires = cachedSession?.user?.tokenExpires;
+
   if (cachedSession && !isTokenExpired(tokenExpires)) {
     return cachedSession.user.token;
+  }
+
+  if (typeof window === 'undefined') {
+    const session = await (await import('./auth')).auth();
+    if (session) cachedSession = session;
+
+    return session?.user.token;
   }
 
   const session = await getSession();
